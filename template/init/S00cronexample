@@ -1,0 +1,24 @@
+#!/bin/sh
+# This is an example for an init-script creating a cron-entry for an UserApp
+
+DISABLED=yes
+
+if [ "${DISABLED}" = "yes" ]; then
+	exit 0
+fi
+
+CRON_LINE_NOR="*/1 * * * * /apps/appname/bin/a_bin"
+CRON_LINE_SED="s/\*\/1 \* \* \* \* \/apps\/appname\/bin\/a_bin//"
+
+case "${1}" in
+	start)
+		echo "Adding cron-Entry for app..."
+		echo ${CRON_LINE_NOR} >> /usr/conf/cron/admin
+		;;
+	stop)
+		echo "Removing cron-Entry of app..."
+		sed ${CRON_LINE_SED} /usr/conf/cron/admin > /tmp/admin_cron
+		tr -s '\n' < /tmp/admin_cron > /usr/conf/cron/admin
+		rm -f /tmp/admin_cron
+		;;
+esac

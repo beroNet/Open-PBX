@@ -1,0 +1,92 @@
+/* apply settings button */
+div#apply_button {
+	display: none;
+}
+
+input#apply_button_green {
+	background-color: #298a08;
+	border: solid 1px #000000;
+	color: #ffffff;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+input#apply_button_red {
+	background-color: #a31d26;
+	border: 1px solid #000000;
+	color: #f0f0f0;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+/* default form style */
+form  {
+	background-color: transparent;
+	color: #000000;
+	margin: 0px;
+	padding: 0px;
+}
+
+form button,
+form input,
+form submit,
+form textarea,
+form select {
+	background-color: #f0f0f0;
+	border: solid 1px #cccccc;
+	color: #000000;
+	font-family: Arial, Verdana, Helvetica, sans-serif;
+	font-style: normal;
+	font-size: 10px;
+}
+
+form textarea {
+	min-width: 160px;
+	min-height: 160px;
+}
+
+form textarea.template_edit {
+	font-family: monospace;
+	min-width: 480px;
+	min-height: 480px;
+	white-space: nowrap;
+}
+
+form select.fixed {
+	height: 95px;
+	width: 50px;
+}
+
+form select.dynamic {
+	min-width: 70px;
+	max-width: 750px;
+}
+
+form input.button_arrow {
+	background-color: transparent;
+	color: #000000;
+	border: none;
+	font-family: monospace;
+}
+
+/* some button styles */
+.button {
+	width: 60px;
+}
+
+.button_left {
+	float: left;
+	margin-left: 10px;
+	width: 60px;
+}
+
+.button_right {
+	float: right;
+	margin-right: 10px;
+	width: 60px;
+}
+

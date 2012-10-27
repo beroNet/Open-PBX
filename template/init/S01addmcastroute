@@ -1,0 +1,37 @@
+#!/bin/sh
+# Set route to support multicasts
+SU5JVF9USElTX1NDUklQVF9BU19ST09U=TRUE
+
+BASE=/apps/beroPBX
+CONF=${BASE}/etc/snom_pnp_daemon
+
+if [ -f ${CONF} ]; then
+	. ${CONF}
+fi
+
+net=224.0.0.0
+netmask=240.0.0.0
+iface=eth0
+
+case "${1}" in
+	start)
+		if [ "${SNOM_PNP_DISABLED}" = "yes" ]; then
+			exit 0
+		fi
+
+		echo -n "Enabling multicast for ${net}/${netmask} on ${iface}:"
+		/sbin/ifconfig eth0 multicast &> /dev/null
+		/sbin/route add -net ${net} netmask ${netmask} dev ${iface} &> /dev/null
+		echo "Done."
+		;;
+	stop)
+		;;
+	restart)
+		${0} stop
+		${0} start
+		;;
+	*)
+		echo "Usage ${0} [start|stop|restart]"
+		exit 1
+		;;
+esac

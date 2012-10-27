@@ -1,0 +1,28 @@
+#!/bin/sh
+# This is an example of an init-script for an UserApp
+
+DISABLED=yes
+
+if [ "${DISABLED}" = "yes" ]; then
+	exit 0
+fi
+
+case "${1}" in
+	start)
+		echo "Starting App..."
+		/userapp/baf_beroAri/bin/example
+		;;
+	stop)
+		echo "Stopping App..."
+		killall -9 /userapp/baf_beroAri/bin/example
+		;;
+	restart)
+		echo "Restarting App..."
+		${0} stop
+		${0} start
+		;;
+	*)
+		echo "Usage ${0} [start|stop|restart]"
+		exit 1
+		;;
+esac

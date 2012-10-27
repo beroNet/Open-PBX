@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+     Default settings to be provisioned to SNOM phones, XML format (supported by firmware v7 and higher).
+-->
+
+<settings>
+	<phone-settings>
+		<language perm="RW">English</language>
+		<web_language perm="RW">English</web_language>
+		<timezone perm="RW">GER+1</timezone>
+		<tone_scheme perm="R">GER</tone_scheme>
+		<date_us_format perm="R">off</date_us_format>
+		<time_24_format perm="R">on</time_24_format>
+		<challenge_response perm="R">off</challenge_response>
+		<filter_registrar perm="R">off</filter_registrar>
+		<redirect_event perm="R">none</redirect_event>
+		<ringer_animation perm="R">on</ringer_animation>
+		<logon_wizard perm="R">off</logon_wizard>
+		<screen_saver_timeout perm="R">60</screen_saver_timeout>
+		<privacy_in perm ="R">off</privacy_in>
+		<privacy_out perm ="R">off</privacy_out>
+		<auto_dial perm="R">5</auto_dial>
+		<admin_mode perm="R">true</admin_mode>
+		<user_phone perm="R">true</user_phone>
+		<ntp_server perm="RW">pool.ntp.org</ntp_server>
+	</phone-settings>
+
+	<functionKeys>
+		<!-- Visit http://wiki.snom.com/Features/Mass_Deployment/Setting_Files/XML/Function_Keys/Example for examples. -->
+	</functionKeys>
+
+	<tbook>
+		<!-- Visit http://wiki.snom.com/Features/Mass_Deployment/Setting_Files/XML/Directory/Example for examples. -->
+	</tbook>
+
+	<dialplan>
+		<!-- Visit http://wiki.snom.com/Features/Mass_Deployment/Setting_Files/XML/Dial_Plan/Example for examples. -->
+	</dialplan>
+
+	<uploads>
+		<!-- Visit http://wiki.snom.com/Features/Mass_Deployment/Setting_Files/XML/Uploads/Example for examples. -->
+	</uploads>
+
+	<certificates>
+		<!-- Visit http://wiki.snom.com/Features/Mass_Deployment/Setting_Files/XML/Certificates/Example for examples. -->
+	</certificates>
+</settings>

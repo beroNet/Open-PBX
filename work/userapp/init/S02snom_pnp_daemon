@@ -1,0 +1,39 @@
+#!/bin/sh
+# Start/Stop snom_pnp_daemon
+
+BASE=/apps/beroPBX
+NAME=snom_pnp_daemon
+CONF=${BASE}/etc/${NAME}
+
+BIN=${BASE}/bin/${NAME}
+PID=${BASE}/var/run/${NAME}.pid
+
+if [ -f ${CONF} ]; then
+	. ${CONF}
+fi
+
+case "${1}" in
+	start)
+		if [ "${SNOM_PNP_DISABLED}" = "yes" ]; then
+			exit 0
+		fi
+
+		echo -n "Starting snom_pnp_daemon: "
+		/sbin/start-stop-daemon -S -b -x ${BIN} -m ${PID} -p ${PID}
+		echo "Done."
+		;;
+	stop)
+		echo -n "Stopping snom_pnp_daemon: "
+		/sbin/start-stop-daemon -K -p ${PID} &> /dev/null
+		rm -f ${PID}
+		echo "Done."
+		;;
+	restart)
+		${0} stop
+		${0} start
+		;;
+	*)
+		echo "Usage ${0} [start|stop|restart]"
+		exit 1
+		;;
+esac

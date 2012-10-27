@@ -1,0 +1,4 @@
+# fstab example for userapps
+# remote path	local path	type	options
+//192.168.0.1/path/to/cifs	/mnt/cifs	cifs	username=someuser,password=abcd
+192.168.0.1:/path/to/nfs	/mnt/nfs	nfs
