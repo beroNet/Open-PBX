@@ -1,0 +1,4 @@
+work/*
+.baf.conf
+*.o
+*~
