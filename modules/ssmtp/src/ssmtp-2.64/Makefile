@@ -2,7 +2,7 @@
 
 
 srcdir= .
-prefix=/apps/beroPBX
+prefix=/apps/OpenPBX
 exec_prefix=${prefix}
 libexecdir=${exec_prefix}/libexec
 bindir=$(prefix)/sbin

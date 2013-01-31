@@ -1,6 +1,6 @@
 /*
  *
- * Stylesheet for beroPBX main pages
+ * Stylesheet for OpenPBX main pages
  *
  */
 
@@ -15,7 +15,7 @@ body {
 /* the body frame */
 div#body_frame {
 	background-color: #f0f0ec;
-	background-image: url(/userapp/beroPBX/img/background/index_left_bar.png);
+	background-image: url(/userapp/OpenPBX/img/background/index_left_bar.png);
 	background-repeat: repeat-y;
 	color: #000000;
 	margin-bottom: 15px;
@@ -26,12 +26,12 @@ div#body_frame {
 	}
 
 div#body_frame_top {
-	background-image: url(/userapp/beroPBX/img/background/index_top_bar.png);
+	background-image: url(/userapp/OpenPBX/img/background/index_top_bar.png);
 	height: 40px;
 }
 
 div#body_frame_top_corner {
-	background-image: url(/userapp/beroPBX/img/background/index_top_corner.png);
+	background-image: url(/userapp/OpenPBX/img/background/index_top_corner.png);
 	background-repeat: no-repeat;
 	height: 40px;
 	width: 58px;
@@ -75,12 +75,12 @@ div#body_frame_content {
 }
 
 div#body_frame_bottom {
-	background-image: url(/userapp/beroPBX/img/background/index_bottom_bar.png);
+	background-image: url(/userapp/OpenPBX/img/background/index_bottom_bar.png);
 	height: 60px;
 }
 
 div#body_frame_bottom_corner {
-	background-image: url(/userapp/beroPBX/img/background/index_bottom_corner.png);
+	background-image: url(/userapp/OpenPBX/img/background/index_bottom_corner.png);
 	background-repeat: no-repeat;
 	height: 60px;
 	width: 58px;

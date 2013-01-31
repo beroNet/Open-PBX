@@ -15,7 +15,7 @@ class MainModule {
 
 	private function _execute_upload() {
 
-		if (!isset($_FILES['uploadfile']) || ($_FILES['uploadfile']['name'] != 'beroPBX.tar.gz')) {
+		if (!isset($_FILES['uploadfile']) || ($_FILES['uploadfile']['name'] != 'OpenPBX.tar.gz')) {
 			$ret =	"<script type=\"text/javascript\">alert('The name of this file is incorrect: \'" . $_FILES['uploadfile']['name'] ."\'')</script>\n" .
 				"<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "'</script>\n";
 
@@ -40,7 +40,7 @@ class MainModule {
 
 	private function _execute_download() {
 
-		$ret =	"<script type=\"text/javascript\">window.open('" . BAF_URL_BASE . "/popup/misc/download.php?file=beroPBX.tar.gz');</script>\n" .
+		$ret =	"<script type=\"text/javascript\">window.open('" . BAF_URL_BASE . "/popup/misc/download.php?file=OpenPBX.tar.gz');</script>\n" .
 			"<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n";
 
 		return($ret);

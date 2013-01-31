@@ -1,6 +1,6 @@
 <?php
 
-include('/apps/beroPBX/www/includes/variables.php');
+include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/includes/database.php');
 include(BAF_APP_WWW . '/includes/amifunc.php');
 include(BAF_APP_WWW . '/includes/create_files_functions.php');
@@ -28,13 +28,13 @@ $ami = new amifunc();
 $ami->Login();
 
 create_ext();
-create_ext_beroPBX($ba, $ami);
+create_ext_OpenPBX($ba, $ami);
 
 create_sip($ba);
-create_sip_beroPBX($ba, $ami);
+create_sip_OpenPBX($ba, $ami);
 
 create_mailbox($ba);
-create_mailbox_beroPBX($ba, $ami);
+create_mailbox_OpenPBX($ba, $ami);
 
 $ami->Reload();
 $ami->Logout();

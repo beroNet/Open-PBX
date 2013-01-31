@@ -1,6 +1,6 @@
 <?php
 
-include('/apps/beroPBX/www/includes/variables.php');
+include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/phones/snom/menu/functions.php');
 
 $url_base = 'http://' . $_SERVER['SERVER_NAME'] . BAF_URL_BASE . '/phones/snom/menu/index.php';
@@ -184,7 +184,7 @@ case 'server_notav':
 	$softkey_items['F2']['url'] =		$url_base . '?page=not_avail';
 	break;
 default:
-	$title = 'beroPBX Main Menu';
+	$title = 'OpenPBX Main Menu';
 
 	$menu_items['Call Diversion'] = $url_base . '?page=diversion';
 	break;

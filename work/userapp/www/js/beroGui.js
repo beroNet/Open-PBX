@@ -4,7 +4,7 @@ function popup_open (url) {
 	left_pos = ((screen.width - 750) / 2);
 	height_pos = ((screen.height - 400) / 2);
 
-	popup_win = window.open(url, "beroPBX", "width=720,height=480,left=" + left_pos + ",top=" + height_pos + ",menubar=no,location=no,resizable=yes,scrollbars=yes,status=no");
+	popup_win = window.open(url, "OpenPBX", "width=720,height=480,left=" + left_pos + ",top=" + height_pos + ",menubar=no,location=no,resizable=yes,scrollbars=yes,status=no");
 	popup_win.focus();
 }
 
@@ -16,6 +16,24 @@ function resize(){
 	if (this.window.sizeToContent) {
 		this.window.sizeToContent();
 	}
+}
+
+/* function to check if MAC is valid */
+function verifyMAC (MACvalue) {
+
+	if (MACvalue == '') {
+		alert('MAC-address is empty!');
+		return false;
+	}
+
+	var macPattern = /^[0-9a-fA-F:]+$/;
+
+	if (MACvalue.match(macPattern) == null) {
+		alert('MAC-address: ' + MACvalue + ' is invalid!');
+		return false;
+	}
+
+	return true;
 }
 
 /* function to check if IP is valid */
@@ -53,7 +71,7 @@ function paint_apply_button (level, module) {
 		return;
 	}
 
-	var url = '/userapp/beroPBX/includes/create_files.php?m=' + module;
+	var url = '/userapp/OpenPBX/includes/create_files.php?m=' + module;
 
 	switch (level) {
 		default:

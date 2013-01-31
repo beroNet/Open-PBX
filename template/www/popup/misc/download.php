@@ -1,11 +1,11 @@
 <?php
 
-include('/apps/beroPBX/www/includes/variables.php');
+include('/apps/OpenPBX/www/includes/variables.php');
 
 switch ($_GET['file']) {
-case 'beroPBX.tar.gz':
+case 'OpenPBX.tar.gz':
 
-	$fn = '/tmp/beroPBX.tar.gz';
+	$fn = '/tmp/OpenPBX.tar.gz';
 
 	if (file_exists($fn)) {
 		@unlink($fn);
@@ -27,7 +27,7 @@ case 'beroPBX.tar.gz':
 	$file_content = implode('', file($fn));
 
 	header('Content-Type: application/octet-stream');
-	header('Content-Disposition: attachment; filename=beroPBX.tar.gz');
+	header('Content-Disposition: attachment; filename=OpenPBX.tar.gz');
 	header('Content-Length: ' . strlen($file_content));
 
 	echo $file_content;

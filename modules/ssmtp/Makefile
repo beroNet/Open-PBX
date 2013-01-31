@@ -16,7 +16,7 @@ BFX_LIB		:= $(BAF_DIR)/lib
 CFLAGS		:= "-I$(TOOL_INC) -I$(BFX_INC)"
 LDFLAGS		:= "-L$(TOOL_LIB) -L$(TOOL_USR_LIB) -L$(BFX_LIB)"
 
-DEST_ROOT	:= /apps/beroPBX
+DEST_ROOT	:= /apps/OpenPBX
 INST_PATH	:= $(CUR_DIR)
 
 CONF_OPTS	:= --build=$(shell uname -m) --host=$(TOOLPREFX) --prefix=$(DEST_ROOT) --enable-ssl

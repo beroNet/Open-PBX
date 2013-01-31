@@ -146,10 +146,21 @@ class MainModule {
 
 		$ret =	((!empty($entry['action_1'])) ? 'Cut first ' . $entry['action_1'] . ' digit(s), ' : '') .
 			((!empty($entry['action_2'])) ? 'Prepend ' . $entry['action_2'] . ', ' : '') .
-			'Dial' .
+			$entry['Action'] .
 			(($entry['Trunk'] != 'Any Trunk') ? ' using ' . $entry['Trunk'] : '');
 
 		return($ret);
+	}
+
+	private function _check_extensions ($ba) {
+
+		$query = $ba->select("SELECT COUNT(id) AS ext_count FROM sip_extensions");
+		$entry = $ba->fetch_array($query);
+		if ($entry['ext_count'] > 1) {
+			return(true);
+		}
+
+		return(false);
 	}
 
 	private function _display_rules ($ba, $rule_type) {
@@ -160,7 +171,9 @@ class MainModule {
 				"\t\t<td class=\"buttons\">\n" .
 				"\t\t\t<form name=\"rule_add\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 				"\t\t\t\t<input type=\"hidden\" name=\"type\" value=\"" . $rule_type['name'] . "\" />\n" .
-				"\t\t\t\t<input type=\"submit\" name=\"add\" value=\"Add " . $rule_type['name'] . " rule\" />\n" .
+				(($this->_check_extensions($ba) == true) ?
+					"\t\t\t\t<input type=\"submit\" name=\"add\" value=\"Add " . $rule_type['name'] . " rule\" />\n" :
+					"\t\t\t\t<span style=\"font-weight: normal;\">No extensions defined.</span>") .
 				"\t\t\t</form>\n" .
 				"\t\t</td>\n" .
 				"\t</tr>\n";

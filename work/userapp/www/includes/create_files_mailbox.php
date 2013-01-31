@@ -1,10 +1,10 @@
 <?php
 
-include('/apps/beroPBX/www/includes/variables.php');
+include('/apps/OpenPBX/www/includes/variables.php');
 
-function create_mailbox_beroPBX ($ba, $ami) {
+function create_mailbox_OpenPBX ($ba, $ami) {
 
-	$fn = BAF_APP_AST_CFG .'/voicemail_beroPBX.conf';
+	$fn = BAF_APP_AST_CFG .'/voicemail_OpenPBX.conf';
 
 	$cont = "[default]\n";
 
@@ -67,15 +67,15 @@ function create_mailbox ($ba) {
 		"maxsilence = 10\n" .
 		"silencethreshold = 128\n" .
 		"maxlogins = 3\n" .
-		"mailcmd = /apps/beroPBX/bin/ssmtp -t\n" .
-		"fromstring = beroPBX VoiceMail\n" .
+		"mailcmd = /apps/OpenPBX/bin/ssmtp -t\n" .
+		"fromstring = OpenPBX VoiceMail\n" .
 		"emailsubject = VoiceMail received from \${VM_CALLERID}\n" .
 		"emailbody = Dear \${VM_NAME},\\n\\n" .
 		"You have received a new VoiceMail from \${VM_CIDNUM} on \${VM_DATE} in mailbox \${VM_MAILBOX}\\n" .
 		"The VoiceMail is attached to this mail.\\n\\n" .
-		"beroPBX\\n\n" .
+		"OpenPBX\\n\n" .
 		"\n" .
-		"#include " . BAF_APP_AST_CFG . "/voicemail_beroPBX.conf\n";
+		"#include " . BAF_APP_AST_CFG . "/voicemail_OpenPBX.conf\n";
 
 	_create_dirs();
 	_save_conf($fn, $cont);

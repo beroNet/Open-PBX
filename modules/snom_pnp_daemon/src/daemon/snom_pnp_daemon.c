@@ -122,7 +122,7 @@ static int _snom_pnp_send_prov (const int sock_fd, struct sockaddr_in send_addr,
 		return(0);
 	}
 
-	snprintf(prov_uri, sizeof(prov_uri), "http://%s/userapp/beroPBX/phones/snom/provisioning.php?mac={mac}", ip_addr);
+	snprintf(prov_uri, sizeof(prov_uri), "http://%s/userapp/OpenPBX/phones/snom/provisioning.php?mac={mac}", ip_addr);
 
 	memset(msg, 0x00, sizeof(msg));
 
@@ -207,9 +207,9 @@ static int _snom_pnp_phone_add (const snom_phone_t *phone) {
 
 	char		url[1024];
 
-	snprintf(url, sizeof(url), "http://127.0.0.1/userapp/beroPBX/api/phone.php?action=add&type=%s&mac=%s&ip=%s", phone->type, phone->mac_addr, phone->ip_addr);
+	snprintf(url, sizeof(url), "http://127.0.0.1/userapp/OpenPBX/api/phone.php?action=add&type=%s&mac=%s&ip=%s", phone->type, phone->mac_addr, phone->ip_addr);
 
-	printf("Adding phone to beroPBX: ");
+	printf("Adding phone to OpenPBX: ");
 	if (!(curl = curl_easy_init())) {
 		printf("Failed (curl_init returned '%s').\n", strerror(errno));
 		return(0);
@@ -278,7 +278,7 @@ static int _snom_pnp_phone_chk (const snom_phone_t *phone) {
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
-	snprintf(url, sizeof(url), "http://127.0.0.1/userapp/beroPBX/api/phone.php?action=chk&type=%s&mac=%s&ip=%s", phone->type, phone->mac_addr, phone->ip_addr);
+	snprintf(url, sizeof(url), "http://127.0.0.1/userapp/OpenPBX/api/phone.php?action=chk&type=%s&mac=%s&ip=%s", phone->type, phone->mac_addr, phone->ip_addr);
 
 	printf("Check if phone is allowed to be provisioned: ");
 	if (!(curl = curl_easy_init())) {

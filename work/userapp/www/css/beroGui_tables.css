@@ -76,7 +76,8 @@ table.default td.monospaced {
 table.default td.swap_group {
 	border-left: none;
 	border-right: none;
-	width: 75px;
+	min-width: 75px;
+	width: auto;
 }
 
 .swap_group select {

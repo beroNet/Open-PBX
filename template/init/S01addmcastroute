@@ -2,7 +2,7 @@
 # Set route to support multicasts
 SU5JVF9USElTX1NDUklQVF9BU19ST09U=TRUE
 
-BASE=/apps/beroPBX
+BASE=/apps/OpenPBX
 CONF=${BASE}/etc/snom_pnp_daemon
 
 if [ -f ${CONF} ]; then

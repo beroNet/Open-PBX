@@ -3,7 +3,7 @@
 class PopupModule {
 
 	private $_name = 'sip_users';
-	private $_title = 'Add/Modify SIP User/Group';
+	private $_title = 'Users & Groups';
 
 	function getName() {
 		return($this->_name);

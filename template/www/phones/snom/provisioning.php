@@ -1,6 +1,6 @@
 <?php
 
-include('/apps/beroPBX/www/includes/variables.php');
+include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/includes/database.php');
 
 function phone_siphost_get () {

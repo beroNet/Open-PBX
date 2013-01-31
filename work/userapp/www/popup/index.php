@@ -1,6 +1,6 @@
 <?php
 
-$app_name = 'beroPBX';
+$app_name = 'OpenPBX';
 
 # BEGIN session management #
 $redir_login = '/app/berogui/includes/login.php';
@@ -24,7 +24,7 @@ $_SESSION['beroari_time'] = time();
 
 # END session management #
 
-include('/apps/beroPBX/www/includes/variables.php');
+include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/includes/database.php');
 include(BAF_APP_WWW . '/includes/beroGui.php');
 
