@@ -83,7 +83,8 @@ class beroAri {
 						"smtp_host VARCHAR(128) NOT NULL DEFAULT ''," .
 						"smtp_port INTEGER NOT NULL DEFAULT 25," .
 						"smtp_user VARCHAR(128) NOT NULL DEFAULT ''," .
-						"smtp_pass VARCHAR(128) NOT NULL DEFAULT '');");
+						"smtp_pass VARCHAR(128) NOT NULL DEFAULT ''," .
+						"smtp_from VARCHAR(128) NOT NULL DEFAULT '');");
 		sqlite_query($this->db, "INSERT INTO mail_settings (id) VALUES (1);");
 
 		// table 'phone_types'
