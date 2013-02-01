@@ -59,6 +59,10 @@ function create_mailbox ($ba) {
 
 	$fn = BAF_APP_AST_CFG . '/voicemail.conf';
 
+	$query = $ba->select("SELECT smtp_from FROM mail_settings WHERE id = 1;");
+	$entry = $ba->fetch_array($query);
+	unset($query);
+
 	$cont =	"[general](+)\n" .
 		"format = wav\n" .
 		"attach = yes\n" .
@@ -68,6 +72,7 @@ function create_mailbox ($ba) {
 		"silencethreshold = 128\n" .
 		"maxlogins = 3\n" .
 		"mailcmd = /apps/OpenPBX/bin/ssmtp -C " . BAF_APP_ETC . "/ssmtp/ssmtp.conf -t\n" .
+		"serveremail = " . $entry['smtp_from'] . "\n" .
 		"fromstring = OpenPBX VoiceMail\n" .
 		"emailsubject = VoiceMail received from \${VM_CALLERID}\n" .
 		"emailbody = Dear \${VM_NAME},\\n\\n" .

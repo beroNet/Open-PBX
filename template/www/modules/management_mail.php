@@ -20,8 +20,11 @@ class MainModule {
 					"smtp_host = '" . $_POST['smtp_host'] . "'," .
 					"smtp_port = '" . $_POST['smtp_port'] . "'," .
 					"smtp_user = '" . $_POST['smtp_user'] . "'," .
-					"smtp_pass = '" . $_POST['smtp_pass'] . "' " .
+					"smtp_pass = '" . $_POST['smtp_pass'] . "'," .
+					"smtp_from = '" . $_POST['smtp_from'] . "' " .
 				"WHERE id = 1;");
+
+		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1;");
 	}
 
 	private function _execute_save_file() {
@@ -67,7 +70,7 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT * FROM mail_settings WHERE id = 1");
+		$query = $ba->select("SELECT * FROM mail_settings WHERE id = 1;");
 		$entry = $ba->fetch_array($query);
 		unset($query);
 
@@ -100,6 +103,13 @@ class MainModule {
 			"\t\t\t\t<input type=\"password\" name=\"smtp_pass\" value=\"" . $entry['smtp_pass'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
+			"\t\t<tr>\n" .
+			"\t\t\t<td>SMTP-From</td>\n" .
+			"\t\t\t<td>\n" .
+			"\t\t\t\t<input type=\"text\" name=\"smtp_from\" value=\"" . $entry['smtp_from'] . "\" />\n" .
+			"\t\t\t</td>\n" .
+			"\t\t</tr>\n" .
+			"\t\t<tr>\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<td></td>\n" .
 			"\t\t\t<td>\n" .
