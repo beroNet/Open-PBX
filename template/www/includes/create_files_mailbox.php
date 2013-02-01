@@ -67,7 +67,7 @@ function create_mailbox ($ba) {
 		"maxsilence = 10\n" .
 		"silencethreshold = 128\n" .
 		"maxlogins = 3\n" .
-		"mailcmd = /apps/OpenPBX/bin/ssmtp -t\n" .
+		"mailcmd = /apps/OpenPBX/bin/ssmtp -C " . BAF_APP_ETC . "/ssmtp/ssmtp.conf -t\n" .
 		"fromstring = OpenPBX VoiceMail\n" .
 		"emailsubject = VoiceMail received from \${VM_CALLERID}\n" .
 		"emailbody = Dear \${VM_NAME},\\n\\n" .
