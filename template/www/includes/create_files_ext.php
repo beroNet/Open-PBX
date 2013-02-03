@@ -120,7 +120,7 @@ function _get_user_ext_by_group_ext($ba, $extension) {
 
 
 	$query = $ba->select("SELECT id FROM sip_users WHERE extension = '" . $ext_id . "' LIMIT 1");
-	if (sqlite_num_rows($query) > 0) {
+	if ($ba->num_rows($query) > 0) {
 		return(array($extension));
 	}
 
@@ -139,7 +139,7 @@ function _get_user_ext_by_group_ext($ba, $extension) {
 					"u.id = r.userid " .
 				"AND " .
 					"e.id = u.extension");
-	if (sqlite_num_rows($query) == 0) {
+	if ($ba->num_rows($query) == 0) {
 		return(array('Any Extension'));
 	}
 

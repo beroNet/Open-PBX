@@ -148,7 +148,7 @@ class PopupModule {
 	private function _execute_sip_update ($ba) {
 
 		$query = $ba->select("SELECT id FROM sip_trunks WHERE id != '" . $_POST['id_upd'] . "' AND name == '" . $_POST['name'] . "'");
-		if (sqlite_num_rows($query) > 0) {
+		if ($ba->num_rows($query) > 0) {
 			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" already in use. Please choose another one!');</script>\n");
 		}
 		unset($query);
@@ -176,7 +176,7 @@ class PopupModule {
 		}
 
 		$query = $ba->select("SELECT id FROM sip_trunks WHERE name = '" . $_POST['name'] . "'");
-		if (sqlite_num_rows($query) > 0) {
+		if ($ba->num_rows($query) > 0) {
 			return("<script>window.history.back(); alert('Name \"" . $_POST['name'] . "\" already in use. Please choose another one!');</script>\n");
 		}
 		unset($query);

@@ -7,14 +7,14 @@ function phone_is_known ($ba, $mac) {
 
 	$query = $ba->select("SELECT id FROM phone_devices WHERE macaddr = '" . $mac . "'");
 
-	return((sqlite_num_rows($query) > 0) ? true : false);
+	return(($ba->num_rows($query) > 0) ? true : false);
 }
 
 function phone_get_default_template ($ba, $type) {
 
 	$query = $ba->select("SELECT id from phone_templates WHERE name = '" . trim($type, '1234567890-_ ') . "_default'");
 
-	if (sqlite_num_rows($query) == 0) {
+	if ($ba->num_rows($query) == 0) {
 		return(-1);
 	}
 
@@ -27,7 +27,7 @@ function phone_get_type_id ($ba, $type) {
 
 	$query = $ba->select("SELECT id FROM phone_types WHERE name = '" . $type . "'");
 
-	if (sqlite_num_rows($query) == 0) {
+	if ($ba->num_rows($query) == 0) {
 		return(1);
 	}
 

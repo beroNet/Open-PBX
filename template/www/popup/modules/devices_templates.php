@@ -35,7 +35,7 @@ class PopupModule {
 		}
 
 		$query = $ba->select("SELECT id FROM phone_templates where name = '" . $name . "'");
-		if (sqlite_num_rows($query) > 0) {
+		if ($ba->num_rows($query) > 0) {
 			return("<script>window.history.back(); alert('Name \'" . $name . "\' already exists.');</script>\n");
 		}
 		unset($query);
