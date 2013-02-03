@@ -100,7 +100,7 @@ class PopupModule {
 
 		// check if user name does not belong to another user
 		$query = $ba->select("SELECT * FROM sip_users WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" is already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
@@ -108,7 +108,7 @@ class PopupModule {
 		// check if extension does not belong to another user
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'user');
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
@@ -139,14 +139,14 @@ class PopupModule {
 
 		// check if user name does not belong to another user
 		$query = $ba->select("SELECT name FROM sip_users WHERE name = '" . $_POST['name'] . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
@@ -192,14 +192,14 @@ class PopupModule {
 		}
 
 		$query = $ba->select("SELECT id FROM sip_groups WHERE name = '" . $_POST['name'] . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" is already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
@@ -227,7 +227,7 @@ class PopupModule {
 	private function _execute_sip_group_update($ba) {
 
 		$query = $ba->select("SELECT id FROM sip_groups WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" is already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);
@@ -235,7 +235,7 @@ class PopupModule {
 		// check if extensions does not belong to another user/group
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'group');
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
-		if (($query != false) && (sqlite_num_rows($query) > 0)) {
+		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
 		}
 		unset($query);

@@ -16,7 +16,7 @@ class PopupModule {
 	private function _execute_dev_update ($ba) {
 
 		$query = $ba->select("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
-		if (sqlite_num_rows($query) == 0) {
+		if ($ba->num_rows($query) == 0) {
 			return("<script>window.history.back(); alert('Device '" . $_POST['name'] . "' does not exist!');</script>\n");
 		}
 
@@ -56,7 +56,7 @@ class PopupModule {
 		}
 
 		$query = $ba->select("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
-		if (sqlite_num_rows($query) > 0) {
+		if ($ba->num_rows($query) > 0) {
 			return("<script> window.history.back(); alert('Name '" . $_POST['name'] . "' is already in use!');</script>\n");
 		}
 

@@ -341,6 +341,11 @@ class beroAri {
 		return(($data) ? sqlite_fetch_column_types($data, $this->db) : false);
 	}
 
+	function num_rows($data)
+	{
+		return(($data) ? sqlite_num_rows($data) : false);
+	}
+
 	function is_error() {
 		return($this->err ? true : false);
 	}
