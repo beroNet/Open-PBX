@@ -25,7 +25,7 @@ class MainModule {
 		case 'entry_add':
 			$ba = new beroAri();
 			$query = $ba->select("SELECT * FROM phone_pnp_managed WHERE mac = '" . $_POST['snom_pnp_entry_new_mac'] . "'");
-			if (sqlite_num_rows($query) == 0) {
+			if ($ba->num_rows($query) == 0) {
 				$ba->insert_("INSERT INTO phone_pnp_managed (mac, enabled) VALUES ('" . $_POST['snom_pnp_entry_new_mac'] . "', 0);");
 			}
 			break;
