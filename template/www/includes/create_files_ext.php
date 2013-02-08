@@ -100,7 +100,7 @@ function _ext_add_users ($ba, $ami) {
 
 function _ext_add_section_intern ($ba, $ami) {
 
-	$ami->deltree('DAD');
+	$ami->DBDelTree('DAD');
 
 	$ret =	"[intern]\n" .
 		_ext_add_users($ba, $ami) .

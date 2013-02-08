@@ -24,8 +24,8 @@ if ($ba->is_error()) {
 }
 
 // create files
-$ami = new amifunc();
-$ami->Login();
+$ami = new AsteriskManager();
+$ami->connect();
 
 create_ext();
 create_ext_OpenPBX($ba, $ami);
@@ -38,6 +38,8 @@ create_mailbox_OpenPBX($ba, $ami);
 
 $ami->Reload();
 $ami->Logout();
+
+unset($ami);
 
 // apply changes
 switch ($entry['option']) {

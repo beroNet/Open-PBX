@@ -26,35 +26,27 @@ function get_extension_by_ip ($remote_ip) {
 
 function get_number_by_extension ($extension, $field) {
 
-	$ami = new amifunc();
-	$ami->Login();
-	$res = $ami->DatabaseShow();
+	$ami = new AsteriskManager();
+	$ami->connect();
+	$res = $ami->DBGet($field, $extension);
 	$ami->Logout();
+	unset($ami);
 
-	$rows = explode("\n", $res);
-	unset($res);
-
-	if (!empty($rows)) {
-		foreach ($rows as $row) {
-			$tmp = split($field . $extension, $row);
-			if ($tmp[1]) {
-				$value = split(": ", $tmp[1]);
-				break;
-			}
-		}
+	if ($res['Response']  == 'Success' && isset($res['Val'])) {
+		return $res['Val'];
+	} else {
+		return '';
 	}
-	unset($rows);
-
-	return(str_replace(' ', '', $value[1]));
 }
 
 function set_forwarding_by_extension ($extension, $table, $fwd_tgt) {
 
-	$ami = new amifunc();
-	$ami->Login();
-	$ami->del($table, $extension);
+	$ami = new AsteriskManager();
+	$ami->connect();
+	$ami->DBDel($table, $extension);
 	$ami->DBPut($table, $extension, $fwd_tgt);
 	$ami->Logout();
+	unset($ami);
 }
 
 function build_page ($text, $title, $menu_items, $softkey_items, $input_items, $prompt_items) {

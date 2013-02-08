@@ -101,9 +101,9 @@ function create_sip_OpenPBX ($ba, $ami) {
 				"call-limit = 2\n" .
 				"\n";
 
-		$res = $ami->DBGET('CFWD', $entry['extension']);
-		if(strpos($res, 'Error')) {
-			$ami->DBPUT('CFWD', $entry['extension'], '0');
+		$res = $ami->DBGet('CFWD', $entry['extension']);
+		if($res['Response'] != 'Success') {
+			$ami->DBPut('CFWD', $entry['extension'], '0');
 		}
 	}
 	unset($entry);
