@@ -11,7 +11,7 @@ function get_extension_by_ip ($remote_ip) {
 					"e.extension AS extension " .
 				"FROM " .
 					"sip_users AS u," .
-					"sip_extenions AS e," .
+					"sip_extensions AS e," .
 					"phone_devices AS d " .
 				"WHERE " .
 					"d.ipaddr = '" . $remote_ip . "' " .
