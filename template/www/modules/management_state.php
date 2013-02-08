@@ -25,39 +25,61 @@ class MainModule {
 
 	private function _display_sip_registrations ($ami) {
 
+		$sipregs = $ami->SIPshowregistry();
+
+		foreach ($sipregs['Entrys'] as $entry) {
+			if (!is_array($entry)) {
+				continue;
+			}
+
+			$state = trim($entry['State']);
+			$state_img = BAF_URL_BASE . '/img/punkt_' . (($state === 'Registered') ? 'gruen' : 'rot') . '.gif';
+
+			$ret .=	"\t<tr>\n" .
+				"\t\t<td>" . trim($entry['Host']) . ':' . trim($entry['Port']) . "</td>\n" .		// host
+				"\t\t<td>" . trim($entry['Username']) . "</td>\n" .		// user
+				"\t\t<td>" . trim($entry['Refresh']) . "</td>\n" .		// refresh
+				"\t\t<td>\n" .
+				"\t\t\t<img src=\"" . $state_img . "\" />\n" .
+				"\t\t\t" . $state . "\n" .
+				"\t\t</td>\n" .
+				"\t\t<td>" . date('r',$entry['RegistrationTime']) . "</td>\n" .			// regtime
+				"\t<tr>\n";
+		}
+
+		return($ret);
+	}
+
+	private function _display_sip_peers($ami)
+	{
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT name FROM sip_trunks");
-		while ($entry = $ba->fetch_array($query)){
-			$user[] = implode(explode('-', $entry['name'], -1));
+		$user = array();
+		$query = $ba->select('SELECT e.extension AS extension FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id');
+		while ($entry = $ba->fetch_array($query)) {
+			$user[] = $entry['extension'];
 		}
 		unset($query);
 		unset($entry);
 
-		foreach (explode("\n", $ami->SipShowRegistry()) as $entry) {
+		$sippeers = $ami->SIPpeers();
 
-			if (strlen($entry) != 101) {
+		foreach ($sippeers['Entrys'] as $entry) {
+			if (!is_array($entry) || !in_array($entry['ObjectName'], $user)) {
 				continue;
 			}
 
-			$uname = trim(substr($entry, 30, 12));
-			if (in_array($uname, $user)){
-				continue;
-			}
+    		$state = trim($entry['Status']);
+    		$state_img = BAF_URL_BASE . '/img/punkt_' . ((substr($state, 0, 2) == 'OK') ? 'gruen' : 'rot') . '.gif';
 
-			$state = str_replace(' ', '', substr($entry, 55, 20));
-			$state_img = BAF_URL_BASE . '/img/punkt_' . (($state == 'Registered') ? 'gruen' : 'rot') . '.gif';
-
-			$ret .=	"\t<tr>\n" .
-				"\t\t<td>" . trim(substr($entry, 0, 30)) . "</td>\n" .		// host
-				"\t\t<td>" . substr($entry, 30, 12) . "</td>\n" .		// user
-				"\t\t<td>" . substr($entry, 42, 13) . "</td>\n" .		// refresh
-				"\t\t<td>" . $state . "</td>\n" .				// state
+			$ret .= "\t<tr>\n" .
+				"\t\t<td>" . trim($entry['IPaddress']) . ':' . trim($entry['IPport']). "</td>\n" .
+				"\t\t<td>" . trim($entry['ObjectName']). "</td>\n" .
 				"\t\t<td>\n" .
 				"\t\t\t<img src=\"" . $state_img . "\" />\n" .
+				"\t\t\t" . $state . "\n" .
 				"\t\t</td>\n" .
-				"\t\t<td>" . substr($entry, 69) . "</td>\n" .			// regtime
-				"\t<tr>\n";
+				"\t</tr>\n";
 		}
 
 		return($ret);
@@ -65,19 +87,19 @@ class MainModule {
 
 	private function _display_channels_active ($ami) {
 
-		$entries = explode("\n", $ami->ShowChannels());
-		$entry_count = count($entries);
+		$entrys = $ami->CoreShowChannels();
 
-		for ($i = 4; $i < ($entry_count - 5); $i++) {
-			$tmp = array_values(array_filter(explode(' ', $entries[$i])));
-
-			$ret .=	"\t<tr>\n" .
-				"\t\t<td>" . $tmp[0] . "</td>\n" .					// channel
-				"\t\t<td>" . $tmp[1] . "</td>\n" .					// location
-				"\t\t<td>" . $tmp[2] . "</td>\n" .					// state
-				"\t\t<td>" . $tmp[3] . ' ' . $tmp[4] . ' ' . $tmp[5] . "</td>\n" .	// app
-				"\t</tr>\n";
-			unset($tmp);
+		foreach ($entrys['Entrys'] as $entry) {
+			if (!is_array($entry)) {
+				continue;
+			}
+			$ret .= "\t<tr>\n";
+			$ret .= "\t\t<td>" . trim($entry['Channel']) ."</td>\n";
+			$ret .= "\t\t<td>" . trim($entry['Extension']).'@'.trim($entry['Context']).':'.trim($entry['Priority']) ."</td>\n";
+			$ret .= "\t\t<td>" . trim($entry['ChannelStateDesc']) ."</td>\n";
+			$ret .= "\t\t<td>" . trim($entry['Application']).'('.trim($entry['ApplicationData']).')' ."</td>\n";
+			$ret .= "\t\t<td>" . trim($entry['Duration']) ."</td>\n";
+			$ret .= "\t</tr>\n";
 		}
 
 		return($ret);
@@ -85,8 +107,8 @@ class MainModule {
 
 	function display () {
 
-		$ami = new amifunc();
-		$ami->Login();
+		$ami = new AsteriskManager();
+		$ami->connect();
 
 		$ret =	"<table class=\"default\">\n" .
 			"\t<tr>\n" .
@@ -105,18 +127,33 @@ class MainModule {
 			"<br />\n" .
 			"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"4\">Active Channels</th>\n" .
+			"\t\t<th colspan=\"3\">SIP-Peers</th>\n" .
+			"\t</tr>\n" .
+			"\t<tr class=\"sub_head\">\n" .
+			"\t\t<td>Host:Port</td>\n" .
+			"\t\t<td>Username</td>\n" .
+			"\t\t<td>State</td>\n" .
+			"\t</tr>\n" .
+			$this->_display_sip_peers($ami) .
+			"</table>\n" .
+			"<br />\n" .
+			"<br />\n" .
+			"<table class=\"default\">\n" .
+			"\t<tr>\n" .
+			"\t\t<th colspan=\"5\">Active Channels</th>\n" .
 			"\t</tr>\n" .
 			"\t<tr class=\"sub_head\">\n" .
 			"\t\t<td>Channel</td>\n" .
 			"\t\t<td>Location</td>\n" .
 			"\t\t<td>State</td>\n" .
 			"\t\t<td>Application(Data)</td>\n" .
+			"\t\t<td>Duration</td>\n" .
 			"\t</tr>\n" .
 			$this->_display_channels_active($ami) .
 			"</table>\n";
 
 		$ami->Logout();
+		unset($ami);
 
 		return($ret);
 	}
