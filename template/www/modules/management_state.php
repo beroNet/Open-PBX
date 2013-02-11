@@ -23,6 +23,63 @@ class MainModule {
 		return('');
 	}
 
+	// displays devices registered to asterisk
+	private function _display_sip_peers ($ami) {
+
+		foreach (explode("\n", $ami->SipShowPeers()) as $line) {
+
+		 	// Continue if this is not part of the table
+			if (strstr($line, "Response:") || strstr($line, "Privilege:") || strstr($line, "END COMMAND")) {
+				continue;
+			}
+
+			// ignore table descriptions
+			if (strstr($line, "Name/username") || strstr($line, "sip peers")) {
+				continue;
+			}
+
+			// ignore if this line is berofix-trunk
+			if (strstr($line, "berofix-trunk")) {
+				continue;
+			}
+
+			// ignore if this line is too short
+			if (strlen($line) < 8) {
+				continue;
+			}
+
+			$table_contents .=	"\t<tr>\n" .
+						"\t\t<td>". trim(substr($line, 0, 27)) . "</td>\n" .	// name
+						"\t\t<td>". trim(substr($line, 27, 16)) . "</td>\n" .	// ip-addr
+//						"\t\t<td>". trim(substr($line, 68, 3)) . "</td>\n" .	// dyn
+//						"\t\t<td>". trim(substr($line, 72, 3)) . "</td>\n" .	// forcerport
+//						"\t\t<td>". trim(substr($line, 83, 3)) . "</td>\n" .	// acl
+						"\t\t<td>". trim(substr($line, 86, 6)) . "</td>\n" .	// port
+						"\t\t<td>". trim(substr($line, 95, 10)) . "</td>\n" .	// status
+						"\t</tr>\n";
+
+		}
+
+		$ret =	"<table class=\"default\">\n" .
+			"\t<tr>\n" .
+			"\t\t<th colspan=\"7\">SIP-Peers</th>\n" .
+			"\t</tr>\n" .
+			"\t<tr class=\"sub_head\">\n" .
+			"\t\t<td>Name / Username</td>\n" .
+			"\t\t<td>IP Address</td>\n" .
+//			"\t\t<td>Dynamic</td>\n" .
+//			"\t\t<td>Forcerport</td>\n" .
+//			"\t\t<td>ACL</td>\n" .
+			"\t\t<td>Port</td>\n" .
+			"\t\t<td>Status</td>\n" .
+			"\t</tr>\n" .
+			$table_contents .
+			"</table>\n";
+
+		return($ret);
+	}
+
+	// displays SIP-Proxies asterisk is registered to
 	private function _display_sip_registrations ($ami) {
 
 		$ba = new beroAri();
@@ -88,7 +145,9 @@ class MainModule {
 		$ami = new amifunc();
 		$ami->Login();
 
-		$ret =	"<table class=\"default\">\n" .
+		$ret =	$this->_display_sip_peers($ami) .
+			"<br /><br />\n" .
+			"<table class=\"default\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"5\">SIP-Registrations</th>\n" .
 			"\t</tr>\n" .

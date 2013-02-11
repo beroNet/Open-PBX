@@ -83,6 +83,14 @@ class amifunc {
 		return($this->Query($sQuery));
 	}
 
+	function SipShowPeers() {
+
+		$sQuery	=	"Action: Command\r\n" .
+				"command: Sip Show Peers\r\n\r\n";
+
+		return($this->Query($sQuery));
+	}
+
 	function SipShowRegistry() {
 
 		$sQuery =	"Action: Command\r\n" .
