@@ -1,10 +1,12 @@
 <?php
 
-Class lang {
+class lang {
 
 	private $_lang_arr;
 
 	function __construct () {
+
+		$this->_lang_arr = array();
 
 		# menu & headlines
 		$this->_lang_arr['menu_dialplan']			= 'Dialplan';
