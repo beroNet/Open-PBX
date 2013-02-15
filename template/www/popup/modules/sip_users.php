@@ -2,8 +2,16 @@
 
 class PopupModule {
 
-	private $_name = 'sip_users';
-	private $_title = 'Users & Groups';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'sip_users';
+		$this->_title = $this->_lang->get('headline_users');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -101,7 +109,7 @@ class PopupModule {
 		// check if user name does not belong to another user
 		$query = $ba->select("SELECT * FROM sip_users WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" is already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -109,7 +117,7 @@ class PopupModule {
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'user');
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -140,14 +148,14 @@ class PopupModule {
 		// check if user name does not belong to another user
 		$query = $ba->select("SELECT name FROM sip_users WHERE name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -193,14 +201,14 @@ class PopupModule {
 
 		$query = $ba->select("SELECT id FROM sip_groups WHERE name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" is already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -228,7 +236,7 @@ class PopupModule {
 
 		$query = $ba->select("SELECT id FROM sip_groups WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" is already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -236,7 +244,7 @@ class PopupModule {
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'group');
 		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('Extension \"" . $_POST['extension'] . "\" already in use! Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -303,20 +311,20 @@ class PopupModule {
 
 		if ($this->_display_voicemail_configured($ba)) {
 			$ret =	"\t\t<tr class=\"sub_head\">\n" .
-				"\t\t\t<td>Voicemail</td>\n" .
+				"\t\t\t<td>" . $this->_lang->get('Voicemail') . "</td>\n" .
 				"\t\t\t<td colspan=\"3\">\n" .
 				"\t\t\t\t<input type=\"checkbox\" class=\"fill\" name=\"voicemail\" value=\"1\" " . (($entry['voicemail'] == '1') ? 'checked ' : '') . "/>\n" .
 				"\t\t\t</td>\n" .
 				"\t\t</tr>\n" .
 				"\t\t<tr class=\"sub_head\">\n" .
-				"\t\t\t<td>Mail-Address</td>\n" .
+				"\t\t\t<td>" . $this->_lang->get('Mail-Address') . "</td>\n" .
 				"\t\t\t<td colspan=\"3\">\n" .
 				"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"mail\" value=\"" . $entry['mail'] . "\" />\n" .
 				"\t\t\t</td>\n" .
 				"\t\t</tr>\n";
 		} else {
 			$ret = 	"\t\t<tr>\n" .
-				"\t\t\t<td colspan=\"5\">To use Voicemail, please configure an SMTP-Server in 'Management -> Mail-Settings'</td>\n" .
+				"\t\t\t<td colspan=\"5\">" . $this->_lang->get('popup_users_voicemail_note') . "</td>\n" .
 				"\t\t</tr>\n";
 		}
 
@@ -348,42 +356,44 @@ class PopupModule {
 		$ret =	"<form name=\"sip_users\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t<table class=\"default\" id=\"sip_users_mod\">\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<th colspan=\"4\">" . (isset($_GET['id']) ? 'Modify' : 'Add') . " User</th>\n" .
+			"\t\t\t<th colspan=\"4\">" . $this->_lang->get('popup_users_table_title_user_' . (isset($_GET['id']) ? 'modify' : 'add')) . "</th>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Name</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Name') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"name\" value=\"" . $entry['name'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Extension</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Extension') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"extension\" value=\"" . $entry['extension'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Password</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Password') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"password\" class=\"fill\" name=\"password\" value=\"" . $entry['password'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			$this-> _display_voicemail($ba, $entry) .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Devices</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Devices') . "</td>\n" .
 			"\t\t\t<td class=\"swap_group\">\n" .
 			$this->_display_user_devices_sel($ba, $entry['id']) .
 			"\t\t\t</td>\n" .
 			"\t\t\t<td class=\"swap_buttons\">\n" .
-			"\t\t\t\t<input type=\"button\" value=\"&#9668;\" onclick=\"move('devices_nonsel','devices_sel')\" /><br />\n" .
-			"\t\t\t\t<input type=\"button\" value=\"&#9658;\" onclick=\"move('devices_sel','devices_nonsel')\" />\n" .
+			"\t\t\t\t<input type=\"button\" value=\"&#9668;\" onclick=\"move('devices_nonsel','devices_sel','" . $this->_lang->get('no_item_in_source_listbox') . "','" .
+																$this->_lang->get('select_item_to_move')  . "')\" /><br />\n" .
+			"\t\t\t\t<input type=\"button\" value=\"&#9658;\" onclick=\"move('devices_sel','devices_nonsel','" . $this->_lang->get('no_item_in_source_listbox') . "','" .
+																$this->_lang->get('select_item_to_move')  . "')\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t\t<td class=\"swap_group\">\n" .
 			$this->_display_user_devices_nonsel($ba) .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Other Settings</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Other_Settings') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<textarea name=\"details\">\n" .
 			$entry['details'] .
@@ -458,36 +468,38 @@ class PopupModule {
 		$ret =	"<form name=\"sip_groups\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t<table class=\"default\" id=\"sip_groups_mod\">\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<th colspan=\"4\">" . (isset($entry['id']) ? 'Modify' : 'Add') . " Group</th>\n" .
+			"\t\t\t<th colspan=\"4\">" . $this->_lang->get('popup_users_table_title_group_' . (isset($_GET['id']) ? 'modify' : 'add')) . "</th>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Name</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Name') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"name\" value=\"" . $entry['name'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Extension</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Extension') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"extension\" value=\"" . $entry['extension'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			$this-> _display_voicemail($ba, $entry) .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Description</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Description') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"description\" value=\"" . $entry['description'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Users</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Users') . "</td>\n" .
 			"\t\t\t<td class=\"swap_group\">\n" .
 			$this->_display_group_members($ba, $entry['id']) .
 			"\t\t\t</td>\n" .
 			"\t\t\t<td class=\"swap_buttons\">\n" .
-			"\t\t\t\t<input type=\"button\" value=\"&#9668;\" onclick=\"move('nomembers','members')\" />\n" .
+			"\t\t\t\t<input type=\"button\" value=\"&#9668;\" onclick=\"move('nomembers','members','" . $this->_lang->get('no_item_in_source_listbox') . "','" .
+															$this->_lang->get('select_item_to_move')  . "')\" />\n" .
 			"\t\t\t\t<br /><br />\n" .
-			"\t\t\t\t<input type=\"button\" value=\"&#9658;\" onclick=\"move('members','nomembers')\" />\n" .
+			"\t\t\t\t<input type=\"button\" value=\"&#9658;\" onclick=\"move('members','nomembers','" . $this->_lang->get('no_item_in_source_listbox') . "','" .
+															$this->_lang->get('select_item_to_move')  . "')\" />\n" .
 			"\t\t\t\t<br />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t\t<td class=\"swap_group\">\n" .
@@ -497,9 +509,9 @@ class PopupModule {
 			"\t</table>\n" .
 			"\t<input type=\"hidden\" name=\"mode\" value=\"group\" />\n" .
 			(isset($entry['id']) ? "\t<input type=\"hidden\" name=\"id_upd\" value=\"" . $entry['id'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"Save\" onclick=\"selectall('members');\" />\n" .
+			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" onclick=\"selectall('members');\" />\n" .
 			"\t&nbsp&nbsp\n" .
-			"\t<input type=\"button\" name=\"close\" value=\"Close\" onclick=\"javascript:popup_close();\" />\n" .
+			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
 			"</form>\n";
 
 		return($ret);

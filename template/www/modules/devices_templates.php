@@ -2,8 +2,16 @@
 
 class MainModule {
 
-	private $_name = 'devices_templates';
-	private $_title = 'Phone Templates';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'devices_templates';
+		$this->_title = $this->_lang->get('headline_devices_templates');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -40,7 +48,7 @@ class MainModule {
 				continue;
 			}
 
-			$cols .=	"\t\t<th>" . ucwords($column) . "</th>\n";
+			$cols .=	"\t\t<th>" . $this->_lang->get(ucwords($column)) . "</th>\n";
 			$col_names[] = $column;
 		}
 		$cols .=	"\t\t<th></th>\n" .
@@ -89,9 +97,10 @@ class MainModule {
 		$ret =	"\t\t<td class=\"buttons\">\n" .
 			"\t\t\t<form name=\"template_modify\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t\t\t\t<input type=\"hidden\" name=\"id\" value=\"" . $entry['id'] . "\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"modify\" value=\"modify\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"copy\" value=\"copy\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"delete\" onclick=\"return confirm_delete('" . $entry['name'] . "', null)\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"modify\" value=\"" . $this->_lang->get('modify') . "\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"copy\" value=\"" . $this->_lang->get('copy') . "\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"" . $this->_lang->get('delete') . "\" onclick=\"return confirm_delete('" . $entry['name'] . "', null, '" .
+																			$this->_lang->get('confirm_delete') . "')\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</td>\n";
 

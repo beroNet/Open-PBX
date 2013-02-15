@@ -2,8 +2,16 @@
 
 class PopupModule {
 
-	private $_name = 'dialplan';
-	private $_title = 'Dialplan';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'dialplan';
+		$this->_title = $this->_lang->get('headline_dialplan');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -221,32 +229,32 @@ class PopupModule {
 		case 'inbound':
 			$table_body =
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>Trunk</td>\n" .
+					"\t\t\t<td>" . $this->_lang->get('Trunk') . "</td>\n" .
 					"\t\t\t<td>\n" .
 					$this->_display_trunks($ba, $entry['trunkid']) .
 					"\t\t\t</td>\n" .
 					"\t\t</tr>\n" .
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>Source</td>\n" .
+					"\t\t\t<td>" . $this->_lang->get('Source') . "</td>\n" .
 					"\t\t\t<td>\n" .
 					"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"number\" value=\"" . (isset($entry['number']) ? $entry['number'] : '*') . "\" />\n" .
 					"\t\t\t</td>\n" .
 					"\t\t</tr>\n" .
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>Target</td>\n" .
+					"\t\t\t<td>" . $this->_lang->get('Target') . "</td>\n" .
 					"\t\t\t<td>\n" .
 					"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_1\" value=\"" . (isset($entry['action_1']) ? $entry['action_1'] : '*') . "\" />\n" .
 					"\t\t\t</td>\n" .
 					"\t\t</tr>\n" .
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>Action</td>\n" .
+					"\t\t\t<td>" . $this->_lang->get('Action') . "</td>\n" .
 					"\t\t\t<td>\n" .
 					$this->_display_actions($ba, $entry['actionid'], $rule_type) .
 					"\t\t\t</td>\n" .
 					"\t\t</tr>\n" .
 //					"\t\t<tbody id=\"rule_dial\">\n" .
 					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>Extension</td>\n" .
+					"\t\t\t\t<td>" . $this->_lang->get('Extension') . "</td>\n" .
 					"\t\t\t\t<td>\n" .
 					$this->_display_extensions($ba, $entry['extid'], $rule_type) .
 					"\t\t\t\t</td>\n" .
@@ -261,7 +269,7 @@ class PopupModule {
 			$length = $this->_display_get_length_from_number($entry['number']);
 
 			$table_body =	"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">Originating Extension</td>\n" .
+					"\t\t\t<td colspan=\"2\">" . $this->_lang->get('originating_extension') . "</td>\n" .
 					"\t\t</tr>\n" .
 					"\t\t<tr>\n" .
 					"\t\t\t<td colspan=\"2\">\n" .
@@ -270,25 +278,25 @@ class PopupModule {
 					"\t\t</tr>\n" .
 
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">Target Number</td>\n" .
+					"\t\t\t<td colspan=\"2\">" . $this->_lang->get('target_number') . "</td>\n" .
 					"\t\t</tr>\n" .
 
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>Prefix</td>\n" .
+					"\t\t\t<td>" . $this->_lang->get('Prefix') . "</td>\n" .
 					"\t\t\t<td>\n" .
 					"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"prefix\" value=\"" . $prefix . "\" />\n" .
 					"\t\t\t</td>\n" .
 					"\t\t</tr>\n" .
 
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>Min. Length</td>\n" .
+					"\t\t\t<td>" . $this->_lang->get('minimum_length') . "</td>\n" .
 					"\t\t\t<td>\n" .
 					$this->_display_length($length) .
 					"\t\t\t</td>\n" .
 					"\t\t</tr>\n" .
 
 					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">Action</td>\n" .
+					"\t\t\t<td colspan=\"2\">" . $this->_lang->get('Action') . "</td>\n" .
 					"\t\t</tr>\n" .
 					"\t\t<tr class=\"sub_head\">\n" .
 					"\t\t\t<td colspan=\"2\">\n" .
@@ -299,19 +307,19 @@ class PopupModule {
 					// Action 'dial'
 					"\t\t<tbody id=\"rule_dial\">\n" .
 					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>Use Trunk</td>\n" .
+					"\t\t\t\t<td>>" . $this->_lang->get('popup_dialplan_use_trunk') . "</td>\n" .
 					"\t\t\t\t<td>\n" .
 					$this->_display_trunks($ba, $entry['trunkid']) .
 					"\t\t\t\t</td>\n" .
 					"\t\t\t</tr>\n" .
 					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>Cut</td>\n" .
+					"\t\t\t\t<td>" . $this->_lang->get('Cut') . "</td>\n" .
 					"\t\t\t\t<td>\n" .
 					"\t\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_1\" value=\"" . htmlspecialchars($entry['action_1']) . "\" />\n" .
 					"\t\t\t\t</td>\n" .
 					"\t\t\t</tr>\n" .
 					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>Prepend</td>\n" .
+					"\t\t\t\t<td>>" . $this->_lang->get('Prepend') . "</td>\n" .
 					"\t\t\t\t<td>\n" .
 					"\t\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_2\" value=\"" . htmlspecialchars($entry['action_2']) . "\" />\n" .
 					"\t\t\t\t</td>\n" .
@@ -327,16 +335,16 @@ class PopupModule {
 		$ret =	"<form name=\"rules_" . $rule_type . "\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t<table class=\"default\" id=\"rules_" . $rule_type . "\">\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<th colspan=\"2\">" . (isset($entry['id']) ? 'Modify' : 'Add') . ' ' . $rule_type . " Rule</th>\n" .
+			"\t\t\t<th colspan=\"2\">" . $this->_lang->get('popup_dialplan_' . (isset($entry['id']) ? 'modify' : 'add') . '_rule') . "</th>\n" .
 			"\t\t</tr>\n" .
 			$table_body .
 			"\t</table>\n" .
 			((!$copy) && isset($entry['id']) ? "\t<input type=\"hidden\" name=\"id_upd\" value=\"" . $entry['id'] . "\" />\n" : '') .
 			"\t<input type=\"hidden\" name=\"type\" value=\"" . $rule_type . "\" />\n" .
 			$hidden .
-			"\t<input type=\"submit\" name=\"submit\" value=\"Save\" />\n" .
+			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
 			"\t&nbsp&nbsp\n" .
-			"\t<input type=\"button\" name=\"close\" value=\"Close\" onclick=\"javascript:popup_close();\" />\n" .
+			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
 			"</form>\n" .
 			"<script type=\"text/javascript\">display_hidden_init('rule_" . $this->_rules_get_action_name($ba, $entry['actionid']) . "', 'table-row-group');</script>\n";
 

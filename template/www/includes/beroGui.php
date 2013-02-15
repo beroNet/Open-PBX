@@ -2,29 +2,36 @@
 
 Class beroGui {
 
+	private $_lang;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+	}
+
 	private function _main_menu ($module) {
 
 		$pre = "\t\t\t\t\t";
 
 		$ret =
 			$pre . "<ul>\n" .
-			$pre . "\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=dialplan\" id=\"item_dialplan\"><span>&#8226;</span> Dialplan</a></li>\n" .
-			$pre . "\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=sip\" id=\"item_sip\"><span>&#8226;</span> SIP-Trunks</a></li>\n" .
-			$pre . "\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=sip_users\" id=\"item_sip_users\"><span>&#8226;</span> Users & Groups</a></li>\n" .
-			$pre . "\t<li><a href=\"#\" id=\"submenu_devices\"><span class=\"submenu\">&#9660</span> Devices</a>\n" .
+			$pre . "\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=dialplan\" id=\"item_dialplan\"><span>&#8226;</span> " . $this->_lang->get('menu_dialplan') . "</a></li>\n" .
+			$pre . "\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=sip\" id=\"item_sip\"><span>&#8226;</span> " . $this->_lang->get('menu_siptrunks') . "</a></li>\n" .
+			$pre . "\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=sip_users\" id=\"item_sip_users\"><span>&#8226;</span> " . $this->_lang->get('menu_users') . "</a></li>\n" .
+			$pre . "\t<li><a href=\"#\" id=\"submenu_devices\"><span class=\"submenu\">&#9660</span> " . $this->_lang->get('menu_devices') . "</a>\n" .
 			$pre . "\t\t<ul>\n" .
-			$pre . "\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=devices_phones\" id=\"item_devices_phones\"><span>&#8226;</span> Phones</a></li>\n" .
-			$pre . "\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=devices_templates\" id=\"item_devices_templates\"><span>&#8226;</span> Templates</a></li>\n" .
+			$pre . "\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=devices_phones\" id=\"item_devices_phones\"><span>&#8226;</span> " . $this->_lang->get('menu_devices_phones') . "</a></li>\n" .
+			$pre . "\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=devices_templates\" id=\"item_devices_templates\"><span>&#8226;</span> " . $this->_lang->get('menu_devices_templates') . "</a></li>\n" .
 			$pre . "\t\t</ul>\n" .
 			$pre . "\t</li>\n" .
-			$pre . "\t<li><a href=\"#\" id=\"submenu_management\"><span class=\"submenu\">&#9660</span> Management</a>\n" .
+			$pre . "\t<li><a href=\"#\" id=\"submenu_management\"><span class=\"submenu\">&#9660</span> " . $this->_lang->get('menu_management') . "</a>\n" .
 			$pre . "\t\t<ul>\n" .
-			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_state\" id=\"item_management_state\"><span>&#8226;</span> State</a></li>\n" .
-			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_mail\" id=\"item_management_mail\"><span>&#8226;</span> Mail Configuration</a></li>\n" .
-			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_pnpconf\" id=\"item_management_pnpconf\"><span>&#8226;</span> PNP Configuration</a></li>\n" .
-			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_backres\" id=\"item_management_backres\"><span>&#8226;</span> Backup/Restore</a></li>\n" .
-			$pre . "\t\t\t<li><a href=\"/userapp/\"><span>&#8226;</span> UserApp Management</a></li>\n" .
-			$pre . "\t\t\t<li><a href=\"/\"><span>&#8226;</span> beroGUI</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_state\" id=\"item_management_state\"><span>&#8226;</span> " . $this->_lang->get('menu_management_state') . "</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_mail\" id=\"item_management_mail\"><span>&#8226;</span> " . $this->_lang->get('menu_management_mail') . "</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_pnpconf\" id=\"item_management_pnpconf\"><span>&#8226;</span> " . $this->_lang->get('menu_management_pnp') . "</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_backres\" id=\"item_management_backres\"><span>&#8226;</span> " . $this->_lang->get('menu_management_backup') . "</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"/userapp/\"><span>&#8226;</span> " . $this->_lang->get('menu_management_userapp') . "</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"/\"><span>&#8226;</span> " . $this->_lang->get('menu_management_berogui') . "</a></li>\n" .
 			$pre . "\t\t</ul>\n" .
 			$pre . "\t</li>\n" .
 			$pre . "</ul>\n" .
@@ -71,7 +78,8 @@ Class beroGui {
 			"\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" . BAF_URL_BASE . "/css/beroGui_forms.css\" />\n" .
 			"\t\t<script type=\"text/javascript\" src=\"" . BAF_URL_BASE . "/js/beroGui.js\"></script>\n" .
 			"\t</head>\n" .
-			"\t<body onload=\"paint_apply_button('" . $entry['option'] . "','" . $mod->getName() . "');\">\n" .
+			"\t<body onload=\"paint_apply_button('" . $entry['option'] . "','" . $mod->getName() . "','" . $this->_lang->get('menu_activate_button') . "','" .
+											$this->_lang->get('menu_activate_green'). "','" . $this->_lang->get('menu_activate_red') . "');\">\n" .
 			"\t\t<div id=\"body_frame\">\n" .
 			"\t\t\t<div id=\"body_frame_top\">\n" .
 			"\t\t\t\t<div id=\"body_frame_top_corner\"></div>\n" .

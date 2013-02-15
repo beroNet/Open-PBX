@@ -4,8 +4,20 @@ include(BAF_APP_WWW . '/includes/amifunc.php');
 
 class MainModule {
 
-	private $_name = 'management_state';
-	private $_title = 'State';
+	#private $_name = 'management_state';
+	#private $_title = 'State';
+
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang 	= $lang;
+
+		$this->_title	= $this->_lang->get('headline_management_state');
+		$this->_name	= 'management_state';
+	}
 
 	function getName() {
 		return($this->_name);
@@ -69,8 +81,8 @@ class MainModule {
 				continue;
 			}
 
-    		$state = trim($entry['Status']);
-    		$state_img = BAF_URL_BASE . '/img/punkt_' . ((substr($state, 0, 2) == 'OK') ? 'gruen' : 'rot') . '.gif';
+			$state = trim($entry['Status']);
+			$state_img = BAF_URL_BASE . '/img/punkt_' . ((substr($state, 0, 2) == 'OK') ? 'gruen' : 'rot') . '.gif';
 
 			$ret .= "\t<tr>\n" .
 				"\t\t<td>" . trim($entry['IPaddress']) . ':' . trim($entry['IPport']). "</td>\n" .
@@ -112,14 +124,14 @@ class MainModule {
 
 		$ret =	"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"5\">SIP-Registrations</th>\n" .
+			"\t\t<th colspan=\"5\">" . $this->_lang->get('state_table_sipregs_head') . "</th>\n" .
 			"\t</tr>\n" .
 			"\t<tr class=\"sub_head\">\n" .
-			"\t\t<td>Host:Port</td>\n" .
-			"\t\t<td>Username</td>\n" .
-			"\t\t<td>Refresh</td>\n" .
-			"\t\t<td>State</td>\n" .
-			"\t\t<td>Reg.Time</td>\n" .
+			"\t\t<td>" . $this->_lang->get('state_table_sipregs_hostport') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('Username') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('Refresh') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('State') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('state_table_sipregs_regtime') . "</td>\n" .
 			"\t</tr>\n" .
 			$this->_display_sip_registrations($ami) .
 			"</table>\n" .
@@ -127,12 +139,12 @@ class MainModule {
 			"<br />\n" .
 			"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"3\">SIP-Peers</th>\n" .
+			"\t\t<th colspan=\"3\">" . $this->_lang->get('state_table_sippeers_head') . "</th>\n" .
 			"\t</tr>\n" .
 			"\t<tr class=\"sub_head\">\n" .
-			"\t\t<td>Host:Port</td>\n" .
-			"\t\t<td>Username</td>\n" .
-			"\t\t<td>State</td>\n" .
+			"\t\t<td>" . $this->_lang->get('state_table_sipregs_hostport') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('Username') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('State') . "</td>\n" .
 			"\t</tr>\n" .
 			$this->_display_sip_peers($ami) .
 			"</table>\n" .
@@ -140,14 +152,14 @@ class MainModule {
 			"<br />\n" .
 			"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"5\">Active Channels</th>\n" .
+			"\t\t<th colspan=\"5\">" . $this->_lang->get('state_table_chans_head') . "</th>\n" .
 			"\t</tr>\n" .
 			"\t<tr class=\"sub_head\">\n" .
-			"\t\t<td>Channel</td>\n" .
-			"\t\t<td>Location</td>\n" .
-			"\t\t<td>State</td>\n" .
-			"\t\t<td>Application(Data)</td>\n" .
-			"\t\t<td>Duration</td>\n" .
+			"\t\t<td>" . $this->_lang->get('Channel') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('Location') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('State') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('state_table_chans_app_data') . "</td>\n" .
+			"\t\t<td>" . $this->_lang->get('Duration') . "</td>\n" .
 			"\t</tr>\n" .
 			$this->_display_channels_active($ami) .
 			"</table>\n";

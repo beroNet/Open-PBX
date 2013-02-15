@@ -2,8 +2,16 @@
 
 class PopupModule {
 
-	private $_name = 'devices_phones';
-	private $_title = 'Add/Modify Phone';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'devices_phones';
+		$this->_title = $this->_lang->get('popup_phone_title');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -138,7 +146,8 @@ class PopupModule {
 			$entry = $ba->fetch_array($query);
 		}
 
-		$ret =	"<form name=\"devices\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return verifyIP(ip.value);\">\n" .
+		$ret =	"<form name=\"devices\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return verifyIP(ip.value,'" .$this->_lang->get('ip_empty') . "','" .
+			$this->_lang->get('ip_invalid') . "');\">\n" .
 			"\t<table class=\"default\">\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
 			"\t\t\t<td>Name</td>\n" .
@@ -147,34 +156,34 @@ class PopupModule {
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Type</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Type') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			$this->_display_type($ba, $entry['typeid']) .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>IP-Address</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('IP-Address') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"ip\" value=\"" . $entry['ipaddr'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>MAC-Address</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('MAC-Address') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"mac\" value=\"" . $entry['macaddr'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Template</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Template') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			$this->_display_template($ba, $entry['tmplid']) .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t</table>\n" .
 			(isset($entry['id']) ? "<input name=\"id_upd\" type=\"hidden\" value=\"" . $entry['id'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"Save\" />\n" .
+			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
 			"\t&nbsp&nbsp\n" .
-			"\t<input type=\"button\" name=\"close\" value=\"Close\" onclick=\"javascript:popup_close();\" />\n" .
+			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
 			"</form>\n";
 
 		return($ret);

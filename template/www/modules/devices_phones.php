@@ -2,8 +2,16 @@
 
 class MainModule {
 
-	private $_name = 'devices_phones';
-	private $_title = 'Phones';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'devices_phones';
+		$this->_title = $this->_lang->get('headline_devices_phones');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -34,8 +42,8 @@ class MainModule {
 		$ba = new beroAri();
 
 		$headlines['name'] = 'Name';
-		$headlines['ipaddr'] = 'IP Address';
-		$headlines['macaddr'] = 'MAC Address';
+		$headlines['ipaddr'] = 'IP-Address';
+		$headlines['macaddr'] = 'MAC-Address';
 
 		$cols = "\t<tr class=\"sub_head\">\n";
 		foreach ($ba->column_type('phone_devices') as $column => $type) {
@@ -43,13 +51,13 @@ class MainModule {
 				continue;
 			}
 
-			$cols .= "\t\t<td>" . $headlines[$column] . "</td>\n";
+			$cols .= "\t\t<td>" . $this->_lang->get($headlines[$column]) . "</td>\n";
 			$col_names[] = $column;
 		}
 		$cols .=	"\t\t<td class=\"buttons\"></td>\n" .
 				"\t\t<td class=\"buttons\">\n" .
 				"\t\t\t<form name=\"phone_entry_add\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-				"\t\t\t\t<input type=\"submit\" name=\"popup\" value=\"Add Phone\" />\n" .
+				"\t\t\t\t<input type=\"submit\" name=\"popup\" value=\"" . $this->_lang->get('phones_table_users_button_add') . "\" />\n" .
 				"\t\t\t</form>\n" .
 				"\t\t</td>\n" .
 				"\t</tr>\n";
@@ -71,7 +79,7 @@ class MainModule {
 
 		$table =	"<table class=\"default\">\n" .
 				"\t<tr>\n" .
-				"\t\t<th colspan=\"" . (count($col_names) + 2) . "\">SIP Phones</th>\n" .
+				"\t\t<th colspan=\"" . (count($col_names) + 2) . "\">" . $this->_lang->get('phones_table_users_head') . "</th>\n" .
 				"\t</tr>\n" .
 				$cols .
 				$rows .
@@ -102,21 +110,22 @@ class MainModule {
 
 		$ret =	"\t\t<td class=\"buttons\">\n" .
 			"\t\t\t<form>\n" .
-			"\t\t\t\t<input type=\"button\" value=\"save\" " .
+			"\t\t\t\t<input type=\"button\" value=\"" . $this->_lang->get('save') . "\" " .
 				"onclick=\"window.location.href='" . BAF_URL_BASE . "/phones/snom/control.php?action=save&id=" . $entry['id'] . "';\" />\n".
-			"\t\t\t\t<input type=\"button\" value=\"reset\" " .
+			"\t\t\t\t<input type=\"button\" value=\"" . $this->_lang->get('reset') . "\" " .
 				"onclick=\"window.location.href='" . BAF_URL_BASE . "/phones/snom/control.php?action=reset&id=" . $entry['id'] . "';\" />\n".
-			"\t\t\t\t<input type=\"button\" value=\"reboot\" " .
+			"\t\t\t\t<input type=\"button\" value=\"" . $this->_lang->get('reboot') . "\" " .
 				"onclick=\"window.location.href='" . BAF_URL_BASE . "/phones/snom/control.php?action=reboot&id=" . $entry['id'] . "';\" />\n" .
-			"\t\t\t\t<input type=\"button\" value=\"phone\" " .
+			"\t\t\t\t<input type=\"button\" value=\"" . $this->_lang->get('phone') . "\" " .
 				"onclick=\"window.open('http://" . $entry['ipaddr'] . "/');\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</td>\n" .
 			"\t\t<td class=\"buttons\">\n" .
 			"\t\t\t<form name=\"phone_entry_mod\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t\t\t\t<input type=\"hidden\" name=\"id\" value=\"" . $entry['id'] . "\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"popup\" value=\"modify\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"delete\" onclick=\"return confirm_delete('" . $entry['name'] . "', null)\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"popup\" value=\"" . $this->_lang->get('modify') . "\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"" . $this->_lang->get('delete') . "\" onclick=\"return confirm_delete('" . $entry['name'] . "', null, '" .
+																	$this->_lang->get('confirm_delete') . "')\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</td>\n";
 

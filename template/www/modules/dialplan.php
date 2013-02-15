@@ -2,8 +2,16 @@
 
 class MainModule {
 
-	private $_name = 'dialplan';
-	private $_title = 'Dialplan';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'dialplan';
+		$this->_title = $this->_lang->get('headline_dialplan');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -166,14 +174,14 @@ class MainModule {
 	private function _display_rules ($ba, $rule_type) {
 
 		$cols =		"\t<tr class=\"sub_head\">\n" .
-				"\t\t<td>Condition</td>\n" .
-				"\t\t<td>Action</td>\n" .
+				"\t\t<td>" . $this->_lang->get('Condition') . "</td>\n" .
+				"\t\t<td>" . $this->_lang->get('Action') . "</td>\n" .
 				"\t\t<td class=\"buttons\">\n" .
 				"\t\t\t<form name=\"rule_add\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 				"\t\t\t\t<input type=\"hidden\" name=\"type\" value=\"" . $rule_type['name'] . "\" />\n" .
 				(($this->_check_extensions($ba) == true) ?
-					"\t\t\t\t<input type=\"submit\" name=\"add\" value=\"Add " . $rule_type['name'] . " rule\" />\n" :
-					"\t\t\t\t<span style=\"font-weight: normal;\">No extensions defined.</span>") .
+					"\t\t\t\t<input type=\"submit\" name=\"add\" value=\"" . $this->_lang->get('dialplan_table_' . $rule_type['name'] . '_button_add') . "\" />\n" :
+					"\t\t\t\t<span style=\"font-weight: normal;\">" . $this->_lang->get('no_extensions_defined') . "</span>") .
 				"\t\t\t</form>\n" .
 				"\t\t</td>\n" .
 				"\t</tr>\n";
@@ -192,12 +200,13 @@ class MainModule {
 					"\t\t\t<form name=\"rule_action\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 					"\t\t\t\t<input type=\"hidden\" name=\"id\" value=\"" . $entry['id'] . "\" />\n" .
 					"\t\t\t\t<input type=\"hidden\" name=\"type\" value=\"" . $rule_type['name'] . "\" />\n" .
-					"\t\t\t\t<input type=\"submit\" class=\"button_arrow\" name=\"up\" value=\"&#9650;\" />\n" .
-					"\t\t\t\t<input type=\"submit\" class=\"button_arrow\" name=\"down\" value=\"&#9660;\" />\n" .
+					"\t\t\t\t<input type=\"submit\" class=\"button_arrow\" name=\"" . $this->_lang->get('up') . "\" value=\"&#9650;\" />\n" .
+					"\t\t\t\t<input type=\"submit\" class=\"button_arrow\" name=\"" . $this->_lang->get('down') . "\" value=\"&#9660;\" />\n" .
 					"\t\t\t\t&nbsp;\n" .
-					"\t\t\t\t<input type=\"submit\" name=\"modify\" value=\"modify\" />\n" .
-					"\t\t\t\t<input type=\"submit\" name=\"copy\" value=\"copy\" />\n" .
-					"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"delete\" onclick=\"return confirm_delete('this rule', null)\" />\n" .
+					"\t\t\t\t<input type=\"submit\" name=\"modify\" value=\"" . $this->_lang->get('modify') . "\" />\n" .
+					"\t\t\t\t<input type=\"submit\" name=\"copy\" value=\"" . $this->_lang->get('copy') . "\" />\n" .
+					"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"" . $this->_lang->get('delete') . "\" onclick=\"return confirm_delete('" . $this->_lang->get('this_rule') . "', null, '" .
+								$this->_lang->get('confirm_delete') . "')\" />\n" .
 					"\t\t\t</form>\n" .
 					"\t\t</td>" .
 					"\t</tr>\n";
@@ -205,7 +214,7 @@ class MainModule {
 
 		$ret =	"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"3\">Rules for " . $rule_type['name'] . " calls</th>\n" .
+			"\t\t<th colspan=\"3\">" . $this->_lang->get('dialplan_table_' . $rule_type['name'] . '_head') . "</th>\n" .
 			"\t</tr>\n" .
 			$cols .
 			$rows .

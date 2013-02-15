@@ -2,8 +2,16 @@
 
 class MainModule {
 
-	private $_name = 'management_backres';
-	private $_title = 'Backup/Restore';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'management_backres';
+		$this->_title = $this->_lang->get('menu_management_backup');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -66,12 +74,12 @@ class MainModule {
 
 		$ret =	"<table class=\"default\" id=\"noborder\">\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"2\">Download Configuration</th>\n" .
+			"\t\t<th colspan=\"2\">" . $this->_lang->get('backup_table_download_head') . "</th>\n" .
 			"\t</tr>\n" .
 			"\t<tr>\n" .
 			"\t\t<td colspan=\"2\">\n" .
 			"\t\t\t<form name=\"conf_download\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"download\" value=\"Download\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"" . $this->_lang->get('download') . "\" value=\"Download\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</th>\n" .
 			"\t</tr>\n" .
@@ -79,13 +87,13 @@ class MainModule {
 			"\t<td class=\"noborder_lr\" colspan=\"2\"><br /><br /><br /></td>\n" .
 			"\t</tr>\n" .
 			"\t<tr>\n" .
-			"\t\t<th colspan=\"2\">Restore Configuration</th>\n" .
+			"\t\t<th colspan=\"2\">" . $this->_lang->get('backup_table_restore_head') . "</th>\n" .
 			"\t</tr>\n" .
 			"\t<tr>\n" .
 			"\t\t<td class=\"nowrap\" colspan=\"2\">\n" .
 			"\t\t\t<form name=\"conf_upload\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" enctype=\"multipart/form-data\">\n" .
 			"\t\t\t\t<input type=\"file\" name=\"uploadfile\" size=\"28\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"upload\" value=\"Upload\" onclick=\"return confirm('This will change the whole configuration. Do you want to continue?')\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"" . $this->_lang->get('upload') . "\" value=\"Upload\" onclick=\"return confirm('This will change the whole configuration. Do you want to continue?')\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</td>\n" .
 			"\t</tr>\n" .

@@ -2,8 +2,16 @@
 
 class MainModule {
 
-	private $_name = 'sip';
-	private $_title = 'SIP-Trunks';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'sip';
+		$this->_title = $this->_lang->get('headline_siptrunks');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -39,12 +47,12 @@ class MainModule {
 				continue;
 			}
 
-			$cols .= "\t\t<td>" . $this->_display_table_head($column) . "</td>\n";
+			$cols .= "\t\t<td>" . $this->_lang->get(ucwords($column)) . "</td>\n";
 			$col_names[] = $column;
 		}
 		$cols .= 	"\t\t<td class=\"buttons\">\n" .
 				"\t\t\t<form name=\"sip_trunk_add\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-				"\t\t\t\t<input type=\"submit\" name=\"add\" value=\"Add SIP-Trunk\" />\n" .
+				"\t\t\t\t<input type=\"submit\" name=\"add\" value=\"" . $this->_lang->get('siptrunks_table_button_add') . "\" />\n" .
 				"\t\t\t</form>\n" .
 				"\t\t</td>\n" .
 			 	"\t</tr>\n";
@@ -80,7 +88,7 @@ class MainModule {
 
 		$ret =	"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t<th colspan=\"6\">SIP-Trunks</th>\n" .
+			"\t<th colspan=\"6\">" . $this->_lang->get('siptrunks_table_head') . "</th>\n" .
 			"\t</tr>\n" .
 			$cols .
 			$rows .
@@ -113,18 +121,14 @@ class MainModule {
 		$ret =	"\t\t<td class=\"buttons\">\n" .
 			"\t\t\t<form name=\"sip_trunk_modify\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t\t\t\t<input type=\"hidden\" name=\"id\" value=\"" . $entry['id'] . "\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"modify\" value=\"modify\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"delete\" onclick=\"return confirm_delete('" . $entry['name'] . "', null)\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"modify\" value=\"" . $this->_lang->get('modify') . "\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"delete\" value=\"" . $this->_lang->get('delete') . "\" onclick=\"return confirm_delete('" . $entry['name'] . "', null, '" .
+																		$this->_lang->get('confirm_delete') . "')\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</td>\n" .
 			"\t</tr>\n";
 
 		return($ret);
-	}
-
-	private function _display_table_head ($name) {
-
-		return(($name == 'dtmfmode') ? 'DTMF-Mode': ucwords($name));
 	}
 }
 

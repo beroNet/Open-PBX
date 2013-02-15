@@ -2,8 +2,16 @@
 
 class PopupModule {
 
-	private $_name = 'sip';
-	private $_title = 'Add/Modify SIP-Trunk';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'sip';
+		$this->_title = $this->_lang->get('popup_sip_title');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -39,46 +47,46 @@ class PopupModule {
 		$ret .=	"<form name=\"sip_trunks_mod\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return is_submit(this);\">\n" .
 			"\t<table class=\"default\" id=\"sip_trunks_mod\">\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<th colspan=\"5\">" . (isset($_GET['id']) ? 'Modify' : 'Add') . " SIP-Trunk</th>\n" .
+			"\t\t\t<th colspan=\"5\">" . $this->_lang->get('popup_sip_table_title_' . (isset($_GET['id']) ? 'modify' : 'add')) . "</th>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Name</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Name') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"name\" value=\"" . $entry['name'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>User</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Username') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"user\" value=\"" . $entry['user'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Password</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Password') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			"\t\t\t\t<input type=\"password\" class=\"fill\" name=\"password\" value=\"" . $entry['password'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Registrar</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Registrar') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"registrar\" value=\"" . $entry['registrar'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Proxy</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Proxy') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"proxy\" value=\"" . $entry['proxy'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>DTMF-Mode</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Dtmfmode') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			$this->_display_dtmfmodes($ba, $entry['dtmfmode']) .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Codecs</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Codecs') . "</td>\n" .
 			"\t\t\t<td class=\"swap_buttons\">\n" .
 			"\t\t\t\t<input type=\"button\" value=\"&#9650;\" onclick=\"up('sip_codecs_sel')\" />\n" .
 			"\t\t\t\t<br /><br />\n" .
@@ -89,9 +97,11 @@ class PopupModule {
 			$this->_display_codecs($ba, $entry['id']) .
 			"\t\t\t</td>\n" .
 			"\t\t\t<td class=\"swap_buttons\">\n" .
-			"\t\t\t\t<input type=\"button\" value=\"&#9668;\" onclick=\"move('sip_codecs_notsel','sip_codecs_sel')\" />\n" .
+			"\t\t\t\t<input type=\"button\" value=\"&#9668;\" onclick=\"move('sip_codecs_notsel','sip_codecs_sel','" . $this->_lang->get('no_item_in_source_listbox') . "','" .
+																	$this->_lang->get('select_item_to_move')  . "')\" />\n" .
 			"\t\t\t\t<br /><br />\n" .
-			"\t\t\t\t<input type=\"button\" value=\"&#9658;\" onclick=\"move('sip_codecs_sel','sip_codecs_notsel')\" />\n" .
+			"\t\t\t\t<input type=\"button\" value=\"&#9658;\" onclick=\"move('sip_codecs_sel','sip_codecs_notsel','" . $this->_lang->get('no_item_in_source_listbox') . "','" .
+																	$this->_lang->get('select_item_to_move')  . "')\" />\n" .
 			"\t\t\t\t<br />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t\t<td class=\"swap_group\">\n" .
@@ -99,7 +109,7 @@ class PopupModule {
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
-			"\t\t\t<td>Other Settings</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('Other_Settings') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			"\t\t\t\t<textarea cols=\"30\" rows=\"10\" name=\"details\">\n" .
 			$entry['details'] .
@@ -108,9 +118,9 @@ class PopupModule {
 			"\t\t</tr>\n" .
 			"\t</table>\n" .
 			(isset($entry['id']) ? "\t<input name=\"id_upd\" type=\"hidden\" value=\"" . $entry['id'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"Save\" onclick=\"selectall('sip_codecs_sel');\" />\n" .
+			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" onclick=\"selectall('sip_codecs_sel');\" />\n" .
 			"\t&nbsp&nbsp\n" .
-			"\t<input type=\"button\" name=\"close\" value=\"Close\" onclick=\"javascript:popup_close();\" />\n" .
+			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
 			"</form>\n";
 
 		return($ret);
@@ -149,7 +159,7 @@ class PopupModule {
 
 		$query = $ba->select("SELECT id FROM sip_trunks WHERE id != '" . $_POST['id_upd'] . "' AND name == '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
-			return("<script> window.history.back(); alert('Name \"" . $_POST['name'] . "\" already in use. Please choose another one!');</script>\n");
+			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
@@ -172,12 +182,12 @@ class PopupModule {
 	private function _execute_sip_create ($ba) {
 
 		if (empty($_POST['name']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['registrar']) || empty($_POST['proxy'])) {
-			return("<script>window.history.back(); alert('Please fill in the form completely!');</script>\n");
+			return("<script>window.history.back(); alert('" . $this->_lang->get('please_fill_the_form') . "');</script>\n");
 		}
 
 		$query = $ba->select("SELECT id FROM sip_trunks WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
-			return("<script>window.history.back(); alert('Name \"" . $_POST['name'] . "\" already in use. Please choose another one!');</script>\n");
+			return("<script>window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 

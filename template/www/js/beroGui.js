@@ -19,17 +19,17 @@ function resize(){
 }
 
 /* function to check if MAC is valid */
-function verifyMAC (MACvalue) {
+function verifyMAC (MACvalue, text_empty, text_invalid) {
 
 	if (MACvalue == '') {
-		alert('MAC-address is empty!');
+		alert(text_empty);
 		return false;
 	}
 
 	var macPattern = /^[0-9a-fA-F:]+$/;
 
 	if (MACvalue.match(macPattern) == null) {
-		alert('MAC-address: ' + MACvalue + ' is invalid!');
+		alert(text_invalid);
 		return false;
 	}
 
@@ -37,19 +37,19 @@ function verifyMAC (MACvalue) {
 }
 
 /* function to check if IP is valid */
-function verifyIP (IPvalue) {
+function verifyIP (IPvalue, text_empty, text_invalid) {
 
 	var ipPattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
 	var ipArray = IPvalue.match(ipPattern);
 
 	if (ipArray == null) {
-		alert('IP-address: ' + IPvalue + ' is not valid.');
+		alert(text_empty);
 		return false;
 	}
 
 	for (var i = 1; i <= 4; i++) {
 		if (ipArray[i] > 255) {
-			alert('IP-address: ' + IPvalue + ' is not valid.');
+			alert(text_invalid);
 			return false;
 		}
 	}
@@ -65,7 +65,7 @@ function limited (text, max) {
 }
 
 /* button 'apply settings' */
-function paint_apply_button (level, module) {
+function paint_apply_button (level, module, text_button, text_green, text_red) {
 
 	if ((level == null) || (level == 0)) {
 		return;
@@ -77,17 +77,17 @@ function paint_apply_button (level, module) {
 		default:
 		case '1':
 			var bid = 'apply_button_green';
-			var txt = 'Do you want to continue and apply the settings made?';
+			var txt = text_green;
 			break;
 		case '2':
 			var bid = 'apply_button_red';
-			var txt = 'This will finish all calls. Do you want to continue?';
+			var txt = text_red;
 			break;
 	}
 
 	var button_div = document.getElementById('apply_button');
 	button_div.style.display = 'block';
-	button_div.innerHTML += "<input type=\"button\" id=\"" + bid + "\" value=\"Apply Changes\" onclick=\"if(confirm('" + txt + "') == true) {window.location.href='" + url + "';}\" />";
+	button_div.innerHTML += "<input type=\"button\" id=\"" + bid + "\" value=\"" + text_button + "\" onclick=\"if(confirm('" + txt + "') == true) {window.location.href='" + url + "';}\" />";
 }
 
 function addselect (id) {
@@ -192,7 +192,7 @@ function is_submit (form) {
 }
 
 // functions for switch-lists
-function move (Orig, Dest) {
+function move (Orig, Dest, text_noitem, text_selectitem) {
 
 	var varFromBox = document.getElementById(Orig);
 	var varToBox = document.getElementById(Dest);
@@ -202,12 +202,12 @@ function move (Orig, Dest) {
 	}
 
 	if(varFromBox.length < 1) {
-		alert('There are no items in the source ListBox');
+		alert(text_noitem);
 		return false;
 	}
 
 	if(varFromBox.options.selectedIndex == -1) {
-		alert('Please select an Item to move');
+		alert(text_selectitem);
 		return false;
 	}
 
@@ -298,9 +298,9 @@ function display_hidden_init (name, dispMode) {
 	dispObj.style.display = dispMode;
 }
 
-function confirm_delete (name, url) {
+function confirm_delete (name, url, text_delete) {
 
-	if (confirm('Do you really want to delete \'' + name + '\'?') == false) {
+	if (confirm(text_delete + ' ' + name + '?') == false) {
 		return(false);
 	}
 

@@ -2,8 +2,16 @@
 
 class MainModule {
 
-	private $_name = 'management_mail';
-	private $_title = 'Mail Configuration';
+	private $_lang;
+	private $_name;
+	private $_title;
+
+	function __construct ($lang) {
+
+		$this->_lang = $lang;
+		$this->_name = 'management_mail';
+		$this->_title = $this->_lang->get('headline_management_mail');
+	}
 
 	function getName() {
 		return($this->_name);
@@ -77,34 +85,34 @@ class MainModule {
 		$ret =	"<form name=\"mail_server\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
 			"\t<table class=\"default\">\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<th colspan=\"2\">Mail-Server Settings</td>\n" .
+			"\t\t\t<th colspan=\"2\">" . $this->_lang->get('mail_table_head') . "</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<td>SMTP-Host</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('mail_table_host') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"text\" name=\"smtp_host\" value=\"" . $entry['smtp_host'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<td>SMTP-Port</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('mail_table_port') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"text\" name=\"smtp_port\" value=\"" . $entry['smtp_port'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<td>SMTP-User</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('mail_table_user') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"text\" name=\"smtp_user\" value=\"" . $entry['smtp_user'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<td>SMTP-Password</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('mail_table_pass') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"password\" name=\"smtp_pass\" value=\"" . $entry['smtp_pass'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr>\n" .
-			"\t\t\t<td>SMTP-From</td>\n" .
+			"\t\t\t<td>" . $this->_lang->get('mail_table_from') . "</td>\n" .
 			"\t\t\t<td>\n" .
 			"\t\t\t\t<input type=\"text\" name=\"smtp_from\" value=\"" . $entry['smtp_from'] . "\" />\n" .
 			"\t\t\t</td>\n" .
@@ -113,7 +121,7 @@ class MainModule {
 			"\t\t<tr>\n" .
 			"\t\t\t<td></td>\n" .
 			"\t\t\t<td>\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"smtp_submit\" value=\"Save\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"smtp_submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t</table>\n" .
