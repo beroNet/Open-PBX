@@ -1,10 +1,12 @@
 <?php
 
-Class lang {
+class lang {
 
 	private $_lang_arr;
 
 	function __construct () {
+
+		$this->_lang_arr = array();
 
 		# menu & headlines
 		$this->_lang_arr['menu_dialplan']			= 'Wählplan';
@@ -157,7 +159,7 @@ Class lang {
 
 		# page Management -> PNP Configuration
 		$this->_lang_arr['pnp_daemon_head']			= 'Daemon Konfiguration';
-		$this->_lang_arr['pnp_daemon_text']			= "Um SNOM-Telefone mit aktiviertem PNP-featuer zu provisionieren,<br />" .
+		$this->_lang_arr['pnp_daemon_text']			= "Um SNOM-Telefone mit aktiviertem PNP-feature zu provisionieren,<br />" .
 									  "aktivieren Sie den SNOM-PHP-Daemon hier.<br /><br />" .
 									  "Die MAC-Adressen, die bedient werden sollen, können auf der linken Seite angegeben werden.<br /><br />";
 		$this->_lang_arr['pnp_mac_head']			= 'MAC-Adressen basierte Provisionierung';
