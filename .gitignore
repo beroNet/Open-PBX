@@ -2,3 +2,4 @@ work/*
 .baf.conf
 *.o
 *~
+pkginfo/VERSION
