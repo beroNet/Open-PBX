@@ -129,6 +129,7 @@ if (!$page) {
 			$snom_xml->setText($text);
 
 			$url_back = $url_base . '?page=call_diversion&type=' . $type;
+			$snom_xml->setFetch('3000', $url_back);
 			$softkeys->addURL('F2', $url_back, 'Back');
 			$softkeys->addURL('Cancel', $url_back);
 
