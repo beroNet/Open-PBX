@@ -37,6 +37,10 @@ class SnomIPPhoneObject {
 	public function show()
 	{
 		header('Content-Type: application/xml; charset=utf-8');
+		header('Expires: 0');
+		header('Pragma: no-cache');
+		header('Cache-Control: private, no-cache, must-revalidate');
+		header('Vary: *');
 		$xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 		$xml .= '<' . $this->_type . '>' . "\n";
 		$xml .= "\t" . '<Title>' . XML_escape($this->_title) .'</Title>' . "\n";
