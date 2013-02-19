@@ -11,12 +11,16 @@ function XML_escape($raw) {
 class SnomIPPhoneObject {
 	
 	private $_title;
+	private $_fetch;
 	private $_softkeys;
 	protected $_type;
 
 	public function __construct()
 	{
 		$this->_title = false;
+		$this->_fetch = array();
+		$this->_fetch['mil'] = false;
+		$this->_fetch['url'] = false;
 		$this->_softkeys = false;
 		$this->_type = 'SnomIPPhoneText';
 	}
@@ -24,6 +28,12 @@ class SnomIPPhoneObject {
 	public function setTitle($title)
 	{
 		$this->_title = $title;
+	}
+
+	public function setFetch($mil=false, $url=false)
+	{
+		$this->_fetch['mil'] = $mil;
+		$this->_fetch['url'] = $url;
 	}
 
 	public function setSoftkeys($softkeys)
@@ -37,10 +47,17 @@ class SnomIPPhoneObject {
 	public function show()
 	{
 		header('Content-Type: application/xml; charset=utf-8');
+		header('Expires: 0');
+		header('Pragma: no-cache');
+		header('Cache-Control: private, no-cache, must-revalidate');
+		header('Vary: *');
 		$xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 		$xml .= '<' . $this->_type . '>' . "\n";
 		$xml .= "\t" . '<Title>' . XML_escape($this->_title) .'</Title>' . "\n";
 		$xml .= $this->_specificXML();
+		if ($this->_fetch['mil'] && $this->_fetch['url']) {
+			$xml .= "\t" . '<fetch mil="' . $this->_fetch['mil'] . '">' . $this->_fetch['url'] . '</fetch>' . "\n";
+		}
 		if ($this->_softkeys) {
 			$xml .= $this->_softkeys->asXML();
 		}
