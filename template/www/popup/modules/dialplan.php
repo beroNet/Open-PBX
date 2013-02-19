@@ -83,6 +83,7 @@ class PopupModule {
 			return($ret);
 			break;
 		case 'dial':
+		case 'hangup':
 			if (($_POST['prefix'] != '') || ($_POST['length'] != 0)) {
 				$x_len = $_POST['length'] - strlen($_POST['prefix']);
 				$x_len = (($x_len <= 0) ? 0 : $x_len);
@@ -93,221 +94,228 @@ class PopupModule {
 
 		switch ($mode) {
 		case 'create':
-			$typeid = $this->_execute_rules_get_type($ba, $_POST['type']);
-			$ba->insert_(	"INSERT INTO " .
-						"call_rules (typeid, extid, number, actionid, action_1, action_2, trunkid) " .
-					"VALUES (" .
-						"'" . $typeid			. "'," .
-						"'" . $_POST['extension']	. "'," .
-						"'" . $number			. "'," .
-						"'" . $_POST['action']		. "'," .
-						"'" . $_POST['action_1']	. "'," .
-						"'" . $_POST['action_2']	. "'," .
-						"'" . $_POST['trunk']		. "');");
-			break;
-		case 'update':
-			$ba->update(	"UPDATE " .
-						"call_rules " .
-					"SET " .
-						"extid = '" .		$_POST['extension']	. "'," .
-						"number = '" .		$number			. "'," .
-						"actionid = '" .	$_POST['action']	. "'," .
-						"action_1 = '" .	$_POST['action_1']	. "'," .
-						"action_2 = '" .	$_POST['action_2']	. "'," .
-						"trunkid = '" .		$_POST['trunk']		. "' " .
-					"WHERE " .
-						"id = '" . $_POST['id_upd'] . "'");
-			break;
+				$typeid = $this->_execute_rules_get_type($ba, $_POST['type']);
+				$ba->insert_(	"INSERT INTO " .
+							"call_rules (typeid, extid, number, actionid, action_1, action_2, trunkid) " .
+						"VALUES (" .
+							"'" . $typeid			. "'," .
+							"'" . $_POST['extension']	. "'," .
+							"'" . $number			. "'," .
+							"'" . $_POST['action']		. "'," .
+							"'" . $_POST['action_1']	. "'," .
+							"'" . $_POST['action_2']	. "'," .
+							"'" . $_POST['trunk']		. "');");
+				break;
+			case 'update':
+				$ba->update(	"UPDATE " .
+							"call_rules " .
+						"SET " .
+							"extid = '" .		$_POST['extension']	. "'," .
+							"number = '" .		$number			. "'," .
+							"actionid = '" .	$_POST['action']	. "'," .
+							"action_1 = '" .	$_POST['action_1']	. "'," .
+							"action_2 = '" .	$_POST['action_2']	. "'," .
+							"trunkid = '" .		$_POST['trunk']		. "' " .
+						"WHERE " .
+							"id = '" . $_POST['id_upd'] . "'");
+				break;
+			}
+
+			$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+
+			$ret =	"<script>window.opener.location='" . BAF_URL_BASE . "/index.php?m=" . $this->_name . "'</script>\n" .
+				"<script>this.window.close();</script>\n";
+
+			return($ret);
 		}
 
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		private function _display_extensions ($ba, $id, $type) {
 
-		$ret =	"<script>window.opener.location='" . BAF_URL_BASE . "/index.php?m=" . $this->_name . "'</script>\n" .
-			"<script>this.window.close();</script>\n";
+			$pre = "\t\t\t\t";
 
-		return($ret);
-	}
+			switch ($type) {
+			case 'inbound':
+				$cond = "WHERE extension != 'Any Extension'";
+				break;
+			case 'outbound':
+				$cond = "WHERE id NOT IN (SELECT extension FROM sip_groups)";
+				break;
+			}
 
-	private function _display_extensions ($ba, $id, $type) {
+			$query = $ba->select("SELECT * FROM sip_extensions " . $cond . " ORDER BY id ASC");
+			while ($entry = $ba->fetch_array($query)) {
+				$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? ' selected' : '') . ">" . $entry['extension'] . "</option>\n";
+			}
 
-		$pre = "\t\t\t\t";
+			$ret =	$pre . "<select class=\"fill\" name=\"extension\">\n" .
+				$opt .
+				$pre . "</select>\n";
 
-		switch ($type) {
-		case 'inbound':
-			$cond = "WHERE extension != 'Any Extension'";
-			break;
-		case 'outbound':
-			$cond = "WHERE id NOT IN (SELECT extension FROM sip_groups)";
-			break;
+			return($ret);
 		}
 
-		$query = $ba->select("SELECT * FROM sip_extensions " . $cond . " ORDER BY id ASC");
-		while ($entry = $ba->fetch_array($query)) {
-			$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? ' selected' : '') . ">" . $entry['extension'] . "</option>\n";
+		private function _display_actions ($ba, $id, $type) {
+
+			$pre = "\t\t\t\t";
+
+			switch ($type) {
+			case 'inbound':
+				$cond = '';
+				break;
+			case 'outbound':
+				$cond = " WHERE name != 'voicemail' AND name != 'disa'";
+				break;
+			}
+
+			$query = $ba->select("SELECT * FROM rules_action" . $cond. " ORDER BY id ASC");
+			while ($entry = $ba->fetch_array($query)) {
+				$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? 'selected' : '') . ">" . $entry['name'] . "</option>\n";
+			}
+
+			$ret =	$pre . "<select class=\"fill\" name=\"action\" onChange=\"display_hidden_rule(this, 'table-row-group')\">\n" .
+				$opt .
+				$pre . "</select>\n";
+
+			return($ret);
 		}
 
-		$ret =	$pre . "<select class=\"fill\" name=\"extension\">\n" .
-			$opt .
-			$pre . "</select>\n";
+		private function _display_trunks ($ba, $id) {
 
-		return($ret);
-	}
+			$pre = "\t\t\t\t\t";
 
-	private function _display_actions ($ba, $id, $type) {
+			$query = $ba->select("SELECT id, name FROM sip_trunks ORDER BY id ASC");
+			while ($entry = $ba->fetch_array($query)) {
+				$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? 'selected' : '') . ">" . $entry['name'] . "</option>\n";
+			}
 
-		$pre = "\t\t\t\t";
+			$ret =	$pre . "<select class=\"fill\" name=\"trunk\">\n" .
+				$opt .
+				$pre . "</select>\n";
 
-		switch ($type) {
-		case 'inbound':
-			$cond = '';
-			break;
-		case 'outbound':
-			$cond = " WHERE name != 'voicemail'";
-			break;
+			return($ret);
 		}
 
-		$query = $ba->select("SELECT * FROM rules_action" . $cond. " ORDER BY id ASC");
-		while ($entry = $ba->fetch_array($query)) {
-			$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? 'selected' : '') . ">" . $entry['name'] . "</option>\n";
+		private function _display_length ($selected) {
+
+			$pre = "\t\t\t\t\t";
+
+			for ($i = 0; $i < 48; $i++) {
+				$opt .= $pre . "\t<option value=\"" . $i ."\"" . (($i == $selected) ? 'selected ' : '') . ">" . $i . "</option>\n";
+			}
+
+			$ret =	$pre . "<select class=\"fill\" name=\"length\">\n" .
+				$opt .
+				$pre . "</select>\n";
+
+			return($ret);
 		}
 
-		$ret =	$pre . "<select class=\"fill\" name=\"action\" onChange=\"display_hidden_rule(this, 'table-row-group')\">\n" .
-			$opt .
-			$pre . "</select>\n";
+		private function _display_get_prefix_from_number ($number) {
 
-		return($ret);
-	}
+			preg_match("/_([0-9]*)/", $number, $res);
 
-	private function _display_trunks ($ba, $id) {
-
-		$pre = "\t\t\t\t\t";
-
-		$query = $ba->select("SELECT id, name FROM sip_trunks ORDER BY id ASC");
-		while ($entry = $ba->fetch_array($query)) {
-			$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? 'selected' : '') . ">" . $entry['name'] . "</option>\n";
+			return($res[1]);
 		}
 
-		$ret =	$pre . "<select class=\"fill\" name=\"trunk\">\n" .
-			$opt .
-			$pre . "</select>\n";
+		private function _display_get_length_from_number ($number) {
 
-		return($ret);
-	}
+			preg_match("/_([0-9X]*)/", $number, $res);
 
-	private function _display_length ($selected) {
-
-		$pre = "\t\t\t\t\t";
-
-		for ($i = 0; $i < 48; $i++) {
-			$opt .= $pre . "\t<option value=\"" . $i ."\"" . (($i == $selected) ? 'selected ' : '') . ">" . $i . "</option>\n";
+			return(strlen($res[1]));
 		}
 
-		$ret =	$pre . "<select class=\"fill\" name=\"length\">\n" .
-			$opt .
-			$pre . "</select>\n";
+		private function _display_rule ($ba, $rule_type, $copy, $entry) {
 
-		return($ret);
-	}
+			switch ($rule_type) {
+			case 'inbound':
+				$table_body =
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('Trunk') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						$this->_display_trunks($ba, $entry['trunkid']) .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('Source') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"number\" value=\"" . (isset($entry['number']) ? $entry['number'] : '*') . "\" />\n" .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('Target') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_1\" value=\"" . (isset($entry['action_1']) ? $entry['action_1'] : '*') . "\" />\n" .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('Action') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						$this->_display_actions($ba, $entry['actionid'], $rule_type) .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
+	//					"\t\t<tbody id=\"rule_dial\">\n" .
+						"\t\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t\t<td>" . $this->_lang->get('Extension') . "</td>\n" .
+						"\t\t\t\t<td>\n" .
+						$this->_display_extensions($ba, $entry['extid'], $rule_type) .
+						"\t\t\t\t</td>\n" .
+						"\t\t\t</tr>\n" .
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('DISA') . '-' . $this->_lang->get('Password') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_2\" value=\"" . (!empty($entry['action_2']) ? $entry['action_2'] : '') . "\" />\n" .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n";
+	//					"\t\t</tbody>\n";
 
-	private function _display_get_prefix_from_number ($number) {
+	//			$hidden =	"\t<input type=\"hidden\" name=\"action_2\" value=\"\" />\n";
+				$hidden =	'';
+				break;
+			case 'outbound':
 
-		preg_match("/_([0-9]*)/", $number, $res);
+				$prefix = $this->_display_get_prefix_from_number($entry['number']);
+				$length = $this->_display_get_length_from_number($entry['number']);
 
-		return($res[1]);
-	}
+				$table_body =	"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td colspan=\"2\">" . $this->_lang->get('originating_extension') . "</td>\n" .
+						"\t\t</tr>\n" .
+						"\t\t<tr>\n" .
+						"\t\t\t<td colspan=\"2\">\n" .
+						$this->_display_extensions($ba, $entry['extid'], $rule_type) .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
 
-	private function _display_get_length_from_number ($number) {
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td colspan=\"2\">" . $this->_lang->get('target_number') . "</td>\n" .
+						"\t\t</tr>\n" .
 
-		preg_match("/_([0-9X]*)/", $number, $res);
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('Prefix') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"prefix\" value=\"" . $prefix . "\" />\n" .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
 
-		return(strlen($res[1]));
-	}
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td>" . $this->_lang->get('minimum_length') . "</td>\n" .
+						"\t\t\t<td>\n" .
+						$this->_display_length($length) .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
 
-	private function _display_rule ($ba, $rule_type, $copy, $entry) {
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td colspan=\"2\">" . $this->_lang->get('Action') . "</td>\n" .
+						"\t\t</tr>\n" .
+						"\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t<td colspan=\"2\">\n" .
+						$this->_display_actions($ba, $entry['actionid'], $rule_type) .
+						"\t\t\t</td>\n" .
+						"\t\t</tr>\n" .
 
-		switch ($rule_type) {
-		case 'inbound':
-			$table_body =
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>" . $this->_lang->get('Trunk') . "</td>\n" .
-					"\t\t\t<td>\n" .
-					$this->_display_trunks($ba, $entry['trunkid']) .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>" . $this->_lang->get('Source') . "</td>\n" .
-					"\t\t\t<td>\n" .
-					"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"number\" value=\"" . (isset($entry['number']) ? $entry['number'] : '*') . "\" />\n" .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>" . $this->_lang->get('Target') . "</td>\n" .
-					"\t\t\t<td>\n" .
-					"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_1\" value=\"" . (isset($entry['action_1']) ? $entry['action_1'] : '*') . "\" />\n" .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>" . $this->_lang->get('Action') . "</td>\n" .
-					"\t\t\t<td>\n" .
-					$this->_display_actions($ba, $entry['actionid'], $rule_type) .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-//					"\t\t<tbody id=\"rule_dial\">\n" .
-					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>" . $this->_lang->get('Extension') . "</td>\n" .
-					"\t\t\t\t<td>\n" .
-					$this->_display_extensions($ba, $entry['extid'], $rule_type) .
-					"\t\t\t\t</td>\n" .
-					"\t\t\t</tr>\n";
-//					"\t\t</tbody>\n";
-
-			$hidden =	"\t<input type=\"hidden\" name=\"action_2\" value=\"\" />\n";
-			break;
-		case 'outbound':
-
-			$prefix = $this->_display_get_prefix_from_number($entry['number']);
-			$length = $this->_display_get_length_from_number($entry['number']);
-
-			$table_body =	"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">" . $this->_lang->get('originating_extension') . "</td>\n" .
-					"\t\t</tr>\n" .
-					"\t\t<tr>\n" .
-					"\t\t\t<td colspan=\"2\">\n" .
-					$this->_display_extensions($ba, $entry['extid'], $rule_type) .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">" . $this->_lang->get('target_number') . "</td>\n" .
-					"\t\t</tr>\n" .
-
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>" . $this->_lang->get('Prefix') . "</td>\n" .
-					"\t\t\t<td>\n" .
-					"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"prefix\" value=\"" . $prefix . "\" />\n" .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td>" . $this->_lang->get('minimum_length') . "</td>\n" .
-					"\t\t\t<td>\n" .
-					$this->_display_length($length) .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">" . $this->_lang->get('Action') . "</td>\n" .
-					"\t\t</tr>\n" .
-					"\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t<td colspan=\"2\">\n" .
-					$this->_display_actions($ba, $entry['actionid'], $rule_type) .
-					"\t\t\t</td>\n" .
-					"\t\t</tr>\n" .
-
-					// Action 'dial'
-					"\t\t<tbody id=\"rule_dial\">\n" .
-					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>>" . $this->_lang->get('popup_dialplan_use_trunk') . "</td>\n" .
+						// Action 'dial'
+						"\t\t<tbody id=\"rule_dial\">\n" .
+						"\t\t\t<tr class=\"sub_head\">\n" .
+						"\t\t\t\t<td>" . $this->_lang->get('popup_dialplan_use_trunk') . "</td>\n" .
 					"\t\t\t\t<td>\n" .
 					$this->_display_trunks($ba, $entry['trunkid']) .
 					"\t\t\t\t</td>\n" .
@@ -319,7 +327,7 @@ class PopupModule {
 					"\t\t\t\t</td>\n" .
 					"\t\t\t</tr>\n" .
 					"\t\t\t<tr class=\"sub_head\">\n" .
-					"\t\t\t\t<td>>" . $this->_lang->get('Prepend') . "</td>\n" .
+					"\t\t\t\t<td>" . $this->_lang->get('Prepend') . "</td>\n" .
 					"\t\t\t\t<td>\n" .
 					"\t\t\t\t\t<input type=\"text\" class=\"fill\" name=\"action_2\" value=\"" . htmlspecialchars($entry['action_2']) . "\" />\n" .
 					"\t\t\t\t</td>\n" .

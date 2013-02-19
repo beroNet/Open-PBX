@@ -63,7 +63,7 @@ function _ext_add_groups ($ba, $ami) {
 		$dial = _ext_add_group_members($ba, $entry['id']);
 
 		$ret .= "; group '" . $entry['name'] . "'\n" .
-			"exten => " . $entry['extension'] . ",1,NoOp()\n" .
+			"exten => " . $entry['extension'] . ",1,NoOp(Incoming call for " . $entry['extension'] . " - group " . $entry['name'] . ")\n" .
 			(($dial != '') ? "exten => " . $entry['extension'] . ",n,Dial(" . $dial . ",15)\n" : '') .
 			(($entry['voicemail'] == 1) ? "exten => " . $entry['extension'] . ",n,Voicemail(" . $entry['extension'] . ",u)\n" : '') .
 			"exten => " . $entry['extension'] . ",n,HangUp\n\n";
@@ -87,7 +87,7 @@ function _ext_add_users ($ba, $ami) {
 	while ($entry = $ba->fetch_array($query)) {
 		$ret .=	"; user '" . $entry['name'] . "'\n" .
 			"exten => " . $entry['extension'] . ",hint,SIP/" . $entry['extension'] . "\n" .
-			"exten => " . $entry['extension'] . ",1,NoOp()\n" .
+			"exten => " . $entry['extension'] . ",1,NoOp(Incoming call for " . $entry['extension'] . " - user " . $entry['name'] . ")\n" .
 			"exten => " . $entry['extension'] . ",n,Macro(dialintern,\${EXTEN})\n" .
 			"exten => " . $entry['extension'] . ",n,HangUp\n\n";
 
@@ -252,6 +252,10 @@ function _ext_add_section_inbound ($ba, $type) {
 		switch ($entry['action']) {
 		case 'dial':
 			$ret .= "exten => " . $number . "," . $pos . ",Dial(SIP/" . (($entry['extension'] != 'Any Extension') ? $entry['extension'] : '0') . ")\n";
+			break;
+		case 'disa':
+			$ret .= 'exten => ' . $number . ',' . $pos . ",Playback(" . ((!empty($entry['action_2'])) ? 'agent-pass&vm-and&' : '') . "vm-enter-num-to-call)\n" .
+				'exten => ' . $number . ',n,DISA(' . ((!empty($entry['action_2'])) ? $entry['action_2'] : 'no-password') . ",intern)\n";
 			break;
 		case 'voicemail':
 			$ret .= "exten => " . $number . "," . $pos . ",Voicemail(" . (($entry['extension'] != 'Any Extension') ? $entry['extension'] : '0') . ",u)\n";

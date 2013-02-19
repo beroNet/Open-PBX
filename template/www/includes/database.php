@@ -182,7 +182,7 @@ class beroAri {
 						"name VARCHAR(16));");
 
 		$i = 0;
-		$rows = array ('none', 'dial', 'hangup', 'voicemail');
+		$rows = array ('none', 'dial', 'hangup', 'voicemail', 'disa');
 		foreach($rows as $row) {
 			sqlite_query($this->db, "INSERT INTO rules_action (id, name) VALUES ('" . $i . "', '" . $row . "');");
 			$i++;
