@@ -87,6 +87,7 @@ class MainModule {
 		foreach (array('CFWD','CFB','CFU') as $fwd_type) {
 			$ami->DBDel($fwd_type, $extension);
 		}
+		$ami->Logout();
 		unset($ami);
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
