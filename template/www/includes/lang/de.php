@@ -67,7 +67,10 @@ class lang {
 		$this->_lang_arr['All']					= 'Alle';
 		$this->_lang_arr['Add']					= 'Hinzufügen';
 		$this->_lang_arr['Enable']				= 'Aktivieren';
+		$this->_lang_arr['Enabled']				= 'Aktiviert';
 		$this->_lang_arr['Disable']				= 'Deaktivieren';
+		$this->_lang_arr['Disabled']				= 'Deaktiviert';
+		$this->_lang_arr['Delete']				= 'Löschen';
 		$this->_lang_arr['Download']				= 'Herunterladen';
 		$this->_lang_arr['Upload']				= 'Hochladen';
 		$this->_lang_arr['Duration']				= 'Dauer';
@@ -85,6 +88,7 @@ class lang {
 		$this->_lang_arr['Device']				= 'Gerät';
 		$this->_lang_arr['Devices']				= 'Geräte';
 		$this->_lang_arr['Other_Settings']			= 'Andere Einstellungen';
+		$this->_lang_arr['DISA']				= 'DISA';
 
 		$this->_lang_arr['save']				= 'speichern';
 		$this->_lang_arr['reset']				= 'zurücksetzen';
@@ -92,11 +96,19 @@ class lang {
 		$this->_lang_arr['add']					= 'hinzufügen';
 		$this->_lang_arr['modify']				= 'ändern';
 		$this->_lang_arr['copy']				= 'kopieren';
+		$this->_lang_arr['cut']					= 'ausschneiden';
 		$this->_lang_arr['delete']				= 'löschen';
 		$this->_lang_arr['enabled']				= 'aktiviert';
 		$this->_lang_arr['disabled']				= 'deaktiviert';
 		$this->_lang_arr['not_configured']			= 'nicht konfiguriert';
 		$this->_lang_arr['phone']				= 'telefon';
+		$this->_lang_arr['calls']                               = 'wählt';
+		$this->_lang_arr['and']					= 'und';
+		$this->_lang_arr['digits']				= 'Ziffern';
+		$this->_lang_arr['digit(s)']                            = 'Ziffer(n)';
+		$this->_lang_arr['long']				= 'lang';
+		$this->_lang_arr['first']				= 'ersten';
+		$this->_lang_arr['using']				= 'mittels';
 
 		$this->_lang_arr['no_extensions_defined']		= 'Keine Durchwahlen definiert.';
 		$this->_lang_arr['please_enter_a_valid_name']		= 'Bitte geben Sie einen validen Namen ein!';
@@ -119,6 +131,16 @@ class lang {
 		$this->_lang_arr['ip_invalid']				= 'Die angegebene IP-Adresse ist ungültig!';
 		$this->_lang_arr['no_item_in_source_listbox']		= 'Die Quell-Liste ist leer!';
 		$this->_lang_arr['select_item_to_move']			= 'Bitte wählen sie ein Element aus, um es zu verschieben.';
+		$this->_lang_arr['send_to_extension']                   = 'Weiterleiten an Durchwahl';
+		$this->_lang_arr['send_to_voicemail']                   = 'Weiterleiten an die Mailbox der Durchwahl';
+		$this->_lang_arr['send_to_disa']                        = 'Weiterleiten an DISA';
+		$this->_lang_arr['dial']				= 'anrufen';
+		$this->_lang_arr['hangup']				= 'auflegen';
+		$this->_lang_arr['a_number']				= 'eine Nummer';
+		$this->_lang_arr['ask_for_password']			= 'nach Passwort fragen';
+		$this->_lang_arr['starting_with']			= 'beginnend mit';
+		$this->_lang_arr['at_least']				= 'mindestens';
+
 
 		# page 'Dialplan'
 		$this->_lang_arr['dialplan_table_inbound_head']		= 'Regeln für eingehende Telefonate';

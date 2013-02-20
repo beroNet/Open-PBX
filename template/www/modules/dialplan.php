@@ -118,9 +118,9 @@ class MainModule {
 
 	private function _display_inbound_conditions ($entry) {
 
-		$ret = $entry['Source'] . '@' . $entry['Trunk'] . ' calls ' . (($entry['action_1'] == '*') ? 'a number' : $entry['action_1']);
+		$ret = $entry['Source'] . '@' . $entry['Trunk'] . ' ' . $this->_lang->get('calls') . ' ' . (($entry['action_1'] == '*') ? $this->_lang->get('a_number') : $entry['action_1']);
 
-		return($ret);
+		return($ret . '.');
 	}
 
 	private function _display_outbound_conditions ($entry) {
@@ -128,36 +128,40 @@ class MainModule {
 		$len = $this->_display_get_length_from_number($entry['Target']);
 		$pre = $this->_display_get_prefix_from_number($entry['Target']);
 
-		$ret = $entry['Extension'] . ' calls a number starting with ' . $pre . ' and is at least ' . $len . ' digits long';
+		$ret = $entry['Extension'] . ' ' .  $this->_lang->get('calls') . ' ' .  $this->_lang->get('a_number') . ' ' .  $this->_lang->get('starting_with') . ' ' .$pre .
+			 ', ' .  $this->_lang->get('at_least') . ' ' . $len . ' ' .  $this->_lang->get('digits') . ' ' .  $this->_lang->get('long');
 
-		return($ret);
+		return($ret . '.');
 	}
 
 	private function _display_inbound_actions ($entry) {
 
 		switch ($entry['Action']) {
 		case 'dial':
-			$ret = 'Send to extension ' . $entry['Extension'];
+			$ret = $this->_lang->get('send_to_extension') . ' ' . $entry['Extension'];
+			break;
+		case 'disa':
+			$ret = $this->_lang->get('send_to_disa') . (!empty($entry['action_2']) ? ', ' . $this->_lang->get('ask_for_password') : '');
 			break;
 		case 'voicemail':
-			$ret = 'Send to Voice-Mailbox of extension ' . $entry['Extension'];
+			$ret = $this->_lang->get('send_to_voicemail') . ' ' . $entry['Extension'];
 			break;
 		case 'hangup':
-			$ret = 'Hang Up';
+			$ret = $this->_lang->get('hangup');
 			break;
 		}
 
-		return($ret);
+		return($ret . '.');
 	}
 
 	private function _display_outbound_actions ($entry) {
 
-		$ret =	((!empty($entry['action_1'])) ? 'Cut first ' . $entry['action_1'] . ' digit(s), ' : '') .
-			((!empty($entry['action_2'])) ? 'Prepend ' . $entry['action_2'] . ', ' : '') .
-			$entry['Action'] .
-			(($entry['Trunk'] != 'Any Trunk') ? ' using ' . $entry['Trunk'] : '');
+		$ret =	((!empty($entry['action_1'])) ? $this->_lang->get('Cut') . ' ' . $this->_lang->get('first') . ' ' . $entry['action_1'] . ' ' . $this->_lang->get('digit(s)') . ', ' : '') .
+			((!empty($entry['action_2'])) ? $this->_lang->get('Prepend') . ' '  . $entry['action_2'] . ', ' : '') .
+			$this->_lang->get($entry['Action']) .
+			(($entry['Trunk'] != 'Any Trunk') ? ' ' . $this->_lang->get('using') . ' ' . $entry['Trunk'] : '');
 
-		return($ret);
+		return($ret . '.');
 	}
 
 	private function _check_extensions ($ba) {

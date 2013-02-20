@@ -67,7 +67,10 @@ class lang {
 		$this->_lang_arr['All']					= 'All';
 		$this->_lang_arr['Add']					= 'Add';
 		$this->_lang_arr['Enable']				= 'Enable';
+		$this->_lang_arr['Enabled']				= 'Enabled';
 		$this->_lang_arr['Disable']				= 'Disable';
+		$this->_lang_arr['Disabled']				= 'Disabled';
+		$this->_lang_arr['Delete']				= 'Delete';
 		$this->_lang_arr['Download']				= 'Download';
 		$this->_lang_arr['Upload']				= 'Upload';
 		$this->_lang_arr['Duration']				= 'Duration';
@@ -83,6 +86,7 @@ class lang {
 		$this->_lang_arr['Trunk']				= 'Trunk';
 		$this->_lang_arr['Devices']				= 'Devices';
 		$this->_lang_arr['Other_Settings']			= 'Other Settings';
+		$this->_lang_arr['DISA']				= 'DISA';
 
 		$this->_lang_arr['save']				= 'save';
 		$this->_lang_arr['reset']				= 'reset';
@@ -90,11 +94,19 @@ class lang {
 		$this->_lang_arr['add']					= 'add';
 		$this->_lang_arr['modify']				= 'modify';
 		$this->_lang_arr['copy']				= 'copy';
+		$this->_lang_arr['cut']					= 'cut';
 		$this->_lang_arr['delete']				= 'delete';
 		$this->_lang_arr['enabled']				= 'enabled';
 		$this->_lang_arr['disabled']				= 'disabled';
 		$this->_lang_arr['not_configured']			= 'not configured';
 		$this->_lang_arr['phone']				= 'phone';
+		$this->_lang_arr['calls']				= 'calls';
+		$this->_lang_arr['and']					= 'and';
+		$this->_lang_arr['digits']				= 'digits';
+		$this->_lang_arr['digit(s)']				= 'digit(s)';
+		$this->_lang_arr['long']				= 'long';
+		$this->_lang_arr['first']				= 'first';
+		$this->_lang_arr['using']				= 'using';
 
 		$this->_lang_arr['no_extensions_defined']		= 'No Extensions defined.';
 		$this->_lang_arr['please_enter_a_valid_name']		= 'Please Enter a valid Name!';
@@ -117,6 +129,15 @@ class lang {
 		$this->_lang_arr['ip_invalid']				= 'The IP-Address given is invalid!';
 		$this->_lang_arr['no_item_in_source_listbox']		= 'The Source-List is empty!';
 		$this->_lang_arr['select_item_to_move']			= 'Please select an item to move.';
+		$this->_lang_arr['send_to_extension']			= 'Send to Extension';
+		$this->_lang_arr['send_to_voicemail']			= 'Send to VoiceMailbox of Extension';
+		$this->_lang_arr['send_to_disa']			= 'Send to DISA';
+		$this->_lang_arr['dial']				= 'dial';
+		$this->_lang_arr['hangup']				= 'hang up';
+		$this->_lang_arr['a_number']				= 'a number';
+		$this->_lang_arr['ask_for_password']			= 'ask for password';
+		$this->_lang_arr['starting_with']			= 'starting with';
+		$this->_lang_arr['at_least']				= 'at least';
 
 		# page 'Dialplan'
 		$this->_lang_arr['dialplan_table_inbound_head']		= 'Rules for inbound calls';
