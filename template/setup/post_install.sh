@@ -3,6 +3,7 @@
 BAF_BASE_DIR=/apps/OpenPBX
 BAF_CONF_DIR=${BAF_BASE_DIR}/etc
 BAF_LIBS_DIR=${BAF_BASE_DIR}/lib
+BAF_EXEC_DIR=${BAF_BASE_DIR}/bin
 
 AST_CONF_DIR=${BAF_CONF_DIR}/asterisk
 
@@ -20,12 +21,9 @@ if [ ! -d ${BAF_CONF_DIR}/settings/default ]; then
 	mkdir -p ${BAF_CONF_DIR}/settings/default
 fi
 
+if [ -f /tmp/OpenPBX_migration.sql ]; then
+	${BAF_EXEC_DIR}/database_migration.sh import
+fi
+
 cp ${BAF_BASE_DIR}/setup/snom_default.xml ${BAF_CONF_DIR}/settings/default/snom.xml
 
-# if [ -z "$(grep multicast_addresses /usr/conf/isgw.conf)" ]; then
-# 	echo "multicast_addresses=224.0.1.75:5060" >> /usr/conf/isgw.conf
-# elif [ -z "$(grep 224.0.1.75:5060 /usr/conf/isgw.conf)" ]; then
-#	cp /usr/conf/isgw.conf /usr/conf/isgw.conf.tmp
-#	sed 's/multicast_addresses=/multicast_addresses=224.0.1.75:5060,/' /usr/conf/isgw.conf.tmp > /usr/conf/isgw.conf
-#	rm /usr/conf/isgw.conf.tmp
-# fi
