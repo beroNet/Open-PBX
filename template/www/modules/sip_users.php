@@ -1,5 +1,7 @@
 <?php
 
+include(BAF_APP_WWW . '/includes/amifunc.php');
+
 class MainModule {
 
 	private $_lang;
@@ -66,9 +68,10 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT extension FROM sip_users WHERE id = '" . $userid . "'");
+		$query = $ba->select("SELECT e.id AS id, e.extension AS extension FROM sip_users AS u, sip_extensions AS e WHERE u.id = '" . $userid . "' AND u.extension = e.id");
 		$entry = $ba->fetch_array($query);
-		$extid = $entry['extension'];
+		$extid = $entry['id'];
+		$extension = $entry['extension'];
 		unset($entry);
 		unset($query);
 
@@ -78,6 +81,13 @@ class MainModule {
 		$ba->delete("DELETE FROM sip_rel_user_group WHERE userid = '". $userid . "'");
 		$ba->delete("DELETE FROM sip_users WHERE id = '" . $userid . "'");
 		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+
+		$ami = new AsteriskManager();
+		$ami->connect();
+		foreach (array('CFWD','CFB','CFU') as $fwd_type) {
+			$ami->DBDel($fwd_type, $extension);
+		}
+		unset($ami);
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
 	}
