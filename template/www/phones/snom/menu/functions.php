@@ -39,6 +39,29 @@ function get_number_by_extension ($extension, $table) {
 	}
 }
 
+function get_has_mailbox_by_extension ($extension) {
+
+	$ba = new beroAri();
+
+	$query = $ba->select('SELECT ' .
+					's.voicemail AS voicemail, ' .
+					's.mail AS mail ' .
+				'FROM ' .
+					'sip_users AS s, ' .
+					'sip_extensions AS e ' .
+				'WHERE '.
+					'e.extension = \'' . $extension . '\' ' .
+				'AND ' .
+					's.extension = e.id');
+	$entry = $ba->fetch_array($query);
+
+	if ($entry['voicemail'] == 1 && strlen($entry['mail']) > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function set_forwarding_by_extension ($extension, $table, $fwd_tgt) {
 
 	$ami = new AsteriskManager();

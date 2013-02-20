@@ -71,7 +71,9 @@ if (!$page) {
 
 			$snom_xml->add('Off', $url_base . '?page=call_diversion&type=' . $type . '&busy=off');
 			$snom_xml->add('Phone Number', $url_base . '?page=call_diversion&type=' . $type . '&busy=number');
-			$snom_xml->add('Mailbox', $url_base . '?page=call_diversion&type=' . $type . '&busy=vb');
+			if (get_has_mailbox_by_extension($extension)) {
+				$snom_xml->add('Mailbox', $url_base . '?page=call_diversion&type=' . $type . '&busy=vb');
+			}
 
 			if ($fwd_tgt == 'vb') {
 				$snom_xml->select('Mailbox');
