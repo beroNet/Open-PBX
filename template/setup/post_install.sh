@@ -21,9 +21,11 @@ if [ ! -d ${BAF_CONF_DIR}/settings/default ]; then
 	mkdir -p ${BAF_CONF_DIR}/settings/default
 fi
 
+# import changes to database from previous installations
 if [ -f /tmp/OpenPBX_migration.sql ]; then
 	${BAF_EXEC_DIR}/database_migration.sh import
 fi
 
+# reset default template for SNOM provisioning
 cp ${BAF_BASE_DIR}/setup/snom_default.xml ${BAF_CONF_DIR}/settings/default/snom.xml
 

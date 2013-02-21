@@ -7,5 +7,5 @@ BAF_EXEC_DIR=${BAF_BASE_DIR}/bin
 
 AST_CONF_DIR=${BAF_CONF_DIR}/asterisk
 
+# export changes to database
 ${BAF_EXEC_DIR}/database_migration.sh export
-
