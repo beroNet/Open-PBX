@@ -395,9 +395,7 @@ class PopupModule {
 			"\t\t<tr class=\"sub_head\">\n" .
 			"\t\t\t<td>" . $this->_lang->get('Other_Settings') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
-			"\t\t\t\t<textarea name=\"details\">\n" .
-			$entry['details'] .
-			"\t\t\t\t</textarea>\n" .
+			"\t\t\t\t<textarea name=\"details\">" . $entry['details'] . "</textarea>\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t</table>\n" .

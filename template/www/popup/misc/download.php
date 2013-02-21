@@ -1,6 +1,17 @@
 <?php
 
 include('/apps/OpenPBX/www/includes/variables.php');
+include(BAF_APP_WWW . '/includes/database.php');
+
+function create_archive ($fn, $file_list) {
+
+	$cur_dir = getcwd();
+	chdir('/tmp/');
+	$cmd_line = '/bin/tar czf ' . $fn . $file_list ;
+	exec($cmd_line);
+	chdir($cur_dir);
+	unset($cur_dir);
+}
 
 switch ($_GET['file']) {
 case 'OpenPBX.tar.gz':
@@ -11,13 +22,12 @@ case 'OpenPBX.tar.gz':
 		@unlink($fn);
 	}
 
-	if (file_exists(BAF_APP_PBX_DB)) {
-	$files .= ' ' . BAF_APP_PBX_DB;
-	}
+	$ba = new beroAri();
+	$db_export = $ba->export_database();
 
-	$cmd_line = '/bin/tar czf ' . $fn . $files ;
+	$file_list .= ' ' . str_replace('/tmp/', '', $db_export);
 
-	exec($cmd_line);
+	create_archive($fn, $file_list);
 
 	if (!file_exists($fn)) {
 		echo "ERROR: File '" . $fn . "' could not be created.<br />\n";

@@ -2,25 +2,20 @@
 
 class beroAri {
 
-	public	$db;
-	private	$dbfile;
-	private	$err;
+	public	$db;			// the database handle
+	private	$dbfile;		// the database file
+	private $dbinit;		// the database from which the database is created
+	private $dbversion;		// the version of the database
+	private	$err;			// string-representations of errors
 
 	function __construct ($path = '') {
 
+		$this->dbinit = BAF_APP_PATH . '/setup/OpenPBX_init.sql';
 		$this->dbfile = (($path == '') ? BAF_APP_PBX_DB : $path);
 
-		if (is_file($this->dbfile)) {
-			$this->db = sqlite_open($this->dbfile);
-		} else {
-			$this->db = sqlite_popen($this->dbfile, 0666, $sqlerror);
-			$this->create_database();
-		}
+		$this->open_database();
 
-		if ($this->db == null) {
-			$this->err = "Opening " . $this->dbfile . " failed: " . sqlite_error_string(sqlite_last_error($this->db));
-			return;
-		}
+		$this->dbversion = $this->get_dbversion($this->dbinit);
 
 		// enable foreign keys support
 		sqlite_query($this->db, "PRAGMA foreign_keys = ON");
@@ -29,281 +24,186 @@ class beroAri {
 	}
 
 	function __destruct () {
-		if ($this->db) {
-			sqlite_close($this->db);
+		$this->close_database();
+	}
+
+	// get the database version the dump was created from
+	private function get_dbversion ($dump_file) {
+
+		$version = 1;
+		foreach (file($dump_file) as $line) {
+			if (preg_match("/DB_VERSION=([0-9]+)/", $line, $res)) {
+				$version = $res[1];
+				break;
+			}
+		}
+
+		return($version);
+	}
+
+	// open database
+	private function open_database () {
+
+		$new_db = ((is_file($this->dbfile)) ? false : true);
+
+		$this->db = sqlite_open($this->dbfile, 0666);
+
+		if ($new_db == true) {
+			$this->create_database();
+		}
+
+		if ($this->db == null) {
+			$this->err = "Opening " . $this->dbfile . " failed: " . sqlite_error_string(sqlite_last_error($this->db));
+			return;
 		}
 	}
 
-	function create_database () {
+	// close database
+	private function close_database () {
 
-		// table 'activate'
-		sqlite_query($this->db, "CREATE TABLE activate (" .
-						"id VARCHAR(15) PRIMARY KEY," .
-						"option INTEGER DEFAULT 0);");
-		sqlite_query($this->db, "INSERT INTO activate VALUES('activate', 0);");
+		if ($this->db) {
+			sqlite_close($this->db);
+			$this->db = null;
+		}
+	}
 
-		// table 'sip_extensions'
-		sqlite_query($this->db, "CREATE TABLE sip_extensions (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"extension VARCHAR(16) NOT NULL DEFAULT '0');");
-		sqlite_query($this->db, "INSERT INTO sip_extensions VALUES (0, 'Any Extension');");
+	// create database
+	private function create_database () {
 
-		// table 'sip_users'
-		sqlite_query($this->db, "CREATE TABLE sip_users (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(64) NOT NULL DEFAULT ''," .
-						"extension INTEGER NOT NULL DEFAULT '0'," .
-						"password VARCHAR(256) NOT NULL DEFAULT ''," .
-						"voicemail INTEGER(1) NOT NULL DEFAULT 0," .
-						"mail VARCHAR(256) NOT NULL DEFAULT ''," .
-						"details VARCHAR(512) NOT NULL DEFAULT ''," .
-						"CONSTRAINT fk_sip_extensions_id FOREIGN KEY(extension) REFERENCES sip_extensions(id) ON DELETE SET DEFAULT);");
+		if (!file_exists($this->dbinit)) {
+			$this->err = "Database initialisation file '" . $this->dbinit . "' does not exist!";
+			return;
+		}
 
-		// table 'sip_groups'
-		sqlite_query($this->db, "CREATE TABLE sip_groups (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(64) NOT NULL DEFAULT ''," .
-						"extension INTEGER NOT NULL DEFAULT '0'," .
-						"voicemail INTEGER(1) NOT NULL DEFAULT 0," .
-						"mail VARCHAR(256) NOT NULL DEFAULT ''," .
-						"description VARCHAR(256) NOT NULL DEFAULT ''," .
-						"CONSTRAINT fk_sip_extensions_id FOREIGN KEY(extension) REFERENCES sip_extensions(id) ON DELETE SET DEFAULT);");
-
-		// table 'sip_rel_user_group'
-		sqlite_query($this->db, "CREATE TABLE sip_rel_user_group (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"userid INTEGER NOT NULL DEFAULT '0'," .
-						"groupid INTEGER NOT NULL DEFAULT '0'," .
-						"CONSTRAINT fk_sip_users_id FOREIGN KEY (userid) REFERENCES sip_users(id) ON DELETE CASCADE," .
-						"CONSTRAINT fk_sip_groups_id FOREIGN KEY (groupid) REFERENCES sip_groups(id) ON DELETE CASCADE);");
-
-		// table 'mail_settings'
-		sqlite_query($this->db, "CREATE TABLE mail_settings (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"smtp_host VARCHAR(128) NOT NULL DEFAULT ''," .
-						"smtp_port INTEGER NOT NULL DEFAULT 25," .
-						"smtp_user VARCHAR(128) NOT NULL DEFAULT ''," .
-						"smtp_pass VARCHAR(128) NOT NULL DEFAULT ''," .
-						"smtp_from VARCHAR(128) NOT NULL DEFAULT '');");
-		sqlite_query($this->db, "INSERT INTO mail_settings (id) VALUES (1);");
-
-		// table 'phone_types'
-		sqlite_query($this->db, "CREATE TABLE phone_types (" .
-						"id INTEGER PRIMARY KEY, " .
-						"name VARCHAR(60));");
-
-		$i = 1;
-		$phones['snom'] = array('300', '320', '360', '370', '720', '760', '820', '821', '870');
-		foreach ($phones as $vendor => $types) {
-			foreach ($types as $type) {
-				sqlite_query($this->db, "INSERT INTO phone_types VALUES(" . $i . ", '" . $vendor . $type . "');");
-				$i++;
+		foreach (file($this->dbinit) as $line) {
+			if ($line[0] == '#') {
+				continue;
 			}
+			sqlite_query($this->db, $line);
 		}
-		unset($phones);
+	}
 
-		// table 'phone_devices'
-		sqlite_query($this->db, "CREATE TABLE phone_devices (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(64) NOT NULL DEFAULT '', " .
-						"ipaddr VARCHAR(16) NOT NULL DEFAULT ''," .
-						"macaddr VARCHAR(12) NOT NULL DEFAULT ''," .
-						"typeid INTEGER NOT NULL DEFAULT '1', " .
-						"tmplid INTEGER NOT NULL DEFAULT '1'," .
-						"userid INTEGER NOT NULL DEFAULT '0', " .
-						"CONSTRAINT fk_sip_users_id FOREIGN KEY (userid) REFERENCES sip_users(id) ON DELETE SET DEFAULT," .
-						"CONSTRAINT fk_phone_types_id FOREIGN KEY (typeid) REFERENCES phone_types(id) ON DELETE SET DEFAULT," .
-						"CONSTRAINT fk_phone_templates_id FOREIGN KEY (tmplid) REFERENCES phone_templates(id) ON DELETE SET DEFAULT);");
+	// Add names of columns to the INSERT INTO commands
+	private function insert_add_colnames ($line) {
 
-		// table 'phone_templates'
-		sqlite_query($this->db, "CREATE TABLE phone_templates (" .
-		       				"id INTEGER PRIMARY KEY," .
-						"name VARCHAR(60)," .
-						"description VARCHAR(120)," .
-						"path VARCHAR(60)," .
-						"readonly INTEGER);");
-		sqlite_query($this->db, "INSERT INTO phone_templates VALUES(1, 'snom_default', 'SNOM default template','" . BAF_APP_ETC . "/settings/default/snom.xml', 1);");
+		if (preg_match("/INSERT INTO ([0-9a-zA-Z\-\_]+)/", $line, $res)) {
+			$table_name = $res[1];
 
-		// table 'phone_pnp_managed'
-		sqlite_query($this->db, "CREATE TABLE phone_pnp_managed (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY, " .
-						"mac VARCHAR(12), " .
-						"enabled INTEGER(1) NOT NULL DEFAULT '0');");
+			unset($column_list);
+			foreach ($this->column_type($table_name) as $column => $type) {
+				$column_list = ((empty($column_list)) ? '' : $column_list . ',') . $column;
+			}
 
-		sqlite_query($this->db,  "INSERT INTO phone_pnp_managed VALUES(0, 'FFFFFFFFFFFF', '0');");
-
-
-		// table sip_dtmfmodes
-		sqlite_query($this->db, "CREATE TABLE sip_dtmfmodes (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(16) NOT NULL DEFAULT '');");
-
-		$rows = array('rfc2833', 'inband', 'info');
-		foreach ($rows as $row) {
-			sqlite_query($this->db, "INSERT INTO sip_dtmfmodes (name) VALUES ('" . $row . "');");
-		}
-		unset($rows);
-
-		// table 'sip_trunks'
-		sqlite_query($this->db, "CREATE TABLE sip_trunks (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(60) NOT NULL DEFAULT ''," .
-						"user VARCHAR(60) NOT NULL DEFAULT ''," .
-						"password VARCHAR(60) NOT NULL DEFAULT ''," .
-						"registrar VARCHAR(60) NOT NULL DEFAULT ''," .
-						"proxy VARCHAR(60) NOT NULL DEFAULT ''," .
-						"dtmfmode INTEGER NOT NULL DEFAULT '0'," .
-						"details VARCHAR(250) NOT NULL DEFAULT ''," .
-						"CONSTRAINT fk_sip_dtmfmodes_id FOREIGN KEY (dtmfmode) REFERENCES sip_dtmfmodes(id) ON DELETE SET DEFAULT);");
-		sqlite_query($this->db, "INSERT INTO sip_trunks (id, name) VALUES (0, 'Any Trunk');");
-
-		// table 'sip_codecs'
-		sqlite_query($this->db, "CREATE TABLE sip_codecs (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(64) NOT NULL DEFAULT '');");
-
-		$codecs = array ('all', 'alaw', 'gsm', 'ilbc', 'ulaw');
-		foreach ($codecs as $codec) {
-			sqlite_query($this->db, "INSERT INTO sip_codecs (name) VALUES ('" . $codec . "');");
+			return(str_replace("INSERT INTO " . $table_name, "INSERT INTO " . $table_name . " (" . $column_list . ")", $line));
 		}
 
-		// table 'sip_rel_trunk_codec'
-		sqlite_query($this->db, "CREATE TABLE sip_rel_trunk_codec (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"priority INTEGER NOT NULL DEFAULT '1'," .
-						"codecid INTEGER NOT NULL DEFAULT '0'," .
-						"trunkid INTEGER NOT NULL DEFAULT '0'," .
-						"CONSTRAINT fk_codecs_id FOREIGN KEY (codecid) REFERENCES codecs(id) ON DELETE SET DEFAULT," .
-						"CONSTRAINT fk_sip_trunks_id FOREIGN KEY (trunkid) REFERENCES sip_trunks(id) ON DELETE CASCADE);");
+		return($line);
+	}
 
-		// table 'rules_action'
-		sqlite_query($this->db, "CREATE TABLE rules_action (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(16));");
+	// reset the database
+	private function reset_database () {
 
-		$i = 0;
-		$rows = array ('none', 'dial', 'hangup', 'voicemail', 'disa');
-		foreach($rows as $row) {
-			sqlite_query($this->db, "INSERT INTO rules_action (id, name) VALUES ('" . $i . "', '" . $row . "');");
-			$i++;
+		// close database
+		$this->close_database();
+
+		// delete database-file
+		unlink($this->dbfile);
+
+		// reopen and recreate database
+		$this->open_database();
+	}
+
+	// exports database
+	function export_database ($export_file = '', $create_diff = 'yes') {
+
+		$cur_date = date("Y-m-d_H-i-s");
+		$export_file = ((!empty($export_file)) ? $export_file : '/tmp/OpenPBX_' . $cur_date . '.sql');
+
+		exec("/bin/echo '.dump' | /usr/bin/sqlite " . BAF_APP_ETC . "/OpenPBX.db > " . $export_file . '.tmp');
+
+		$init_cont = (($create_diff == 'yes') ? file($this->dbinit) : array());
+
+		if (($fp = fopen($export_file, "w"))) {
+
+			fwrite($fp, "# OpenPBX Database Export from " . $cur_date ."\n");
+			fwrite($fp, "# DB_VERSION=" . $this->dbversion . "\n\n");
+
+			foreach (file($export_file . '.tmp') as $line) {
+				$line_mod = $this->insert_add_colnames($line);
+				if (!in_array($line_mod, $init_cont)) {
+					fwrite($fp, $line_mod);
+				}
+			}
+
+			fclose($fp);
 		}
-		unset($rows);
 
-		// table 'rules_type'
-		sqlite_query($this->db, "CREATE TABLE rules_type (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"name VARCHAR(16) NOT NULL DEFAULT '');");
-		$rows = array ('inbound', 'outbound');
-		foreach($rows as $row) {
-			sqlite_query($this->db, "INSERT INTO rules_type (name) VALUES ('" . $row . "');");
+		unlink($export_file . '.tmp');
+
+		return($export_file);
+	}
+
+	// imports database
+	function import_database ($import_file) {
+
+		// check if file exists
+		if (!file_exists($import_file)) {
+			$this->err = "File to import '" . $import_file . "' does not exist!";
+			return;
 		}
-		unset($rows);
 
-		// table 'call_rules'
-		sqlite_query($this->db, "CREATE TABLE call_rules (" .
-						"id INTEGER AUTOINCREMENT PRIMARY KEY," .
-						"typeid INTEGER NUT NULL DEFAULT '0'," .
-						"extid INTEGER NOT NULL DEFAULT '0'," .
-						"position INTEGER NOT NULL DEFAULT '1'," .
-						"number VARCHAR(128) NOT NULL DEFAULT '*'," .
-						"actionid INTEGER NOT NULL DEFAULT '0'," .
-						"action_1 VARCHAR(128) NOT NULL DEFAULT ''," .
-						"action_2 VARCHAR(128) NOT NULL DEFAULT ''," .
-						"trunkid INTEGER NOT NULL DEFAULT '0'," .
-						"CONSTRAINT fk_sip_extensions_id FOREIGN KEY (extid) REFERENCES sip_extensions(id) ON DELETE CASCADE," .
-						"CONSTRAINT fk_rules_type_id FOREIGN KEY (typeid) REFERENCES rules_type(id) ON DELETE CASCADE," .
-						"CONSTRAINT fk_rules_action_id FOREIGN KEY (actionid) REFERENCES rules_action(id) ON DELETE CASCADE," .
-						"CONSTRAINT fk_sip_trunks_id FOREIGN KEY (trunkid) REFERENCES sip_trunks(id) ON DELETE CASCADE);");
+		// check if version of imported database is newer than our database-structure
+		$import_version = $this->get_dbversion($import_file);
 
-		sqlite_query($this->db,	"CREATE VIEW " .
-						"call_rules_outbound " .
-					"AS " .
-						"SELECT " .
-							"r.id AS id," .
-							"r.number AS Target," .
-							"e.extension AS Extension," .
-							"a.name AS Action," .
-							"r.action_1 AS action_1," .
-							"r.action_2 AS action_2," .
-							"t.name AS Trunk " .
-						"FROM " .
-							"call_rules AS r," .
-							"rules_action AS a, ".
-							"sip_extensions AS e," .
-							"sip_trunks AS t " .
-						"WHERE " .
-							"r.typeid = '2' " .
-						"AND " .
-							"a.id = r.actionid " .
-						"AND " .
-							"e.id = r.extid " .
-						"AND " .
-							"t.id = r.trunkid " .
-						"GROUP BY " .
-							"r.number " .
-						"ORDER BY " .
-							"r.position " .
-						"ASC");
+		if ($import_version > $this->dbversion) {
+			$this->err = "The version of the database to be imported is " . $import_version . ".\n" .
+				     "Our version is " . $this->dbversion . ".\n" .
+				     "As of now importing newer databases is not supported, leaving.";
+			return;
+		}
 
-		sqlite_query($this->db,	"CREATE VIEW " .
-						"call_rules_inbound " .
-					"AS " .
-						"SELECT " .
-							"r.id AS id," .
-							"r.number AS Source," .
-							"e.extension AS Extension," .
-							"a.name AS Action," .
-							"r.action_1 AS action_1," .
-							"r.action_2 AS action_2," .
-							"t.name AS Trunk " .
-						"FROM " .
-							"call_rules AS r," .
-							"rules_action AS a, ".
-							"sip_extensions AS e," .
-							"sip_trunks AS t " .
-						"WHERE " .
-							"r.typeid = '1' " .
-						"AND " .
-							"a.id = r.actionid " .
-						"AND " .
-							"e.id = r.extid " .
-						"AND " .
-							"t.id = r.trunkid " .
-						"GROUP BY " .
-							"r.number " .
-						"ORDER BY " .
-							"r.position " .
-						"ASC");
+		// reset the database - we always import into a clean database!
+		$this->reset_database();
+
+		// import data
+		foreach (file($import_file) as $line) {
+			# ignore lines beginning with '#' and all INSERTs into activate
+			if (($line[0] == '#') || (strstr($line, 'INSERT INTO activate'))) {
+				continue;
+			}
+			sqlite_query($this->db, $line);
+		}
+	}
+
+	// generic query-function
+	private function query_gen ($sql, $name) {
+
+		if (!($result = sqlite_query($this->db, $sql))) {
+			$this->err = $name . ' failed: ' . sqlite_error_string(sqlite_last_error($this->db));
+			return(false);
+		}
+
+		return($result);
 	}
 
 	function update ($sql) {
-
-		if (!($ok = sqlite_query($this->db, $sql))) {
-			$this->err = "update() failed: " . sqlite_error_string(sqlite_last_error($this->db));
-			return false;
-		}
-
-		return $ok;
+		return($this->query_gen($sql, 'update'));
 	}
 
 	function delete ($sql) {
-
-		if (!($ok = sqlite_query($this->db, $sql))) {
-			$this->err = "update() failed: " . sqlite_error_string(sqlite_last_error($this->db));
-			return false;
-		}
-
-		return true;
+		return($this->query_gen($sql, 'delete'));
 	}
 
 	function insert_ ($sql) {
+		return($this->query_gen($sql, 'insert'));
+	}
 
-		if (!($ok = sqlite_query($this->db, $sql))) {
-			$this->err = "insert() failed: " . sqlite_error_string(sqlite_last_error($this->db));
-			return false;
-		}
+	function select ($sql) {
+		return($this->query_gen($sql, 'select'));
+	}
 
-		return $ok;
+	function query ($sql) {
+		return($this->query_gen($sql, 'query'));
 	}
 
 	function dbquery ($sql) {
@@ -316,33 +216,19 @@ class beroAri {
 		return $ok;
 	}
 
-	function select($sql) {
-
-		if (!($ok = sqlite_query($this->db, $sql))) {
-			$this->err = $sql. " select() failed: " . sqlite_error_string(sqlite_last_error($this->db));
-			return false;
-		}
-
-		return $ok;
-	}
-
 	function fetch_array ($data) {
-
 		return(($data) ? sqlite_fetch_array($data) : false);
 	}
 
 	function rowid() {
-
 		return(sqlite_last_insert_rowid($this->db));
 	}
 
 	function column_type ($data) {
-
 		return(($data) ? sqlite_fetch_column_types($data, $this->db) : false);
 	}
 
-	function num_rows($data)
-	{
+	function num_rows ($data) {
 		return(($data) ? sqlite_num_rows($data) : false);
 	}
 
