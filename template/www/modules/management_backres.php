@@ -35,12 +35,27 @@ class MainModule {
 		@exec('/bin/tar xzf ' . $_FILES['uploadfile']['tmp_name']);
 		@chdir($cwd);
 
-		@copy('/tmp' . BAF_APP_PBX_DB, BAF_APP_PBX_DB);
-		@unlink('/tmp' . BAF_APP_PBX_DB);
-		chown(BAF_APP_PBX_DB, 'admin');
-		chgrp(BAF_APP_PBX_DB, 'admin');
+		$tmp_dir = scandir('/tmp/');
+		if (!empty($tmp_dir)) {
+			foreach ($tmp_dir as $tmp_file) {
+				if (preg_match('/OpenPBX_[0-9\-\_]+\.sql/', $tmp_file)) {
+					$import_name = $tmp_file;
+					break;
+				}
+			}
+		}
+		unset($tmp_dir);
 
-		$ba = new beroAri();
+		if (!empty($import_name) && file_exists('/tmp/' . $import_name)) {
+			$ba = new beroAri();
+			$ba->import_database('/tmp/' . $import_name);
+			if ($ba->is_error()) {
+				echo $ba->error();
+			}
+
+			@unlink('/tmp/' . $import_name);
+		}
+
 		$ba->update("UPDATE activate SET option = 2 WHERE id = 'activate' AND option < 2");
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
@@ -79,7 +94,7 @@ class MainModule {
 			"\t<tr>\n" .
 			"\t\t<td colspan=\"2\">\n" .
 			"\t\t\t<form name=\"conf_download\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"" . $this->_lang->get('download') . "\" value=\"Download\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"download\" value=\"" . $this->_lang->get('Download') . "\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</th>\n" .
 			"\t</tr>\n" .
@@ -93,7 +108,7 @@ class MainModule {
 			"\t\t<td class=\"nowrap\" colspan=\"2\">\n" .
 			"\t\t\t<form name=\"conf_upload\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" enctype=\"multipart/form-data\">\n" .
 			"\t\t\t\t<input type=\"file\" name=\"uploadfile\" size=\"28\" />\n" .
-			"\t\t\t\t<input type=\"submit\" name=\"" . $this->_lang->get('upload') . "\" value=\"Upload\" onclick=\"return confirm('This will change the whole configuration. Do you want to continue?')\" />\n" .
+			"\t\t\t\t<input type=\"submit\" name=\"upload\" value=\"" . $this->_lang->get('Upload') . "\" onclick=\"return confirm('This will change the whole configuration. Do you want to continue?')\" />\n" .
 			"\t\t\t</form>\n" .
 			"\t\t</td>\n" .
 			"\t</tr>\n" .
