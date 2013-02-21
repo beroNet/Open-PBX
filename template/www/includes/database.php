@@ -2,29 +2,20 @@
 
 class beroAri {
 
-	public	$db;
-	private	$dbfile;
-	private $dbversion;
-	private	$err;
+	public	$db;			// the database handle
+	private	$dbfile;		// the database file
+	private $dbinit;		// the database from which the database is created
+	private $dbversion;		// the version of the database
+	private	$err;			// string-representations of errors
 
 	function __construct ($path = '') {
 
+		$this->dbinit = BAF_APP_PATH . '/setup/OpenPBX_init.sql';
 		$this->dbfile = (($path == '') ? BAF_APP_PBX_DB : $path);
 
-		if (is_file($this->dbfile)) {
-			$this->db = sqlite_open($this->dbfile);
-		} else {
-			$this->db = sqlite_popen($this->dbfile, 0666, $sqlerror);
-			$this->create_database();
-		}
+		$this->open_database();
 
-		if ($this->db == null) {
-			$this->err = "Opening " . $this->dbfile . " failed: " . sqlite_error_string(sqlite_last_error($this->db));
-			return;
-		}
-
-		// get version of this database
-		$this->dbversion = $this->get_dbversion(BAF_APP_PATH . '/setup/OpenPBX_init.sql');
+		$this->dbversion = $this->get_dbversion($this->dbinit);
 
 		// enable foreign keys support
 		sqlite_query($this->db, "PRAGMA foreign_keys = ON");
@@ -33,9 +24,7 @@ class beroAri {
 	}
 
 	function __destruct () {
-		if ($this->db) {
-			sqlite_close($this->db);
-		}
+		$this->close_database();
 	}
 
 	// get the database version the dump was created from
@@ -52,17 +41,41 @@ class beroAri {
 		return($version);
 	}
 
+	// open database
+	private function open_database () {
+
+		$new_db = ((is_file($this->dbfile)) ? false : true);
+
+		$this->db = sqlite_open($this->dbfile, 0666);
+
+		if ($new_db == true) {
+			$this->create_database();
+		}
+
+		if ($this->db == null) {
+			$this->err = "Opening " . $this->dbfile . " failed: " . sqlite_error_string(sqlite_last_error($this->db));
+			return;
+		}
+	}
+
+	// close database
+	private function close_database () {
+
+		if ($this->db) {
+			sqlite_close($this->db);
+			$this->db = null;
+		}
+	}
+
 	// create database
-	function create_database () {
+	private function create_database () {
 
-		$db_init_file = BAF_APP_PATH . '/setup/OpenPBX_init.sql';
-
-		if (!file_exists($db_init_file)) {
-			$this->err = "Database initialisation file '" . $db_init_file . "' does not exist!";
+		if (!file_exists($this->dbinit)) {
+			$this->err = "Database initialisation file '" . $this->dbinit . "' does not exist!";
 			return;
 		}
 
-		foreach (file($db_init_file) as $line) {
+		foreach (file($this->dbinit) as $line) {
 			if ($line[0] == '#') {
 				continue;
 			}
@@ -70,20 +83,8 @@ class beroAri {
 		}
 	}
 
-	// dump database and recreate it from scratch
-	function reset_database () {
-
-		// remove old database
-		sqlite_close($this->db);
-		unlink($this->dbfile);
-
-		// create new blank database
-		$this->db = sqlite_popen($this->dbfile, 0666, $sqlerror);
-		$this->create_database();
-	}
-
 	// Add names of columns to the INSERT INTO commands
-	function insert_add_colnames ($line) {
+	private function insert_add_colnames ($line) {
 
 		if (preg_match("/INSERT INTO ([0-9a-zA-Z\-\_]+)/", $line, $res)) {
 			$table_name = $res[1];
@@ -99,6 +100,19 @@ class beroAri {
 		return($line);
 	}
 
+	// reset the database
+	private function reset_database () {
+
+		// close database
+		$this->close_database();
+
+		// delete database-file
+		unlink($this->dbfile);
+
+		// reopen and recreate database
+		$this->open_database();
+	}
+
 	// exports database
 	function export_database ($export_file = '', $create_diff = 'yes') {
 
@@ -107,7 +121,7 @@ class beroAri {
 
 		exec("/bin/echo '.dump' | /usr/bin/sqlite " . BAF_APP_ETC . "/OpenPBX.db > " . $export_file . '.tmp');
 
-		$init_cont = (($create_diff == 'yes') ? file(BAF_APP_PATH . '/setup/OpenPBX_init.sql') : array());
+		$init_cont = (($create_diff == 'yes') ? file($this->dbinit) : array());
 
 		if (($fp = fopen($export_file, "w"))) {
 
@@ -148,12 +162,13 @@ class beroAri {
 			return;
 		}
 
-		// reset database to be sure to start with a clean one
+		// reset the database - we always import into a clean database!
 		$this->reset_database();
 
 		// import data
 		foreach (file($import_file) as $line) {
-			if ($line[0] == '#') {
+			# ignore lines beginning with '#' and all INSERTs into activate
+			if (($line[0] == '#') || (strstr($line, 'INSERT INTO activate'))) {
 				continue;
 			}
 			sqlite_query($this->db, $line);
@@ -202,22 +217,18 @@ class beroAri {
 	}
 
 	function fetch_array ($data) {
-
 		return(($data) ? sqlite_fetch_array($data) : false);
 	}
 
 	function rowid() {
-
 		return(sqlite_last_insert_rowid($this->db));
 	}
 
 	function column_type ($data) {
-
 		return(($data) ? sqlite_fetch_column_types($data, $this->db) : false);
 	}
 
-	function num_rows($data)
-	{
+	function num_rows ($data) {
 		return(($data) ? sqlite_num_rows($data) : false);
 	}
 
