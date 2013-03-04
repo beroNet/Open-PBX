@@ -90,6 +90,8 @@ class lang {
 		$this->_lang_arr['Other_Settings']			= 'Andere Einstellungen';
 		$this->_lang_arr['DISA']				= 'DISA';
 		$this->_lang_arr['Language']				= 'Sprache';
+		$this->_lang_arr['Off']					= 'Aus';
+		$this->_lang_arr['Phone_Number']			= 'Telefonnummer';
 
 		$this->_lang_arr['save']				= 'speichern';
 		$this->_lang_arr['reset']				= 'zurücksetzen';
@@ -218,6 +220,23 @@ class lang {
 		$this->_lang_arr['popup_users_table_title_group_add']	= 'Gruppe Hinzufügen';
 		$this->_lang_arr['popup_users_table_title_group_modify']= 'Gruppe Ändern';
 		$this->_lang_arr['popup_users_voicemail_note']		= "Um den Anrufbeantworter zu nutzen, konfigurieren Sie bitte einen SMTP-Server unter 'Verwaltung -> E-Mail Einstellungen'.";
+
+		# Snom XML Buttons
+		$this->_lang_arr['snomxml_button_main']			= 'Haupt';
+		$this->_lang_arr['snomxml_button_back']			= '<<';
+		$this->_lang_arr['snomxml_button_exit']			= 'Ende';
+
+		# Snom XML Menu: Main
+		$this->_lang_arr['snomxml_main_menu']			= 'OpenPBX Hauptmenü';
+		$this->_lang_arr['snomxml_call_diversion']		= 'Anrufumleitung';
+
+		# Snom XML Menu: Call Diversion
+		$this->_lang_arr['snomxml_all_calls']			= 'Alle Anrufe';
+		$this->_lang_arr['snomxml_line_busy']			= 'Besetzt';
+		$this->_lang_arr['snomxml_not_available']		= 'Nicht Verfügbar';
+		$this->_lang_arr['snomxml_diversion_all_calls']		= 'Umleitung bei Alle Anrufe';
+		$this->_lang_arr['snomxml_diversion_line_busy']		= 'Umleitung wenn Besetzt';
+		$this->_lang_arr['snomxml_diversion_not_available']	= 'Umleitung wenn Nicht Verfügbar';
 	}
 
 	public function get ($fieldname) {
