@@ -186,6 +186,7 @@ class MainModule {
 						"s.name AS name," .
 						"s.voicemail AS voicemail," .
 						"s.mail AS mail," .
+						"s.language AS language," .
 						"e.extension AS extension " .
 					"FROM " .
 						"sip_users AS s," .

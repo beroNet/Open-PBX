@@ -87,6 +87,7 @@ class lang {
 		$this->_lang_arr['Devices']				= 'Devices';
 		$this->_lang_arr['Other_Settings']			= 'Other Settings';
 		$this->_lang_arr['DISA']				= 'DISA';
+		$this->_lang_arr['Language']				= 'Language';
 
 		$this->_lang_arr['save']				= 'save';
 		$this->_lang_arr['reset']				= 'reset';

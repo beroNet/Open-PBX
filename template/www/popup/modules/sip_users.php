@@ -131,6 +131,7 @@ class PopupModule {
 					"password = '" .	$_POST['password']	. "', " .
 					"voicemail = '" .	$voicemail		. "', " .
 					"mail = '" .		$_POST['mail']		. "', " .
+					"language = '" .	$_POST['language']	. "', " .
 					"details = '" .		$_POST['details']	. "' "  .
 				"WHERE " .
 					"id = '" . $_POST['id_upd'] . "'");
@@ -165,12 +166,13 @@ class PopupModule {
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
 
-		$ba->insert_("INSERT INTO sip_users (name, extension, password, voicemail, mail, details) VALUES ('" .
+		$ba->insert_("INSERT INTO sip_users (name, extension, password, voicemail, mail, language, details) VALUES ('" .
 						$_POST['name']		. "','" .
 						$extension_id		. "','" .
 						$_POST['password']	. "','" .
 						$mailbox		. "','" .
 						$_POST['mail']		. "','" .
+						$_POST['language']	. "','" .
 						$_POST['details']	. "')");
 
 		$id = sqlite_last_insert_rowid($ba->db);
@@ -331,6 +333,26 @@ class PopupModule {
 		return($ret);
 	}
 
+	private function _display_language ($ba, $user_lang) {
+
+		$pre = "\t\t\t\t";
+		$ret = $pre . "<select name=\"language\">\n" ;
+
+		if ($handle = opendir(BAF_APP_WWW . '/includes/lang/')) {
+			while (($file = readdir($handle)) !== false) {
+				if ($file == '.' || $file == '..') {
+					continue;
+				}
+				$lang_code = str_ireplace('.php', '', $file);
+				$ret .= $pre . "\t<option value=\"" . $lang_code . "\"" . (($lang_code == $user_lang) ? ' selected' : '') . ">" . $lang_code . "</option>\n";
+			}
+		}
+
+		$ret .= $pre . "</select>\n";
+
+		return($ret);
+	}
+
 	private function _display_user ($ba) {
 
 		if (isset($_GET['id'])) {
@@ -340,6 +362,7 @@ class PopupModule {
 							"s.password AS password," .
 							"s.voicemail AS voicemail," .
 							"s.mail AS mail," .
+							"s.language AS language," .
 							"s.details AS details," .
 							"e.extension AS extension " .
 						"FROM " .
@@ -377,6 +400,12 @@ class PopupModule {
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			$this-> _display_voicemail($ba, $entry) .
+			"\t\t<tr class=\"sub_head\">\n" .
+			"\t\t\t<td>" . $this->_lang->get('Language') . "</td>\n" .
+			"\t\t\t<td colspan=\"3\">\n" .
+			$this->_display_language($ba, $entry['language']) .
+			"\t\t\t</td>\n" .
+			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
 			"\t\t\t<td>" . $this->_lang->get('Devices') . "</td>\n" .
 			"\t\t\t<td class=\"swap_group\">\n" .
