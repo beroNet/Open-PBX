@@ -84,18 +84,16 @@ function phone_rem ($ba, $mac) {
 function phone_chk ($ba, $mac) {
 
 	$query = $ba->select("SELECT enabled FROM phone_pnp_managed WHERE id = 0");
-	$entry = $ba->fetch_array($query);
-
-	if ($entry['enabled'] == 1) {
+	if ($ba->fetch_single($query) == 1) {
 		return('1');
 	}
+	unset($query);
 
 	$query = $ba->select("SELECT enabled FROM phone_pnp_managed WHERE mac = '" . $mac . "'");
-	$entry = $ba->fetch_array($query);
-
-	if ($entry['enabled'] == 1) {
+	if ($ba->fetch_single($query) == 1) {
 		return('1');
 	}
+	unset($query);
 
 	return('0');
 }

@@ -220,6 +220,10 @@ class beroAri {
 		return(($data) ? sqlite_fetch_array($data) : false);
 	}
 
+	function fetch_single ($data) {
+		return(($data) ? sqlite_fetch_single($data) : false);
+	}
+
 	function rowid() {
 		return(sqlite_last_insert_rowid($this->db));
 	}

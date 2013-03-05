@@ -98,9 +98,7 @@ class MainModule {
 		$ba = new beroAri();
 
 		$query = $ba->select("SELECT extension FROM sip_groups WHERE id = '" . $groupid . "'");
-		$entry = $ba->fetch_array($query);
-		$extid = $entry['extension'];
-		unset($entry);
+		$extid = $ba->fetch_single($query);
 		unset($query);
 
 		$ba->delete("DELETE FROM call_rules WHERE extid = '" . $extid . "'");

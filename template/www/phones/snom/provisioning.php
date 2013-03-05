@@ -51,10 +51,8 @@ function phone_user_get ($ba, $device) {
 function phone_menukey_get ($ba, $type_id) {
 
 	$query = $ba->select("SELECT name FROM phone_types WHERE id = '" . $type_id . "'");
-	$entry = $ba->fetch_array($query);
+	$type_num = str_replace('snom', '', $ba->fetch_single($query));
 	unset($query);
-
-	$type_num = str_replace('snom', '', $entry['name']);
 
 	switch($type_num) {
 	case '300':

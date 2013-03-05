@@ -113,9 +113,7 @@ function _ext_add_section_intern ($ba, $ami) {
 function _get_user_ext_by_group_ext($ba, $extension) {
 
 	$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $extension . "' LIMIT 1");
-	$entry = $ba->fetch_array($query);
-	$ext_id = $entry['id'];
-	unset($entry);
+	$ext_id = $ba->fetch_single($query);
 	unset($query);
 
 

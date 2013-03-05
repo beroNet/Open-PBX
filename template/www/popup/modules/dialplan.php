@@ -50,25 +50,22 @@ class PopupModule {
 	private function _rules_get_action_name ($ba, $id) {
 
 		$query = $ba->select("SELECT name FROM rules_action WHERE id = '" . $id . "'");
-		$entry = $ba->fetch_array($query);
 
-		return($entry['name']);
+		return $ba->fetch_single($query);
 	}
 
 	private function _rules_get_action_id ($ba, $name) {
 
 		$query = $ba->select("SELECT id FROM rules_action WHERE name = '" . $name . "'");
-		$entry = $ba->fetch_array($query);
 
-		return($entry['id']);
+		return $ba->fetch_single($query);
 	}
 
 	private function _execute_rules_get_type ($ba, $type) {
 
 		$query = $ba->select("SELECT id FROM rules_type WHERE name = '" . $type . "'");
-		$entry = $ba->fetch_array($query);
 
-		return($entry['id']);
+		return $ba->fetch_single($query);
 	}
 
 	private function _execute_rules ($ba, $mode) {

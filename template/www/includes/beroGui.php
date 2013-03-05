@@ -60,7 +60,7 @@ Class beroGui {
 
 		# check if there is something to be activated
 		$query = $ba->select("SELECT option FROM activate WHERE id = 'activate'");
-		$entry = $ba->fetch_array($query);
+		$option = $ba->fetch_single($query);
 		unset($query);
 
 		$ret =	"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n" .
@@ -78,7 +78,7 @@ Class beroGui {
 			"\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" . BAF_URL_BASE . "/css/beroGui_forms.css\" />\n" .
 			"\t\t<script type=\"text/javascript\" src=\"" . BAF_URL_BASE . "/js/beroGui.js\"></script>\n" .
 			"\t</head>\n" .
-			"\t<body onload=\"paint_apply_button('" . $entry['option'] . "','" . $mod->getName() . "','" . $this->_lang->get('menu_activate_button') . "','" .
+			"\t<body onload=\"paint_apply_button('" . $option . "','" . $mod->getName() . "','" . $this->_lang->get('menu_activate_button') . "','" .
 											$this->_lang->get('menu_activate_green'). "','" . $this->_lang->get('menu_activate_red') . "');\">\n" .
 			"\t\t<div id=\"body_frame\">\n" .
 			"\t\t\t<div id=\"body_frame_top\">\n" .

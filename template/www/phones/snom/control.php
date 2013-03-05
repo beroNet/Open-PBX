@@ -43,10 +43,8 @@ if (!empty($_GET['id'])) {
 	$ba = new beroAri();
 
 	$query = $ba->select("SELECT ipaddr FROM phone_devices WHERE id = '" . $_GET['id'] . "'");
-	$entry = $ba->fetch_array($query);
-	$url = 'http://' . $entry['ipaddr'] . '/advanced_update.htm';
+	$url = 'http://' . $ba->fetch_single($query) . '/advanced_update.htm';
 	unset($query);
-	unset($entry);
 
 	snom_phone_ctrl($url, $_GET['action']);
 }

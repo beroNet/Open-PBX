@@ -77,11 +77,9 @@ class MainModule {
 	private function _execute_move ($ba, $id, $typeid, $dir) {
 
 		$query = $ba->select("SELECT position FROM call_rules WHERE id = '" . $id . "'");
-		$entry = $ba->fetch_array($query);
-		$cur_pos = $entry['position'];
+		$cur_pos = $ba->fetch_single($query);
 		$new_pos = (($dir == 'down') ? $cur_pos + 1 : (($cur_pos > 1) ? $cur_pos - 1 : 1));
 		unset($query);
-		unset($entry);
 
 		$ba->update("UPDATE call_rules SET position = '" . $cur_pos . "' WHERE position = '" . $new_pos . "' AND typeid = '" . $typeid . "'");
 		$ba->update("UPDATE call_rules SET position = '" . $new_pos . "' WHERE id = '" . $id . "'");
@@ -167,8 +165,7 @@ class MainModule {
 	private function _check_extensions ($ba) {
 
 		$query = $ba->select("SELECT COUNT(id) AS ext_count FROM sip_extensions");
-		$entry = $ba->fetch_array($query);
-		if ($entry['ext_count'] > 1) {
+		if ($ba->fetch_single($query) > 1) {
 			return(true);
 		}
 

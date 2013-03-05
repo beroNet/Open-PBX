@@ -99,9 +99,8 @@ class PopupModule {
 		}
 
 		$query = $ba->select("SELECT extension FROM sip_" . $type_str . " WHERE id = '" . $id . "'");
-		$entry = $ba->fetch_array($query);
 
-		return($entry['extension']);
+		return $ba->fetch_single($query) ;
 	}
 
 	private function _execute_sip_user_update ($ba) {
