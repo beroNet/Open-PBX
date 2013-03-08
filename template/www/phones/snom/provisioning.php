@@ -3,6 +3,12 @@
 include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/includes/database.php');
 
+header('Content-Type: application/xml; charset=utf-8');
+header('Expires: 0');
+header('Pragma: no-cache');
+header('Cache-Control: private, no-cache, must-revalidate');
+header('Vary: *');
+
 function phone_siphost_get () {
 
 	// get port asterisk is listening on
