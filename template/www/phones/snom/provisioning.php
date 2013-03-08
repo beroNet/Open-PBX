@@ -9,6 +9,15 @@ header('Pragma: no-cache');
 header('Cache-Control: private, no-cache, must-revalidate');
 header('Vary: *');
 
+function phone_error () {
+	ob_end_clean();
+	ob_start();
+	header('Content-Type: text/plain; charset=utf-8');
+	echo '<!-- // Error // -->' . "\n";
+	ob_end_flush();
+	exit(1);
+}
+
 function phone_siphost_get () {
 
 	// get port asterisk is listening on
@@ -95,15 +104,21 @@ $base_tmpl =	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n\n" .
 		"\t</dialplan>\n" .
 		"</settings>\n";
 
-// if MAC address is not set, return empty settings
-if (!isset($_GET['mac'])) {
-	echo $base_tmpl;
-	exit();
+
+$mac = preg_replace('/[^0-9a-f]/', '', strtolower($_REQUEST['mac']));
+if (strlen($mac) !== 12) {
+	phone_error();
 }
+if (substr($mac,0,6) !== '000413') {
+	phone_error();
+}
+
+
+ob_start();
 
 $ba = new beroAri();
 
-$query = $ba->select("SELECT path FROM phone_templates WHERE id = (SELECT tmplid FROM phone_devices WHERE macaddr = '" . $_GET['mac'] . "')");
+$query = $ba->select("SELECT path FROM phone_templates WHERE id = (SELECT tmplid FROM phone_devices WHERE macaddr = '" . $mac . "')");
 $dev_tmpl = $ba->fetch_array($query);
 
 if (empty($dev_tmpl)) {
@@ -159,13 +174,13 @@ foreach (file($dev_tmpl['path']) as $line) {
 }
 
 // get device users configuration
-$query = $ba->select("SELECT * FROM phone_devices WHERE macaddr = '" . $_GET['mac'] . "'");
+$query = $ba->select("SELECT * FROM phone_devices WHERE macaddr = '" . $mac . "'");
 if (($entry = $ba->fetch_array($query))) {
 	$phone_user_conf = phone_user_get($ba, $entry);
 	$phone_menu_fkey = phone_menukey_get($ba, $entry['typeid']);
 }
 
-echo	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n\n" .
+echo	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" .
 	"<settings>\n" .
 	"\t<phone-settings>\n" .
 	$phone_settings .
@@ -182,4 +197,11 @@ echo	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n\n" .
 	$dialplan .
 	"\t</dialplan>\n" .
 	"</settings>\n";
+
+
+if (! headers_sent()) {
+	header('Content-Length: '. (int)ob_get_length());
+}
+ob_end_flush();
+
 ?>
