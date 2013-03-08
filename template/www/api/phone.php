@@ -137,6 +137,6 @@ function phone ($action, $type, $mac, $ip) {
 	return('ERROR: unknown action');
 }
 
-echo phone($_GET['action'], $_GET['type'], $_GET['mac'], $_GET['ip']);
+echo phone($_GET['action'], $_GET['type'], strtolower($_GET['mac']), $_GET['ip']);
 
 ?>

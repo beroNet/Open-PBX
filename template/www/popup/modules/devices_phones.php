@@ -39,7 +39,7 @@ class PopupModule {
 				"SET " .
 					"name = '" .		$_POST['name']		. "'," .
 					"ipaddr = '" .		$_POST['ip']		. "'," .
-					"macaddr = '" .		$_POST['mac']		. "'," .
+					"macaddr = '" .		strtolower($_POST['mac'])		. "'," .
 					"typeid = '" .		$_POST['type']		. "'," .
 					"tmplid = '" .		$_POST['template']	. "' " .
 				"WHERE " .
@@ -72,7 +72,7 @@ class PopupModule {
 					$_POST['name'] . "', '" .
 					$_POST['type'] . "', '" .
 					$_POST['ip'] . "', '" .
-					$_POST['mac'] . "', '" .
+					strtolower($_POST['mac']) . "', '" .
 					$_POST['template'] . "')");
 
 		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
