@@ -65,9 +65,7 @@ function phone_user_get ($ba, $device) {
 
 function phone_menukey_get ($ba, $type_id) {
 
-	$query = $ba->select("SELECT name FROM phone_types WHERE id = '" . $type_id . "'");
-	$type_num = str_replace('snom', '', $ba->fetch_single($query));
-	unset($query);
+	$type_num = str_replace('snom', '', $ba->fetch_single($ba->select("SELECT name FROM phone_types WHERE id = '" . $type_id . "'")));
 
 	switch($type_num) {
 	case '300':
@@ -118,17 +116,16 @@ ob_start();
 
 $ba = new beroAri();
 
-$query = $ba->select("SELECT path FROM phone_templates WHERE id = (SELECT tmplid FROM phone_devices WHERE macaddr = '" . $mac . "')");
-$dev_tmpl = $ba->fetch_array($query);
+$dev_tmpl_path = $ba->fetch_single($ba->select("SELECT path FROM phone_templates WHERE id = (SELECT tmplid FROM phone_devices WHERE macaddr = '" . $mac . "')"));
 
-if (empty($dev_tmpl)) {
+if (empty($dev_tmpl_path)) {
 	echo $base_tmpl;
 	exit();
 }
 
 
 $mode = 'none';
-foreach (file($dev_tmpl['path']) as $line) {
+foreach (file($dev_tmpl_path) as $line) {
 
 	switch (trim($line, "\t\r\n ")) {
 	case '<phone-settings>':
