@@ -34,6 +34,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 					"s.password AS password," .
 					"s.registrar AS registrar," .
 					"s.proxy AS proxy," .
+					"s.details AS details," .
 					"d.name AS dtmfmode " .
 				"FROM " .
 					"sip_trunks AS s," .
@@ -76,6 +77,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 					"u.name AS name," .
 					"u.password AS password," .
 					"u.voicemail AS voicemail," .
+					"u.details AS details," .
 					"e.extension AS extension " .
 				"FROM " .
 					"sip_users AS u," .
@@ -99,6 +101,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 				"nat = no\n" .
 				"canreinvite = no\n" .
 				"call-limit = 2\n" .
+				((!empty($entry['details'])) ? $entry['details'] : '') .
 				"\n";
 
 		foreach (array('CFWD','CFB','CFU') as $fwd_type) {
