@@ -240,7 +240,7 @@ function _ext_add_section_inbound ($ba, $type) {
 			$last_trunk = $entry['trunk'];
 		}
 
-		$number = (($entry['action_1'] != '*') ? $entry['action_1'] : 's') . (($entry['number'] != '*') ? '/' . $entry['number'] : '');
+		$number = (($entry['number'] != '*') ? $entry['number'] : 's') . (($entry['action_1'] != '*') ? '/' . $entry['action_1'] : '');
 
 		if ($number != $last_number) {
 			$pos = '1';
