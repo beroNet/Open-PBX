@@ -1,29 +1,72 @@
 <?php
 
 include('/apps/OpenPBX/www/includes/variables.php');
-include(BAF_APP_WWW . '/phones/snom/menu/functions.php');
+include(BAF_APP_WWW . '/includes/database.php');
+include(BAF_APP_WWW . '/includes/amifunc.php');
 include(BAF_APP_WWW . '/phones/snom/menu/xml_browser_func.php');
 
-$url_base = 'http://' . $_SERVER['SERVER_NAME'] . BAF_URL_BASE . '/phones/snom/menu/index.php';
 
-$extension = get_extension_by_ip($_SERVER['REMOTE_ADDR']);
+function _err ($msg='') {
+	ob_end_clean();
+	ob_start();
 
-# get the language the user has configured
-$user_lang = get_language_by_extension($extension);
+	$softkeys = new SnomIPPhoneSoftkeys();
+	$softkeys->addAction('F4', 'F_ABORT', 'Exit');
+	$softkeys->addAction('Cancel', 'F_ABORT');
+
+	$snom_xml = new SnomIPPhoneText();
+	$snom_xml->setSoftkeys($softkeys);
+	$snom_xml->setTitle('Error');
+	$snom_xml->setText('Error: '. $msg);
+	$snom_xml->setFetch('3000', 'F_ABORT');
+	$snom_xml->show();
+
+	ob_end_flush();
+	exit();
+}
+
+
+ob_start();
+
+
+# connect database
+#
+$ba = new beroAri();
+
+
+# get user_id
+#
+$user_id = (int)$ba->fetch_single($ba->select('SELECT u.id FROM sip_users AS u, phone_devices AS d WHERE u.id = d.userid AND d.ipaddr = \''. $_SERVER['REMOTE_ADDR'] .'\''));
+if ($user_id < 1) {
+	_err('Unknown user.');
+}
+
+
+# get and set user language
+#
+$user_lang = $ba->fetch_single($ba->select('SELECT language FROM sip_users WHERE id = '. $user_id));
 include(BAF_APP_WWW . '/includes/lang/' . $user_lang . '.php');
 unset($user_lang);
 $lang = new lang();
 
-// add softkeys for main-menu and exit on all pages
+
+$url_base = 'http://' . $_SERVER['SERVER_NAME'] . BAF_URL_BASE . '/phones/snom/menu/index.php';
+
+
+# softkeys for main-menu and exit on all pages
+#
 $softkeys = new SnomIPPhoneSoftkeys();
 $softkeys->addURL('F1', $url_base, $lang->get('snomxml_button_main'));
 $softkeys->addAction('F4', 'F_ABORT', $lang->get('snomxml_button_exit'));
+
 
 $page = trim($_REQUEST['page']);
 if (! in_array($page, array('call_diversion'))) {
 	$page = false;
 }
 
+
+#################################### Main {
 if (!$page) {
 
 	$snom_xml = new SnomIPPhoneMenu();
@@ -32,7 +75,12 @@ if (!$page) {
 
 	$softkeys->addAction('Cancel', 'F_ABORT');
 
-} elseif ($page === 'call_diversion') {
+}
+#################################### Main }
+
+
+#################################### Call Diversion {
+elseif ($page === 'call_diversion') {
 
 	// CFWD = All Calls
 	// CFB  = Line Busy
@@ -62,8 +110,22 @@ if (!$page) {
 
 		$number = trim($_REQUEST['number']);
 
-		$extension = get_extension_by_ip($_SERVER['REMOTE_ADDR']);
-		$fwd_tgt = get_number_by_extension($extension, $type);
+		# get user extension
+		#
+		$extension = $ba->fetch_single($ba->select('SELECT e.extension FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND u.id = '. $user_id));
+
+		# get current forward target
+		#
+		$ami = new AsteriskManager();
+		$ami->connect();
+		$res = $ami->DBGet($type, $extension);
+		if ($res['Response'] == 'Success' && isset($res['Val'])) {
+			$fwd_tgt = $res['Val'];
+		} else {
+			$fwd_tgt = '';
+		}
+		unset($res);
+
 
 		if (!$busy) {
 
@@ -79,9 +141,12 @@ if (!$page) {
 
 			$snom_xml->add($lang->get('Off'), $url_base . '?page=call_diversion&type=' . $type . '&busy=off');
 			$snom_xml->add($lang->get('Phone_Number'), $url_base . '?page=call_diversion&type=' . $type . '&busy=number');
-			if (get_has_mailbox_by_extension($extension)) {
+
+			$entry = $ba->fetch_array($ba->select('SELECT voicemail, mail FROM sip_users WHERE id = '. $user_id));
+			if ($entry['voicemail'] == 1 && strlen($entry['mail']) > 0) {
 				$snom_xml->add($lang->get('Voicemail'), $url_base . '?page=call_diversion&type=' . $type . '&busy=vb');
 			}
+			unset($entry);
 
 			if ($fwd_tgt == 'vb') {
 				$snom_xml->select($lang->get('Voicemail'));
@@ -123,14 +188,15 @@ if (!$page) {
 				$snom_xml->setTitle($lang->get('snomxml_diversion_not_available'));
 			}
 
+			$ami->DBDel($type, $extension);
 			if ($busy == 'off') {
-				set_forwarding_by_extension($extension, $type, '0');
+				$ami->DBPut($type, $extension, '0');
 				$snom_xml->setText('-> ' . $lang->get('disabled'));
 			} elseif ($busy == 'vb') {
-				set_forwarding_by_extension($extension, $type, 'vb');
+				$ami->DBPut($type, $extension, 'vb');
 				$snom_xml->setText('-> ' . $lang->get('Voicemail'));
 			} elseif ($busy == 'number') {
-				set_forwarding_by_extension($extension, $type, $number);
+				$ami->DBPut($type, $extension, $number);
 				$snom_xml->setText('-> ' . $number);
 			}
 
@@ -140,12 +206,18 @@ if (!$page) {
 			$softkeys->addURL('Cancel', $url_back);
 
 		}
+		$ami->Logout();
+		unset($ami);
+
 	}
 }
+#################################### Call Diversion }
 
 
 $snom_xml->setSoftkeys($softkeys);
 
 $snom_xml->show();
+
+ob_end_flush();
 
 ?>
