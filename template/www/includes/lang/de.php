@@ -160,6 +160,7 @@ class lang {
 		$this->_lang_arr['users_table_users_button_add']	= 'SIP-Benutzer hinzufügen';
 		$this->_lang_arr['users_table_groups_head']		= 'SIP-Gruppen';
 		$this->_lang_arr['users_table_groups_button_add']	= 'SIP-Gruppe hinzufügen';
+		$this->_lang_arr['send_from_user']			= 'Sende \'fromuser\'';
 
 		# page Devices -> Phones
 		$this->_lang_arr['phones_table_users_head']		= 'SIP-Telefone';

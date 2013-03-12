@@ -162,7 +162,7 @@ class MainModule {
 		$cols =	"\t<tr class=\"sub_head\">\n";
 		foreach ($ba->column_type('sip_users') as $column => $type) {
 
-			if (($column == 'id') || ($column == 'password') || ($column == 'details')) {
+			if (($column == 'id') || ($column == 'password') || ($column == 'details') || ($column == 'send_from_user')) {
 				continue;
 			}
 

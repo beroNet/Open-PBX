@@ -124,11 +124,13 @@ class PopupModule {
 		$ba->update("UPDATE sip_extensions SET extension = '" . $_POST['extension'] . "' WHERE id = '" . $extension_id . "'");
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
+		$from_user = ((isset($_POST['send_from_user'])) ? '1' : '0');
 
 		$ba->update("UPDATE sip_users SET " .
 					"name = '" .		$_POST['name']		. "', " .
 					"password = '" .	$_POST['password']	. "', " .
 					"voicemail = '" .	$voicemail		. "', " .
+					"send_from_user = '" .	$from_user		. "', " .
 					"mail = '" .		$_POST['mail']		. "', " .
 					"language = '" .	$_POST['language']	. "', " .
 					"details = '" .		$_POST['details']	. "' "  .
@@ -164,12 +166,14 @@ class PopupModule {
 		$extension_id = sqlite_last_insert_rowid($ba->db);
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
+		$from_user = ((isset($_POST['send_from_user'])) ? '1' : '0');
 
-		$ba->insert_("INSERT INTO sip_users (name, extension, password, voicemail, mail, language, details) VALUES ('" .
+		$ba->insert_("INSERT INTO sip_users (name, extension, password, voicemail, send_from_user, mail, language, details) VALUES ('" .
 						$_POST['name']		. "','" .
 						$extension_id		. "','" .
 						$_POST['password']	. "','" .
 						$mailbox		. "','" .
+						$from_user		. "','" .
 						$_POST['mail']		. "','" .
 						$_POST['language']	. "','" .
 						$_POST['details']	. "')");
@@ -360,6 +364,7 @@ class PopupModule {
 							"s.name AS name," .
 							"s.password AS password," .
 							"s.voicemail AS voicemail," .
+							"s.send_from_user AS send_from_user," .
 							"s.mail AS mail," .
 							"s.language AS language," .
 							"s.details AS details," .
@@ -396,6 +401,12 @@ class PopupModule {
 			"\t\t\t<td>" . $this->_lang->get('Password') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"password\" class=\"fill\" name=\"password\" value=\"" . $entry['password'] . "\" />\n" .
+			"\t\t\t</td>\n" .
+			"\t\t</tr>\n" .
+			"\t\t<tr class=\"sub_head\">\n" .
+			"\t\t\t<td>" . $this->_lang->get('send_from_user') . "</td>\n" .
+			"\t\t\t<td colspan=\"3\">\n" .
+			"\t\t\t\t<input type=\"checkbox\" class=\"fill\" name=\"send_from_user\" value=\"1\"" . (($entry['send_from_user'] == 0) ? '' : " checked=\"checked\"") . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			$this-> _display_voicemail($ba, $entry) .
