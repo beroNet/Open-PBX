@@ -96,7 +96,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 				"secret = " . $entry['password'] . "\n" .
 				"callerid = \"" . $entry['name'] . "\" <" . $entry['extension'] . ">\n" .
 				(($entry['voicemail'] == 1) ? "mailbox = " . $entry['extension'] . "\n" : '') .
-				(($entry['send_from_user'] == 1) ? "fromuser = " . $entry['name'] . "\n" : '') .
+				(($entry['send_from_user'] == 1) ? "fromuser = " . $entry['extension'] . "\n" : '') .
 				"dtmfmode = rfc2833\n" .
 				"disallow = all\n" .
 				"allow = alaw\n" .
