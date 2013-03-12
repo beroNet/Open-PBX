@@ -9,7 +9,7 @@ function create_mailbox_OpenPBX ($ba, $ami) {
 	$cont = "[default]\n";
 
 	// user voicemail
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"s.name AS name," .
 					"s.password AS password," .
 					"s.mail AS mail," .
@@ -31,7 +31,7 @@ function create_mailbox_OpenPBX ($ba, $ami) {
 	unset($query);
 
 	// group voicemail
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"s.name AS name," .
 					"s.mail AS mail," .
 					"e.extension AS extension " .
@@ -59,7 +59,7 @@ function create_mailbox ($ba) {
 
 	$fn = BAF_APP_AST_CFG . '/voicemail.conf';
 
-	$query = $ba->select("SELECT smtp_from FROM mail_settings WHERE id = 1;");
+	$query = $ba->query("SELECT smtp_from FROM mail_settings WHERE id = 1;");
 	$entry = $ba->fetch_array($query);
 	unset($query);
 

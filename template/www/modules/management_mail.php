@@ -24,7 +24,7 @@ class MainModule {
 	private function _execute_save_db() {
 		$ba = new beroAri();
 
-		$ba->update("UPDATE mail_settings SET " .
+		$ba->query("UPDATE mail_settings SET " .
 					"smtp_host = '" . $_POST['smtp_host'] . "'," .
 					"smtp_port = '" . $_POST['smtp_port'] . "'," .
 					"smtp_user = '" . $_POST['smtp_user'] . "'," .
@@ -32,7 +32,7 @@ class MainModule {
 					"smtp_from = '" . $_POST['smtp_from'] . "' " .
 				"WHERE id = 1;");
 
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1;");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1;");
 	}
 
 	private function _execute_save_file() {
@@ -78,7 +78,7 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT * FROM mail_settings WHERE id = 1;");
+		$query = $ba->query("SELECT * FROM mail_settings WHERE id = 1;");
 		$entry = $ba->fetch_array($query);
 		unset($query);
 

@@ -67,7 +67,7 @@ class MainModule {
 		$ba = new beroAri();
 
 		$user = array();
-		$query = $ba->select('SELECT e.extension AS extension FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id');
+		$query = $ba->query('SELECT e.extension AS extension FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id');
 		while ($entry = $ba->fetch_array($query)) {
 			$user[] = $entry['extension'];
 		}

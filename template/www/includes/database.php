@@ -206,10 +206,10 @@ class beroAri {
 		return($this->query_gen($sql, 'query'));
 	}
 
-	function dbquery ($sql) {
+	function query_array ($sql) {
 
 		if (!($ok = sqlite_array_query($this->db, $sql))) {
-			$this->err = "Query_Array() failed: " . sqlite_error_string(sqlite_last_error($this->db));
+			$this->err = "query_array() failed: " . sqlite_error_string(sqlite_last_error($this->db));
 			return false;
 		}
 

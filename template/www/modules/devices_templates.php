@@ -54,7 +54,7 @@ class MainModule {
 		$cols .=	"\t\t<th></th>\n" .
 				"\t</tr>\n";
 
-		$query = $ba->dbquery('SELECT id, name, description FROM phone_templates ORDER BY name ASC');
+		$query = $ba->query_array('SELECT id, name, description FROM phone_templates ORDER BY name ASC');
 		foreach ($query as $entry) {
 			$rows .= "\t<tr>\n";
 			foreach ($col_names as $col_name) {
@@ -75,14 +75,14 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT path, readonly FROM phone_templates WHERE id = '" . $id . "'");
+		$query = $ba->query("SELECT path, readonly FROM phone_templates WHERE id = '" . $id . "'");
 		$entry = $ba->fetch_array($query);
 		if ($entry['readonly'] != '1') {
 			unlink($entry['path']);
 			unset($query);
 			unset($entry);
 
-			$ba->delete("DELETE FROM phone_templates WHERE id = '" . $id . "'");
+			$ba->query("DELETE FROM phone_templates WHERE id = '" . $id . "'");
 		}
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");

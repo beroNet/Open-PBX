@@ -64,7 +64,7 @@ class PopupModule {
 
 	private function _execute_return ($ba) {
 
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		if ($ba->is_error()) {
 			$ret = "<script>alert(" . $ba->error() . ");</script>\n";
@@ -78,11 +78,11 @@ class PopupModule {
 
 	private function _execute_sip_phone_update ($ba, $userid, $phones) {
 
-		$ba->update("UPDATE phone_devices SET userid = '0' WHERE userid = '" . $userid . "'");
+		$ba->query("UPDATE phone_devices SET userid = '0' WHERE userid = '" . $userid . "'");
 
 		if (!empty($phones)) {
 			foreach ($phones as $phoneid) {
-				$ba->update("UPDATE phone_devices SET userid = '" . $userid . "' WHERE id = '" . $phoneid . "'");
+				$ba->query("UPDATE phone_devices SET userid = '" . $userid . "' WHERE id = '" . $phoneid . "'");
 			}
 		}
 	}
@@ -98,7 +98,7 @@ class PopupModule {
 			break;
 		}
 
-		$query = $ba->select("SELECT extension FROM sip_" . $type_str . " WHERE id = '" . $id . "'");
+		$query = $ba->query("SELECT extension FROM sip_" . $type_str . " WHERE id = '" . $id . "'");
 
 		return $ba->fetch_single($query) ;
 	}
@@ -106,7 +106,7 @@ class PopupModule {
 	private function _execute_sip_user_update ($ba) {
 
 		// check if user name does not belong to another user
-		$query = $ba->select("SELECT * FROM sip_users WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT * FROM sip_users WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
@@ -114,19 +114,19 @@ class PopupModule {
 
 		// check if extension does not belong to another user
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'user');
-		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
+		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// update data
-		$ba->update("UPDATE sip_extensions SET extension = '" . $_POST['extension'] . "' WHERE id = '" . $extension_id . "'");
+		$ba->query("UPDATE sip_extensions SET extension = '" . $_POST['extension'] . "' WHERE id = '" . $extension_id . "'");
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
 		$from_user = ((isset($_POST['send_from_user'])) ? '1' : '0');
 
-		$ba->update("UPDATE sip_users SET " .
+		$ba->query("UPDATE sip_users SET " .
 					"name = '" .		$_POST['name']		. "', " .
 					"password = '" .	$_POST['password']	. "', " .
 					"voicemail = '" .	$voicemail		. "', " .
@@ -148,27 +148,27 @@ class PopupModule {
 		}
 
 		// check if user name does not belong to another user
-		$query = $ba->select("SELECT name FROM sip_users WHERE name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT name FROM sip_users WHERE name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
-		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
+		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// update data
-		$ba->insert_("INSERT INTO sip_extensions (extension) VALUES ('" . $_POST['extension'] . "')");
+		$ba->query("INSERT INTO sip_extensions (extension) VALUES ('" . $_POST['extension'] . "')");
 		$extension_id = sqlite_last_insert_rowid($ba->db);
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
 		$from_user = ((isset($_POST['send_from_user'])) ? '1' : '0');
 
-		$ba->insert_("INSERT INTO sip_users (name, extension, password, voicemail, send_from_user, mail, language, details) VALUES ('" .
+		$ba->query("INSERT INTO sip_users (name, extension, password, voicemail, send_from_user, mail, language, details) VALUES ('" .
 						$_POST['name']		. "','" .
 						$extension_id		. "','" .
 						$_POST['password']	. "','" .
@@ -187,11 +187,11 @@ class PopupModule {
 
 	private function _execute_sip_rel_update($ba, $groupid, $members) {
 
-		$ba->delete("DELETE FROM sip_rel_user_group WHERE groupid = '" . $groupid . "'");
+		$ba->query("DELETE FROM sip_rel_user_group WHERE groupid = '" . $groupid . "'");
 
 		if (!empty($members)) {
 			foreach ($members as $userid) {
-				$ba->insert_("INSERT INTO sip_rel_user_group (groupid, userid) VALUES ('" .
+				$ba->query("INSERT INTO sip_rel_user_group (groupid, userid) VALUES ('" .
 							$groupid		. "','" .
 							$userid			. "')");
 			}
@@ -204,26 +204,26 @@ class PopupModule {
 			return("<script>window.history.back(); alert('Please fill out the form completely.')</script>\n");
 		}
 
-		$query = $ba->select("SELECT id FROM sip_groups WHERE name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT id FROM sip_groups WHERE name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
-		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
+		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// update data
-		$ba->insert_("INSERT INTO sip_extensions (extension) VALUES ('" . $_POST['extension'] . "')");
+		$ba->query("INSERT INTO sip_extensions (extension) VALUES ('" . $_POST['extension'] . "')");
 		$extension_id = sqlite_last_insert_rowid($ba->db);
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
 
-		$ba->insert_("INSERT INTO sip_groups (name, extension, voicemail, mail, description) VALUES ('" .
+		$ba->query("INSERT INTO sip_groups (name, extension, voicemail, mail, description) VALUES ('" .
 							$_POST['name']		. "','" .
 							$extension_id		. "','" .
 							$voicemail		. "','" .
@@ -239,7 +239,7 @@ class PopupModule {
 
 	private function _execute_sip_group_update($ba) {
 
-		$query = $ba->select("SELECT id FROM sip_groups WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT id FROM sip_groups WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
@@ -247,18 +247,18 @@ class PopupModule {
 
 		// check if extensions does not belong to another user/group
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'group');
-		$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
+		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
 		// update data
-		$ba->update("UPDATE sip_extensions SET extension = '" . $_POST['extension'] . "' WHERE id = '" . $extension_id . "'");
+		$ba->query("UPDATE sip_extensions SET extension = '" . $_POST['extension'] . "' WHERE id = '" . $extension_id . "'");
 
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
 
-		$ba->update("UPDATE sip_groups SET " .
+		$ba->query("UPDATE sip_groups SET " .
 					"name = '" .		$_POST['name']		. "', " .
 					"voicemail = '" .	$voicemail		. "', " .
 					"mail = '" .		$_POST['mail']		. "', " .
@@ -278,7 +278,7 @@ class PopupModule {
 
 		if (isset($userid)) {
 
-			$query = $ba->select("SELECT id, name FROM phone_devices WHERE userid = '" . $userid . "'");
+			$query = $ba->query("SELECT id, name FROM phone_devices WHERE userid = '" . $userid . "'");
 			while  ($entry = $ba->fetch_array($query)) {
 				$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\">" . $entry['name'] . "</option>\n";
 			}
@@ -294,7 +294,7 @@ class PopupModule {
 		$pre = "\t\t\t\t";
 		$ret = $pre . "<select multiple name=\"nodevices[]\" id=\"devices_nonsel\">\n";
 
-		$query = $ba->select("SELECT id, name FROM phone_devices WHERE userid = '0'");
+		$query = $ba->query("SELECT id, name FROM phone_devices WHERE userid = '0'");
 		while  ($entry = $ba->fetch_array($query)) {
 			$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\">" . $entry['name'] . "</option>\n";
 		}
@@ -306,7 +306,7 @@ class PopupModule {
 
 	private function _display_voicemail_configured ($ba) {
 
-		$query = $ba->select("SELECT * FROM mail_settings LIMIT 1");
+		$query = $ba->query("SELECT * FROM mail_settings LIMIT 1");
 		$entry = $ba->fetch_array($query);
 
 		return((empty($entry['smtp_host']) || empty($entry['smtp_host']) || empty($entry['smtp_user']) || empty($entry['smtp_pass'])) ? false : true);
@@ -359,7 +359,7 @@ class PopupModule {
 	private function _display_user ($ba) {
 
 		if (isset($_GET['id'])) {
-			$query = $ba->select(	"SELECT " .
+			$query = $ba->query(	"SELECT " .
 							"s.id AS id, " .
 							"s.name AS name," .
 							"s.password AS password," .
@@ -454,7 +454,7 @@ class PopupModule {
 		$ret = $pre . "<select multiple name=\"group_members[]\" id=\"members\">\n";
 
 		if (isset($group_id)) {
-			$query = $ba->select("SELECT id, name FROM sip_users WHERE id IN (SELECT userid FROM sip_rel_user_group WHERE groupid = '" . $group_id . "')");
+			$query = $ba->query("SELECT id, name FROM sip_users WHERE id IN (SELECT userid FROM sip_rel_user_group WHERE groupid = '" . $group_id . "')");
 			while ($entry = $ba->fetch_array($query)) {
 				$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\">" . $entry['name'] . "</option>\n";
 			}
@@ -470,7 +470,7 @@ class PopupModule {
 		$pre = "\t\t\t\t";
 		$ret = $pre . "<select multiple name=\"group_nomembers[]\" id=\"nomembers\">\n";
 
-		$query = $ba->select("SELECT id, name FROM sip_users WHERE id NOT IN (SELECT userid FROM sip_rel_user_group WHERE groupid = '" . $group_id . "')");
+		$query = $ba->query("SELECT id, name FROM sip_users WHERE id NOT IN (SELECT userid FROM sip_rel_user_group WHERE groupid = '" . $group_id . "')");
 		while ($entry = $ba->fetch_array($query)) {
 			$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\">" . $entry['name'] . "</option>\n";
 		}
@@ -484,7 +484,7 @@ class PopupModule {
 	private function _display_group($ba) {
 
 		if (isset($_GET['id'])) {
-			$query = $ba->select(	"SELECT " .
+			$query = $ba->query(	"SELECT " .
 							"g.id AS id," .
 							"g.name AS name," .
 							"g.voicemail AS voicemail," .

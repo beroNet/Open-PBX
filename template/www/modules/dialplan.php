@@ -52,7 +52,7 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT id, name FROM rules_type ORDER BY id ASC");
+		$query = $ba->query("SELECT id, name FROM rules_type ORDER BY id ASC");
 		while ($entry = $ba->fetch_array($query)) {
 			$ret .= (($ret == '') ? '' : "<br /><br />\n") . $this->_display_rules($ba, $entry);
 		}
@@ -62,27 +62,27 @@ class MainModule {
 
 	private function _execute_return($ba) {
 
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
 	}
 
 	private function _execute_delete ($ba, $id) {
 
-		$ba->delete("DELETE FROM call_rules WHERE id = '" . $id . "'");
+		$ba->query("DELETE FROM call_rules WHERE id = '" . $id . "'");
 
 		return($this->_execute_return($ba));
 	}
 
 	private function _execute_move ($ba, $id, $typeid, $dir) {
 
-		$query = $ba->select("SELECT position FROM call_rules WHERE id = '" . $id . "'");
+		$query = $ba->query("SELECT position FROM call_rules WHERE id = '" . $id . "'");
 		$cur_pos = $ba->fetch_single($query);
 		$new_pos = (($dir == 'down') ? $cur_pos + 1 : (($cur_pos > 1) ? $cur_pos - 1 : 1));
 		unset($query);
 
-		$ba->update("UPDATE call_rules SET position = '" . $cur_pos . "' WHERE position = '" . $new_pos . "' AND typeid = '" . $typeid . "'");
-		$ba->update("UPDATE call_rules SET position = '" . $new_pos . "' WHERE id = '" . $id . "'");
+		$ba->query("UPDATE call_rules SET position = '" . $cur_pos . "' WHERE position = '" . $new_pos . "' AND typeid = '" . $typeid . "'");
+		$ba->query("UPDATE call_rules SET position = '" . $new_pos . "' WHERE id = '" . $id . "'");
 
 		return($this->_execute_return($ba));
 	}
@@ -164,7 +164,7 @@ class MainModule {
 
 	private function _check_extensions ($ba) {
 
-		$query = $ba->select("SELECT COUNT(id) AS ext_count FROM sip_extensions");
+		$query = $ba->query("SELECT COUNT(id) AS ext_count FROM sip_extensions");
 		if ($ba->fetch_single($query) > 1) {
 			return(true);
 		}
@@ -187,7 +187,7 @@ class MainModule {
 				"\t\t</td>\n" .
 				"\t</tr>\n";
 
-		$query = $ba->select("SELECT * FROM call_rules_" . $rule_type['name']);
+		$query = $ba->query("SELECT * FROM call_rules_" . $rule_type['name']);
 		while ($entry = $ba->fetch_array($query)) {
 
 			$rows .=	"\t<tr>\n" .

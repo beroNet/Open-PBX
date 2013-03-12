@@ -62,7 +62,7 @@ class MainModule {
 				"\t\t</td>\n" .
 				"\t</tr>\n";
 
-		$query = $ba->select('SELECT * FROM phone_devices ORDER BY id ASC');
+		$query = $ba->query('SELECT * FROM phone_devices ORDER BY id ASC');
 		while ($entry = $ba->fetch_array($query)) {
 			$rows .=	"\t<tr>\n";
 
@@ -94,8 +94,8 @@ class MainModule {
 
 			$ba = new beroAri();
 
-			$ba->delete("DELETE FROM phone_devices WHERE id = '" . $id . "'");
-			$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+			$ba->query("DELETE FROM phone_devices WHERE id = '" . $id . "'");
+			$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 		}
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");

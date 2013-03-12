@@ -23,7 +23,7 @@ class PopupModule {
 
 	private function _execute_dev_update ($ba) {
 
-		$query = $ba->select("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) == 0) {
 			return("<script>window.history.back(); alert('Device '" . $_POST['name'] . "' does not exist!');</script>\n");
 		}
@@ -34,7 +34,7 @@ class PopupModule {
 			}
 		}
 
-		$ba->update(	"UPDATE " .
+		$ba->query(	"UPDATE " .
 					"phone_devices " .
 				"SET " .
 					"name = '" .		$_POST['name']		. "'," .
@@ -45,7 +45,7 @@ class PopupModule {
 				"WHERE " .
 					"id = '" . $_POST['id_upd'] . "'");
 
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		if ($ba->is_error()) {
 			return("<script>alert(" . $ba->error() . ");</script>\n");
@@ -63,19 +63,19 @@ class PopupModule {
 			return("<script>window.history.back(); alert('Please fill in the form completly!')</script>\n");
 		}
 
-		$query = $ba->select("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
 			return("<script> window.history.back(); alert('Name '" . $_POST['name'] . "' is already in use!');</script>\n");
 		}
 
-		$ba->insert_("INSERT INTO phone_devices (name, typeid, ipaddr, macaddr, tmplid) VALUES ('" .
+		$ba->query("INSERT INTO phone_devices (name, typeid, ipaddr, macaddr, tmplid) VALUES ('" .
 					$_POST['name'] . "', '" .
 					$_POST['type'] . "', '" .
 					$_POST['ip'] . "', '" .
 					strtolower($_POST['mac']) . "', '" .
 					$_POST['template'] . "')");
 
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		if ($ba->is_error()) {
 			return("<script>alert(" . $ba->error() . ");</script>\n");
@@ -109,7 +109,7 @@ class PopupModule {
 
 	private function _display_type ($ba, $type) {
 
-		$query = $ba->select("SELECT * FROM phone_types");
+		$query = $ba->query("SELECT * FROM phone_types");
 		while ($entry = $ba->fetch_array($query)) {
 			$selected = (isset($_GET['id']) && ($type == $entry['id'])) ? 'selected ' : '';
 			$opts .= "\t<option value=\"" . $entry['id'] . "\" " . $selected . "/>" . $entry['name'] . "</option>\n";
@@ -124,7 +124,7 @@ class PopupModule {
 
 	private function _display_template ($ba, $tmpl) {
 
-		$query = $ba->select("SELECT * FROM phone_templates");
+		$query = $ba->query("SELECT * FROM phone_templates");
 		while ($entry = $ba->fetch_array($query)) {
 			$selected = (isset($_GET['id']) && ($tmpl == $entry['id'])) ? 'selected ' : '';
 			$opts .= "\t<option value=\"" . $entry['id'] . "\" " . $selected . "/>" . $entry['name'] . "</option>\n";
@@ -142,7 +142,7 @@ class PopupModule {
 		$ba = new beroAri();
 
 		if (isset($_GET['id'])) {
-			$query = $ba->select("SELECT * FROM phone_devices WHERE id = '" . $_GET['id'] . "'");
+			$query = $ba->query("SELECT * FROM phone_devices WHERE id = '" . $_GET['id'] . "'");
 			$entry = $ba->fetch_array($query);
 		}
 

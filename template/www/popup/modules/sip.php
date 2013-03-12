@@ -39,7 +39,7 @@ class PopupModule {
 		$ba = new beroAri();
 
 		if (isset($_GET['id'])) {
-			$query = $ba->select("SELECT * FROM sip_trunks WHERE id = '". $_GET['id'] . "'");
+			$query = $ba->query("SELECT * FROM sip_trunks WHERE id = '". $_GET['id'] . "'");
 			$entry = $ba->fetch_array($query);
 			unset($query);
 		}
@@ -127,7 +127,7 @@ class PopupModule {
 	}
 
 	private function _execute_return($ba) {
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		if ($ba->is_error()){
 			return("<script>window.history.back(); alert(" . $ba->error() . ");</script>\n");
@@ -141,12 +141,12 @@ class PopupModule {
 
 	private function _execute_sip_rel_codec_update($ba, $trunkid) {
 
-		$ba->delete("DELETE FROM sip_rel_trunk_codec WHERE trunkid = '" . $trunkid . "'");
+		$ba->query("DELETE FROM sip_rel_trunk_codec WHERE trunkid = '" . $trunkid . "'");
 
 		if (!empty($_POST['codecs'])) {
 			$prio = 1;
 			foreach ($_POST['codecs'] as $codecid) {
-				$ba->insert_("INSERT INTO sip_rel_trunk_codec (priority, codecid, trunkid) VALUES ('" .
+				$ba->query("INSERT INTO sip_rel_trunk_codec (priority, codecid, trunkid) VALUES ('" .
 						$prio .		"','" .
 						$codecid .	"','" .
 						$trunkid .	"')");
@@ -157,13 +157,13 @@ class PopupModule {
 
 	private function _execute_sip_update ($ba) {
 
-		$query = $ba->select("SELECT id FROM sip_trunks WHERE id != '" . $_POST['id_upd'] . "' AND name == '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT id FROM sip_trunks WHERE id != '" . $_POST['id_upd'] . "' AND name == '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
-		$ba->update(	"UPDATE sip_trunks SET " .
+		$ba->query(	"UPDATE sip_trunks SET " .
 					"name = '" .		$_POST['name']		. "'," .
 					"user = '" .		$_POST['user']		. "'," .
 					"password = '" .	$_POST['password']	. "'," .
@@ -185,13 +185,13 @@ class PopupModule {
 			return("<script>window.history.back(); alert('" . $this->_lang->get('please_fill_the_form') . "');</script>\n");
 		}
 
-		$query = $ba->select("SELECT id FROM sip_trunks WHERE name = '" . $_POST['name'] . "'");
+		$query = $ba->query("SELECT id FROM sip_trunks WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
 			return("<script>window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
 
-		$ba->insert_(	"INSERT INTO " .
+		$ba->query(	"INSERT INTO " .
 					"sip_trunks (name, user, password, registrar, proxy, dtmfmode, details) " .
 				"VALUES ('" .
 					$_POST['name']		. "', '" .
@@ -214,7 +214,7 @@ class PopupModule {
 		$pre = "\t\t\t\t";
 		$ret = $pre . "<select class=\"fill\" name=\"dtmfmode\">\n";
 
-		$query = $ba->select("SELECT * FROM sip_dtmfmodes ORDER BY id");
+		$query = $ba->query("SELECT * FROM sip_dtmfmodes ORDER BY id");
 		while ($entry = $ba->fetch_array($query)) {
 			$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . (($entry['id'] == $active) ? ' selected' : '') . ">" . $entry['name'] . "</option>\n";
 		}
@@ -247,7 +247,7 @@ class PopupModule {
 					"r.priority ASC";
 		}
 
-		$query = $ba->select($sql);
+		$query = $ba->query($sql);
 		while ($entry = $ba->fetch_array($query)) {
 			$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\">" . $entry['name'] . "</option>\n";
 		}
@@ -269,7 +269,7 @@ class PopupModule {
 			$condition = "id NOT IN (SELECT codecid FROM sip_rel_trunk_codec WHERE trunkid = '" . $trunkid . "')";
 		}
 
-		$query = $ba->select('SELECT id, name FROM sip_codecs WHERE ' . $condition);
+		$query = $ba->query('SELECT id, name FROM sip_codecs WHERE ' . $condition);
 		while ($entry = $ba->fetch_array($query)) {
 			$ret .= $pre . "\t<option value=\"" . $entry['id'] . "\">" . $entry['name'] . "</option>\n";
 		}

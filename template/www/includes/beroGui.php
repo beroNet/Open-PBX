@@ -59,7 +59,7 @@ Class beroGui {
 		$ba = new beroAri();
 
 		# check if there is something to be activated
-		$query = $ba->select("SELECT option FROM activate WHERE id = 'activate'");
+		$query = $ba->query("SELECT option FROM activate WHERE id = 'activate'");
 		$option = $ba->fetch_single($query);
 		unset($query);
 

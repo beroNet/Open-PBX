@@ -34,7 +34,7 @@ function phone_siphost_get () {
 
 function phone_user_get ($ba, $device) {
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"u.name AS name," .
 					"u.password AS password," .
 					"e.extension AS extension " .
@@ -65,7 +65,7 @@ function phone_user_get ($ba, $device) {
 
 function phone_menukey_get ($ba, $type_id) {
 
-	$type_num = str_replace('snom', '', $ba->fetch_single($ba->select("SELECT name FROM phone_types WHERE id = '" . $type_id . "'")));
+	$type_num = str_replace('snom', '', $ba->fetch_single($ba->query("SELECT name FROM phone_types WHERE id = '" . $type_id . "'")));
 
 	switch($type_num) {
 	case '300':
@@ -116,7 +116,7 @@ ob_start();
 
 $ba = new beroAri();
 
-$dev_tmpl_path = $ba->fetch_single($ba->select("SELECT path FROM phone_templates WHERE id = (SELECT tmplid FROM phone_devices WHERE macaddr = '" . $mac . "')"));
+$dev_tmpl_path = $ba->fetch_single($ba->query("SELECT path FROM phone_templates WHERE id = (SELECT tmplid FROM phone_devices WHERE macaddr = '" . $mac . "')"));
 
 if (empty($dev_tmpl_path)) {
 	echo $base_tmpl;
@@ -171,7 +171,7 @@ foreach (file($dev_tmpl_path) as $line) {
 }
 
 // get device users configuration
-$query = $ba->select("SELECT * FROM phone_devices WHERE macaddr = '" . $mac . "'");
+$query = $ba->query("SELECT * FROM phone_devices WHERE macaddr = '" . $mac . "'");
 if (($entry = $ba->fetch_array($query))) {
 	$phone_user_conf = phone_user_get($ba, $entry);
 	$phone_menu_fkey = phone_menukey_get($ba, $entry['typeid']);

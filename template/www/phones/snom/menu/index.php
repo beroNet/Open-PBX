@@ -36,7 +36,7 @@ $ba = new beroAri();
 
 # get user_id
 #
-$user_id = (int)$ba->fetch_single($ba->select('SELECT u.id FROM sip_users AS u, phone_devices AS d WHERE u.id = d.userid AND d.ipaddr = \''. $_SERVER['REMOTE_ADDR'] .'\''));
+$user_id = (int)$ba->fetch_single($ba->query('SELECT u.id FROM sip_users AS u, phone_devices AS d WHERE u.id = d.userid AND d.ipaddr = \''. $_SERVER['REMOTE_ADDR'] .'\''));
 if ($user_id < 1) {
 	_err('Unknown user.');
 }
@@ -44,7 +44,7 @@ if ($user_id < 1) {
 
 # get and set user language
 #
-$user_lang = $ba->fetch_single($ba->select('SELECT language FROM sip_users WHERE id = '. $user_id));
+$user_lang = $ba->fetch_single($ba->query('SELECT language FROM sip_users WHERE id = '. $user_id));
 include(BAF_APP_WWW . '/includes/lang/' . $user_lang . '.php');
 unset($user_lang);
 $lang = new lang();
@@ -112,7 +112,7 @@ elseif ($page === 'call_diversion') {
 
 		# get user extension
 		#
-		$extension = $ba->fetch_single($ba->select('SELECT e.extension FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND u.id = '. $user_id));
+		$extension = $ba->fetch_single($ba->query('SELECT e.extension FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND u.id = '. $user_id));
 
 		# get current forward target
 		#
@@ -142,7 +142,7 @@ elseif ($page === 'call_diversion') {
 			$snom_xml->add($lang->get('Off'), $url_base . '?page=call_diversion&type=' . $type . '&busy=off');
 			$snom_xml->add($lang->get('Phone_Number'), $url_base . '?page=call_diversion&type=' . $type . '&busy=number');
 
-			$entry = $ba->fetch_array($ba->select('SELECT voicemail, mail FROM sip_users WHERE id = '. $user_id));
+			$entry = $ba->fetch_array($ba->query('SELECT voicemail, mail FROM sip_users WHERE id = '. $user_id));
 			if ($entry['voicemail'] == 1 && strlen($entry['mail']) > 0) {
 				$snom_xml->add($lang->get('Voicemail'), $url_base . '?page=call_diversion&type=' . $type . '&busy=vb');
 			}

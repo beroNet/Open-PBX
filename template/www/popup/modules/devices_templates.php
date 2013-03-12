@@ -42,7 +42,7 @@ class PopupModule {
 			return("<script>window.history.back(); alert('" . $this->_lang->get('please_enter_a_valid_name') . "');</script>\n");
 		}
 
-		$query = $ba->select("SELECT id FROM phone_templates where name = '" . $name . "'");
+		$query = $ba->query("SELECT id FROM phone_templates where name = '" . $name . "'");
 		if ($ba->num_rows($query) > 0) {
 			return("<script>window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . "');</script>\n");
 		}
@@ -53,7 +53,7 @@ class PopupModule {
 			return("<script>window.history.back(); alert('" . $this->_lang->get('could_not_save') . ' ' . $path . "!');</script>\n");
 		}
 
-		$ba->insert_("INSERT INTO phone_templates ('name', 'description', 'path') VALUES('" . $name ."', '" . $_POST['description'] . "', '" . $path . "')");
+		$ba->query("INSERT INTO phone_templates ('name', 'description', 'path') VALUES('" . $name ."', '" . $_POST['description'] . "', '" . $path . "')");
 		if ($ba->is_error()) {
 			return("<script>window.history.back(); alert(" . $ba->error() . ");</script>\n");
 		}
@@ -103,7 +103,7 @@ class PopupModule {
 		}
 
 		if (isset($_GET['id'])) {
-			$query = $ba->select("SELECT * FROM phone_templates WHERE id = '" . $_GET['id'] . "'");
+			$query = $ba->query("SELECT * FROM phone_templates WHERE id = '" . $_GET['id'] . "'");
 			$entry = $ba->fetch_array($query);
 			unset($query);
 		}

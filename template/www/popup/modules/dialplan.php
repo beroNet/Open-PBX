@@ -40,7 +40,7 @@ class PopupModule {
 		$ba = new beroAri();
 
 		if (isset($_GET['id'])) {
-			$query = $ba->select("SELECT * FROM call_rules WHERE id = '" . $_GET['id'] . "'");
+			$query = $ba->query("SELECT * FROM call_rules WHERE id = '" . $_GET['id'] . "'");
 			$entry = $ba->fetch_array($query);
 		}
 
@@ -49,21 +49,21 @@ class PopupModule {
 
 	private function _rules_get_action_name ($ba, $id) {
 
-		$query = $ba->select("SELECT name FROM rules_action WHERE id = '" . $id . "'");
+		$query = $ba->query("SELECT name FROM rules_action WHERE id = '" . $id . "'");
 
 		return $ba->fetch_single($query);
 	}
 
 	private function _rules_get_action_id ($ba, $name) {
 
-		$query = $ba->select("SELECT id FROM rules_action WHERE name = '" . $name . "'");
+		$query = $ba->query("SELECT id FROM rules_action WHERE name = '" . $name . "'");
 
 		return $ba->fetch_single($query);
 	}
 
 	private function _execute_rules_get_type ($ba, $type) {
 
-		$query = $ba->select("SELECT id FROM rules_type WHERE name = '" . $type . "'");
+		$query = $ba->query("SELECT id FROM rules_type WHERE name = '" . $type . "'");
 
 		return $ba->fetch_single($query);
 	}
@@ -92,7 +92,7 @@ class PopupModule {
 		switch ($mode) {
 		case 'create':
 				$typeid = $this->_execute_rules_get_type($ba, $_POST['type']);
-				$ba->insert_(	"INSERT INTO " .
+				$ba->query(	"INSERT INTO " .
 							"call_rules (typeid, extid, number, actionid, action_1, action_2, trunkid) " .
 						"VALUES (" .
 							"'" . $typeid			. "'," .
@@ -104,7 +104,7 @@ class PopupModule {
 							"'" . $_POST['trunk']		. "');");
 				break;
 			case 'update':
-				$ba->update(	"UPDATE " .
+				$ba->query(	"UPDATE " .
 							"call_rules " .
 						"SET " .
 							"extid = '" .		$_POST['extension']	. "'," .
@@ -118,7 +118,7 @@ class PopupModule {
 				break;
 			}
 
-			$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+			$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 			$ret =	"<script>window.opener.location='" . BAF_URL_BASE . "/index.php?m=" . $this->_name . "'</script>\n" .
 				"<script>this.window.close();</script>\n";
@@ -139,7 +139,7 @@ class PopupModule {
 				break;
 			}
 
-			$query = $ba->select("SELECT * FROM sip_extensions " . $cond . " ORDER BY id ASC");
+			$query = $ba->query("SELECT * FROM sip_extensions " . $cond . " ORDER BY id ASC");
 			while ($entry = $ba->fetch_array($query)) {
 				$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? ' selected' : '') . ">" . $entry['extension'] . "</option>\n";
 			}
@@ -164,7 +164,7 @@ class PopupModule {
 				break;
 			}
 
-			$query = $ba->select("SELECT * FROM rules_action" . $cond. " ORDER BY id ASC");
+			$query = $ba->query("SELECT * FROM rules_action" . $cond. " ORDER BY id ASC");
 			while ($entry = $ba->fetch_array($query)) {
 				$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? 'selected' : '') . ">" . $entry['name'] . "</option>\n";
 			}
@@ -180,7 +180,7 @@ class PopupModule {
 
 			$pre = "\t\t\t\t\t";
 
-			$query = $ba->select("SELECT id, name FROM sip_trunks ORDER BY id ASC");
+			$query = $ba->query("SELECT id, name FROM sip_trunks ORDER BY id ASC");
 			while ($entry = $ba->fetch_array($query)) {
 				$opt .= $pre . "\t<option value=\"" . $entry['id'] . "\"" . ($entry['id'] == $id ? 'selected' : '') . ">" . $entry['name'] . "</option>\n";
 			}

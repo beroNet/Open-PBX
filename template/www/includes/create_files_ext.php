@@ -7,7 +7,7 @@ function _ext_add_section_OpenPBX ($ba) {
 
 	$ret = "[OpenPBX]\n";
 
-	$query = $ba->select('SELECT name FROM sip_trunks WHERE id > 0');
+	$query = $ba->query('SELECT name FROM sip_trunks WHERE id > 0');
 	while ($entry = $ba->fetch_array($query)) {
 		$name = str_replace(' ', '_', str_replace(',', '[-]', str_replace('.', '[.]', $entry['name'])));
 		$ret .= "exten => _" . $name . "X.,1,Goto(intern/\${EXTEN:" . strlen($name) . "})\n";
@@ -20,7 +20,7 @@ function _ext_add_section_OpenPBX ($ba) {
 
 function _ext_get_user_dialstring ($ba, $userid) {
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"e.extension AS extension " .
 				"FROM " .
 					"sip_users AS u," .
@@ -38,7 +38,7 @@ function _ext_get_user_dialstring ($ba, $userid) {
 
 function _ext_add_group_members ($ba, $groupid) {
 
-	$query = $ba->select("SELECT userid FROM sip_rel_user_group WHERE groupid = '" . $groupid . "'");
+	$query = $ba->query("SELECT userid FROM sip_rel_user_group WHERE groupid = '" . $groupid . "'");
 	while ($entry = $ba->fetch_array($query)) {
 		$ret .= _ext_get_user_dialstring($ba, $entry['userid']) . '&';
 	}
@@ -48,7 +48,7 @@ function _ext_add_group_members ($ba, $groupid) {
 
 function _ext_add_groups ($ba, $ami) {
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"s.id AS id," .
 					"s.name AS name," .
 					"e.extension AS extension," .
@@ -76,7 +76,7 @@ function _ext_add_groups ($ba, $ami) {
 
 function _ext_add_users ($ba, $ami) {
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"s.name AS name," .
 					"e.extension AS extension " .
 				"FROM " .
@@ -112,17 +112,17 @@ function _ext_add_section_intern ($ba, $ami) {
 
 function _get_user_ext_by_group_ext($ba, $extension) {
 
-	$query = $ba->select("SELECT id FROM sip_extensions WHERE extension = '" . $extension . "' LIMIT 1");
+	$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $extension . "' LIMIT 1");
 	$ext_id = $ba->fetch_single($query);
 	unset($query);
 
 
-	$query = $ba->select("SELECT id FROM sip_users WHERE extension = '" . $ext_id . "' LIMIT 1");
+	$query = $ba->query("SELECT id FROM sip_users WHERE extension = '" . $ext_id . "' LIMIT 1");
 	if ($ba->num_rows($query) > 0) {
 		return(array($extension));
 	}
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"e.extension AS extension " .
 				"FROM " .
 					"sip_extensions AS e," .
@@ -152,7 +152,7 @@ function _ext_add_section_outbound ($ba, $type) {
 
 	$ret = "[outbound]\n";
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"c.position AS position," .
 					"e.extension AS extension," .
 					"c.number AS number," .
@@ -207,7 +207,7 @@ function _ext_add_section_outbound ($ba, $type) {
 
 function _ext_add_section_inbound ($ba, $type) {
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"c.position AS position," .
 					"e.extension AS extension," .
 					"c.number AS number," .
@@ -278,7 +278,7 @@ function create_ext_OpenPBX ($ba, $ami) {
 		_ext_add_section_OpenPBX($ba) .
 		_ext_add_section_intern($ba, $ami) . "\n";
 
-	$query = $ba->select('SELECT * FROM rules_type');
+	$query = $ba->query('SELECT * FROM rules_type');
 	while ($entry = $ba->fetch_array($query)) {
 		switch ($entry['name']) {
 		case 'inbound':

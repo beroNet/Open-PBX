@@ -10,10 +10,10 @@ include(BAF_APP_WWW . '/includes/create_files_mailbox.php');
 
 $ba = new beroAri();
 
-$query = $ba->select("SELECT option FROM activate WHERE id = 'activate'");
+$query = $ba->query("SELECT option FROM activate WHERE id = 'activate'");
 $entry = $ba->fetch_array($query);
 
-$ba->update("UPDATE activate SET option = '0' WHERE id = 'activate'");
+$ba->query("UPDATE activate SET option = '0' WHERE id = 'activate'");
 
 if ($ba->is_error()) {
 	echo	"<script>\n" .

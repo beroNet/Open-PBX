@@ -42,7 +42,7 @@ if (!empty($_GET['id'])) {
 
 	$ba = new beroAri();
 
-	$query = $ba->select("SELECT ipaddr FROM phone_devices WHERE id = '" . $_GET['id'] . "'");
+	$query = $ba->query("SELECT ipaddr FROM phone_devices WHERE id = '" . $_GET['id'] . "'");
 	$url = 'http://' . $ba->fetch_single($query) . '/advanced_update.htm';
 	unset($query);
 

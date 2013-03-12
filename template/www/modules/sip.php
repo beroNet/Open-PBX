@@ -57,7 +57,7 @@ class MainModule {
 				"\t\t</td>\n" .
 			 	"\t</tr>\n";
 
-		$query = $ba->select(	'SELECT ' .
+		$query = $ba->query(	'SELECT ' .
 						's.id AS id,' .
 						's.name AS name,' .
 						's.user AS user,' .
@@ -101,10 +101,10 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$ba->delete("DELETE FROM sip_rel_trunk_codec WHERE trunkid = '" . $id . "'");
-		$ba->delete("DELETE FROM call_rules WHERE trunkid = '" . $id . "'");
-		$ba->delete("DELETE FROM sip_trunks WHERE id = '" . $id . "'");
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("DELETE FROM sip_rel_trunk_codec WHERE trunkid = '" . $id . "'");
+		$ba->query("DELETE FROM call_rules WHERE trunkid = '" . $id . "'");
+		$ba->query("DELETE FROM sip_trunks WHERE id = '" . $id . "'");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 	}
 
 	private function _execute_popup ($id) {

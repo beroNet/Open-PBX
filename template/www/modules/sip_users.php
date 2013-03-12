@@ -68,19 +68,19 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT e.id AS id, e.extension AS extension FROM sip_users AS u, sip_extensions AS e WHERE u.id = '" . $userid . "' AND u.extension = e.id");
+		$query = $ba->query("SELECT e.id AS id, e.extension AS extension FROM sip_users AS u, sip_extensions AS e WHERE u.id = '" . $userid . "' AND u.extension = e.id");
 		$entry = $ba->fetch_array($query);
 		$extid = $entry['id'];
 		$extension = $entry['extension'];
 		unset($entry);
 		unset($query);
 
-		$ba->update("UPDATE phone_devices SET userid = '0' WHERE userid = '" . $userid . "'");
-		$ba->delete("DELETE FROM call_rules WHERE extid = '" . $extid . "'");
-		$ba->delete("DELETE FROM sip_extensions WHERE id = '" . $extid . "'");
-		$ba->delete("DELETE FROM sip_rel_user_group WHERE userid = '". $userid . "'");
-		$ba->delete("DELETE FROM sip_users WHERE id = '" . $userid . "'");
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("UPDATE phone_devices SET userid = '0' WHERE userid = '" . $userid . "'");
+		$ba->query("DELETE FROM call_rules WHERE extid = '" . $extid . "'");
+		$ba->query("DELETE FROM sip_extensions WHERE id = '" . $extid . "'");
+		$ba->query("DELETE FROM sip_rel_user_group WHERE userid = '". $userid . "'");
+		$ba->query("DELETE FROM sip_users WHERE id = '" . $userid . "'");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		$ami = new AsteriskManager();
 		$ami->connect();
@@ -97,15 +97,15 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT extension FROM sip_groups WHERE id = '" . $groupid . "'");
+		$query = $ba->query("SELECT extension FROM sip_groups WHERE id = '" . $groupid . "'");
 		$extid = $ba->fetch_single($query);
 		unset($query);
 
-		$ba->delete("DELETE FROM call_rules WHERE extid = '" . $extid . "'");
-		$ba->delete("DELETE FROM sip_extensions WHERE id = '" . $extid . "'");
-		$ba->delete("DELETE FROM sip_rel_user_group WHERE groupid = '". $groupid . "'");
-		$ba->delete("DELETE FROM sip_groups WHERE id = '" . $groupid . "'");
-		$ba->update("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
+		$ba->query("DELETE FROM call_rules WHERE extid = '" . $extid . "'");
+		$ba->query("DELETE FROM sip_extensions WHERE id = '" . $extid . "'");
+		$ba->query("DELETE FROM sip_rel_user_group WHERE groupid = '". $groupid . "'");
+		$ba->query("DELETE FROM sip_groups WHERE id = '" . $groupid . "'");
+		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
 	}
@@ -141,7 +141,7 @@ class MainModule {
 
 	private function _display_table_users_groups ($ba, $id) {
 
-		$query = $ba->select("SELECT g.name AS name FROM sip_groups AS g, sip_rel_user_group AS r, sip_users AS u WHERE u.id = " . $id . " AND r.userid = u.id AND g.id = r.groupid");
+		$query = $ba->query("SELECT g.name AS name FROM sip_groups AS g, sip_rel_user_group AS r, sip_users AS u WHERE u.id = " . $id . " AND r.userid = u.id AND g.id = r.groupid");
 		while($entry = $ba->fetch_array($query)) {
 			$list .= $entry['name'] . ', ';
 		}
@@ -179,7 +179,7 @@ class MainModule {
 				"\t</tr>\n";
 
 		// build table body
-		$query = $ba->select(	"SELECT " .
+		$query = $ba->query(	"SELECT " .
 						"s.id AS id," .
 						"s.name AS name," .
 						"s.voicemail AS voicemail," .
@@ -241,7 +241,7 @@ class MainModule {
 				"\t</tr>\n";
 
 		// build table body
-		$query = $ba->select(	"SELECT " .
+		$query = $ba->query(	"SELECT " .
 						"g.id AS id," .
 						"g.name AS name," .
 						"g.voicemail AS voicemail," .

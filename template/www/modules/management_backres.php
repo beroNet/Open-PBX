@@ -56,7 +56,7 @@ class MainModule {
 			@unlink('/tmp/' . $import_name);
 		}
 
-		$ba->update("UPDATE activate SET option = 2 WHERE id = 'activate' AND option < 2");
+		$ba->query("UPDATE activate SET option = 2 WHERE id = 'activate' AND option < 2");
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
 	}

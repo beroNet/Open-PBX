@@ -5,14 +5,14 @@ include(BAF_APP_WWW . '/includes/database.php');
 
 function phone_is_known ($ba, $mac) {
 
-	$query = $ba->select("SELECT id FROM phone_devices WHERE macaddr = '" . $mac . "'");
+	$query = $ba->query("SELECT id FROM phone_devices WHERE macaddr = '" . $mac . "'");
 
 	return(($ba->num_rows($query) > 0) ? true : false);
 }
 
 function phone_get_default_template ($ba, $type) {
 
-	$query = $ba->select("SELECT id from phone_templates WHERE name = '" . trim($type, '1234567890-_ ') . "_default'");
+	$query = $ba->query("SELECT id from phone_templates WHERE name = '" . trim($type, '1234567890-_ ') . "_default'");
 
 	if ($ba->num_rows($query) == 0) {
 		return(-1);
@@ -25,7 +25,7 @@ function phone_get_default_template ($ba, $type) {
 
 function phone_get_type_id ($ba, $type) {
 
-	$query = $ba->select("SELECT id FROM phone_types WHERE name = '" . $type . "'");
+	$query = $ba->query("SELECT id FROM phone_types WHERE name = '" . $type . "'");
 
 	if ($ba->num_rows($query) == 0) {
 		return(1);
@@ -48,7 +48,7 @@ function phone_add ($ba, $type, $mac, $ip) {
 
 	$type_id = phone_get_type_id($ba, $type);
 
-	$res = $ba->insert_('INSERT INTO phone_devices (name, typeid, ipaddr, macaddr, tmplid) VALUES (' .
+	$res = $ba->query('INSERT INTO phone_devices (name, typeid, ipaddr, macaddr, tmplid) VALUES (' .
 					"'" .	$name		. "'," .
 					"'" .	$type_id	. "'," .
 					"'" .	$ip		. "'," .
@@ -58,38 +58,38 @@ function phone_add ($ba, $type, $mac, $ip) {
 		return('ERROR: failed adding phone');
 	}
 
-	$ba->update("UPDATE activate SET option = 1 WHERE option < 1");
+	$ba->query("UPDATE activate SET option = 1 WHERE option < 1");
 	return('SUCCESS: phone added');
 }
 
 function phone_upd ($ba, $mac, $ip) {
 
-	$res = $ba->update("UPDATE phone_devices SET ipaddr = '" . $ip . "' WHERE macaddr = '" . $mac . "'");
+	$res = $ba->query("UPDATE phone_devices SET ipaddr = '" . $ip . "' WHERE macaddr = '" . $mac . "'");
 
 	return(($res == true) ? 'SUCCESS: phone updated' : 'ERROR: failed updating phone');
 }
 
 function phone_rem ($ba, $mac) {
 
-	$res = $ba->delete("DELETE FROM phone_devices WHERE macaddr = '" . $mac . "'");
+	$res = $ba->query("DELETE FROM phone_devices WHERE macaddr = '" . $mac . "'");
 
 	if ($res == false) {
 		return('ERROR: failed deleting phone');
 	}
 
-	$ba->update("UPDATE activate SET option = 1 WHERE option < 1");
+	$ba->query("UPDATE activate SET option = 1 WHERE option < 1");
 	return('SUCCESS: phone deleted');
 }
 
 function phone_chk ($ba, $mac) {
 
-	$query = $ba->select("SELECT enabled FROM phone_pnp_managed WHERE id = 0");
+	$query = $ba->query("SELECT enabled FROM phone_pnp_managed WHERE id = 0");
 	if ($ba->fetch_single($query) == 1) {
 		return('1');
 	}
 	unset($query);
 
-	$query = $ba->select("SELECT enabled FROM phone_pnp_managed WHERE mac = '" . $mac . "'");
+	$query = $ba->query("SELECT enabled FROM phone_pnp_managed WHERE mac = '" . $mac . "'");
 	if ($ba->fetch_single($query) == 1) {
 		return('1');
 	}

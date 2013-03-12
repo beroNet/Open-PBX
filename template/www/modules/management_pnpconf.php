@@ -32,18 +32,18 @@ class MainModule {
 			break;
 		case 'entry_add':
 			$ba = new beroAri();
-			$query = $ba->select("SELECT * FROM phone_pnp_managed WHERE mac = '" . $_POST['snom_pnp_entry_new_mac'] . "'");
+			$query = $ba->query("SELECT * FROM phone_pnp_managed WHERE mac = '" . $_POST['snom_pnp_entry_new_mac'] . "'");
 			if ($ba->num_rows($query) == 0) {
-				$ba->insert_("INSERT INTO phone_pnp_managed (mac, enabled) VALUES ('" . $_POST['snom_pnp_entry_new_mac'] . "', 0);");
+				$ba->query("INSERT INTO phone_pnp_managed (mac, enabled) VALUES ('" . $_POST['snom_pnp_entry_new_mac'] . "', 0);");
 			}
 			break;
 		case 'entry_alt':
 			$ba = new beroAri();
-			$ba->update("UPDATE phone_pnp_managed SET enabled = not enabled WHERE id = '" . $_POST['snom_pnp_entry_id'] . "';");
+			$ba->query("UPDATE phone_pnp_managed SET enabled = not enabled WHERE id = '" . $_POST['snom_pnp_entry_id'] . "';");
 			break;
 		case 'entry_del':
 			$ba = new beroAri();
-			$ba->delete("DELETE FROM phone_pnp_managed WHERE id = '" . $_POST['snom_pnp_entry_id'] . "';");
+			$ba->query("DELETE FROM phone_pnp_managed WHERE id = '" . $_POST['snom_pnp_entry_id'] . "';");
 			break;
 		}
 
@@ -110,7 +110,7 @@ class MainModule {
 
 		$ba = new beroAri();
 
-		$query = $ba->select("SELECT * FROM phone_pnp_managed ORDER BY id ASC");
+		$query = $ba->query("SELECT * FROM phone_pnp_managed ORDER BY id ASC");
 		while ($entry = $ba->fetch_array($query)) {
 
 			if ($entry['id'] == 0) {

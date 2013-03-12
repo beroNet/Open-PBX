@@ -4,7 +4,7 @@ include('/apps/OpenPBX/www/includes/variables.php');
 
 function _create_sip_OpenPBX_codecs ($ba, $trunkid) {
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"c.name AS name " .
 				"FROM " .
 					"sip_codecs AS c," .
@@ -27,7 +27,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 
 	$fn = BAF_APP_AST_CFG . '/sip_OpenPBX.conf';
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"s.id AS id," .
 					"s.name AS name," .
 					"s.user AS user," .
@@ -73,7 +73,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 	unset($regs);
 	unset($secs);
 
-	$query = $ba->select(	"SELECT " .
+	$query = $ba->query(	"SELECT " .
 					"u.name AS name," .
 					"u.password AS password," .
 					"u.voicemail AS voicemail," .
