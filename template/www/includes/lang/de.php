@@ -92,6 +92,7 @@ class lang {
 		$this->_lang_arr['Language']				= 'Sprache';
 		$this->_lang_arr['Off']					= 'Aus';
 		$this->_lang_arr['Phone_Number']			= 'Telefonnummer';
+		$this->_lang_arr['Settings']				= 'Einstellungen';
 
 		$this->_lang_arr['save']				= 'speichern';
 		$this->_lang_arr['reset']				= 'zurücksetzen';
