@@ -30,8 +30,8 @@ CREATE TABLE sip_dtmfmodes (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(16
 INSERT INTO sip_dtmfmodes (id,name) VALUES(1,'rfc2833');
 INSERT INTO sip_dtmfmodes (id,name) VALUES(2,'inband');
 INSERT INTO sip_dtmfmodes (id,name) VALUES(3,'info');
-CREATE TABLE sip_trunks (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(60) NOT NULL DEFAULT '',user VARCHAR(60) NOT NULL DEFAULT '',password VARCHAR(60) NOT NULL DEFAULT '',registrar VARCHAR(60) NOT NULL DEFAULT '',proxy VARCHAR(60) NOT NULL DEFAULT '',dtmfmode INTEGER NOT NULL DEFAULT '0',details VARCHAR(250) NOT NULL DEFAULT '',CONSTRAINT fk_sip_dtmfmodes_id FOREIGN KEY (dtmfmode) REFERENCES sip_dtmfmodes(id) ON DELETE SET DEFAULT);
-INSERT INTO sip_trunks (id,name,user,password,registrar,proxy,dtmfmode,details) VALUES(0,'Any Trunk','','','','',0,'');
+CREATE TABLE sip_trunks (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(60) NOT NULL DEFAULT '',user VARCHAR(60) NOT NULL DEFAULT '',password VARCHAR(60) NOT NULL DEFAULT '',registrar VARCHAR(60) NOT NULL DEFAULT '',proxy VARCHAR(60) NOT NULL DEFAULT '',send_from_user INTEGER(1) NOT NULL DEFAULT 0,dtmfmode INTEGER NOT NULL DEFAULT '0',details VARCHAR(250) NOT NULL DEFAULT '',CONSTRAINT fk_sip_dtmfmodes_id FOREIGN KEY (dtmfmode) REFERENCES sip_dtmfmodes(id) ON DELETE SET DEFAULT);
+INSERT INTO sip_trunks (id,name,user,password,registrar,proxy,send_from_user,dtmfmode,details) VALUES(0,'Any Trunk','','','','',0,0,'');
 CREATE TABLE sip_codecs (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '');
 INSERT INTO sip_codecs (id,name) VALUES(1,'all');
 INSERT INTO sip_codecs (id,name) VALUES(2,'alaw');

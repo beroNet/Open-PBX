@@ -34,6 +34,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 					"s.password AS password," .
 					"s.registrar AS registrar," .
 					"s.proxy AS proxy," .
+					"s.send_from_user AS send_from_user," .
 					"s.details AS details," .
 					"d.name AS dtmfmode " .
 				"FROM " .
@@ -57,6 +58,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 				"secret = " .	$entry['password']	. "\n" .
 				"proxy = " .	$entry['proxy']		. "\n" .
 				"dtmfmode = " .	$entry['dtmfmode']	. "\n" .
+				(($entry['send_from_user'] == 1) ? "fromuser = " . $entry['user'] . "\n" : '') .
 				"disallow = all\n" .
 				"allow = " . _create_sip_OpenPBX_codecs($ba, $entry['id']) . "\n" .
 				((!empty($entry['details'])) ? $entry['details'] . "\n" : '') .

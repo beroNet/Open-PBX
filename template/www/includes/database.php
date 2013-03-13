@@ -171,7 +171,12 @@ class beroAri {
 			if (($line[0] == '#') || (strstr($line, 'INSERT INTO activate'))) {
 				continue;
 			}
-			sqlite_query($this->db, $line);
+			sqlite_query($this->db, $line, $res, $error_msg);
+
+			if (isset($error_msg)) {
+				echo $line . "<br />\n";
+			}
+
 		}
 	}
 

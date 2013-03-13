@@ -80,6 +80,12 @@ class PopupModule {
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
+			"\t\t\t<td>" . $this->_lang->get('send_from_user') . "</td>\n" .
+			"\t\t\t<td colspan=\"4\">\n" .
+			"\t\t\t\t<input type=\"checkbox\" class=\"fill\" name=\"send_from_user\" value=\"1\"" . ((!empty($entry['send_from_user'])) ? " checked=\"checked\"" : '') . " />\n" .
+			"\t\t\t</td>\n" .
+			"\t\t</tr>\n" .
+			"\t\t<tr class=\"sub_head\">\n" .
 			"\t\t\t<td>" . $this->_lang->get('Dtmfmode') . "</td>\n" .
 			"\t\t\t<td colspan=\"4\">\n" .
 			$this->_display_dtmfmodes($ba, $entry['dtmfmode']) .
@@ -162,6 +168,7 @@ class PopupModule {
 			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
+		$send_from_user = ((isset($_POST['send_from_user'])) ? '1' :'0');
 
 		$ba->query(	"UPDATE sip_trunks SET " .
 					"name = '" .		$_POST['name']		. "'," .
@@ -170,6 +177,7 @@ class PopupModule {
 					"registrar = '" .	$_POST['registrar']	. "'," .
 					"proxy = '" .		$_POST['proxy']		. "'," .
 					"dtmfmode = '" .	$_POST['dtmfmode']	. "'," .
+					"send_from_user = '" .	$send_from_user		. "'," .
 					"details = '" .		$_POST['details']	. "'" .
 				"WHERE " .
 					"id = '" . $_POST['id_upd'] . "';");
@@ -190,9 +198,10 @@ class PopupModule {
 			return("<script>window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
 		}
 		unset($query);
+		$send_from_user = ((isset($_POST['send_from_user'])) ? '1' :'0');
 
 		$ba->query(	"INSERT INTO " .
-					"sip_trunks (name, user, password, registrar, proxy, dtmfmode, details) " .
+					"sip_trunks (name, user, password, registrar, proxy, dtmfmode, send_from_user, details) " .
 				"VALUES ('" .
 					$_POST['name']		. "', '" .
 					$_POST['user']		. "', '" .
@@ -200,6 +209,7 @@ class PopupModule {
 					$_POST['registrar']	. "', '" .
 					$_POST['proxy']		. "', '" .
 					$_POST['dtmfmode']	. "', '" .
+					$send_from_user		. "', '" .
 					$_POST['details']	. "');");
 
 		$trunkid = sqlite_last_insert_rowid($ba->db);

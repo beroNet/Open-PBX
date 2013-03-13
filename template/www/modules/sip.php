@@ -41,14 +41,18 @@ class MainModule {
 
                 $ba = new beroAri();
 
+		$span = 1;
+
 		$cols =	"\t<tr class=\"sub_head\">\n";
 		foreach ($ba->column_type('sip_trunks') as $column => $type) {
-			if (($column == 'id') || ($column == 'password') || ($column == 'details') || ($column == 'type') || ($column == 'context')) {
+			if (($column == 'id') || ($column == 'password') || ($column == 'details') || ($column == 'type') || ($column == 'context') || ($column == 'send_from_user')) {
 				continue;
 			}
 
 			$cols .= "\t\t<td>" . $this->_lang->get(ucwords($column)) . "</td>\n";
 			$col_names[] = $column;
+
+			$span++;
 		}
 		$cols .= 	"\t\t<td class=\"buttons\">\n" .
 				"\t\t\t<form name=\"sip_trunk_add\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
@@ -88,7 +92,7 @@ class MainModule {
 
 		$ret =	"<table class=\"default\">\n" .
 			"\t<tr>\n" .
-			"\t<th colspan=\"6\">" . $this->_lang->get('siptrunks_table_head') . "</th>\n" .
+			"\t<th colspan=\"" . $span . "\">" . $this->_lang->get('siptrunks_table_head') . "</th>\n" .
 			"\t</tr>\n" .
 			$cols .
 			$rows .
