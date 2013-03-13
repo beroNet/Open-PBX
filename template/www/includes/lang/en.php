@@ -90,6 +90,7 @@ class lang {
 		$this->_lang_arr['Language']				= 'Language';
 		$this->_lang_arr['Off']					= 'Off';
 		$this->_lang_arr['Phone_Number']			= 'Phone Number';
+		$this->_lang_arr['Settings']				= 'Settings';
 
 		$this->_lang_arr['save']				= 'save';
 		$this->_lang_arr['reset']				= 'reset';
