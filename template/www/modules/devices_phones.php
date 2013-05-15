@@ -47,7 +47,7 @@ class MainModule {
 
 		$cols = "\t<tr class=\"sub_head\">\n";
 		foreach ($ba->column_type('phone_devices') as $column => $type) {
-			if (($column == 'id') || ($column == 'userid') || ($column == 'typeid') || ($column == 'tmplid')) {
+			if (($column == 'id') || ($column == 'userid') || ($column == 'typeid') || ($column == 'tmplid') || ($column == 'easyconfig')) {
 				continue;
 			}
 

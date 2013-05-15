@@ -128,6 +128,7 @@ class PopupModule {
 
 		$ba->query("UPDATE sip_users SET " .
 					"name = '" .		$_POST['name']		. "', " .
+					"username = '" .	$_POST['username']	. "', " .
 					"password = '" .	$_POST['password']	. "', " .
 					"voicemail = '" .	$voicemail		. "', " .
 					"send_from_user = '" .	$from_user		. "', " .
@@ -168,9 +169,10 @@ class PopupModule {
 		$voicemail = ((isset($_POST['voicemail']) && isset($_POST['mail'])) ? '1' : '0');
 		$from_user = ((isset($_POST['send_from_user'])) ? '1' : '0');
 
-		$ba->query("INSERT INTO sip_users (name, extension, password, voicemail, send_from_user, mail, language, details) VALUES ('" .
+		$ba->query("INSERT INTO sip_users (name, extension, username, password, voicemail, send_from_user, mail, language, details) VALUES ('" .
 						$_POST['name']		. "','" .
 						$extension_id		. "','" .
+						$_POST['username']	. "','" .
 						$_POST['password']	. "','" .
 						$mailbox		. "','" .
 						$from_user		. "','" .
@@ -362,6 +364,7 @@ class PopupModule {
 			$query = $ba->query(	"SELECT " .
 							"s.id AS id, " .
 							"s.name AS name," .
+							"s.username AS username," .
 							"s.password AS password," .
 							"s.voicemail AS voicemail," .
 							"s.send_from_user AS send_from_user," .
@@ -395,6 +398,12 @@ class PopupModule {
 			"\t\t\t<td>" . $this->_lang->get('Extension') . "</td>\n" .
 			"\t\t\t<td colspan=\"3\">\n" .
 			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"extension\" value=\"" . $entry['extension'] . "\" />\n" .
+			"\t\t\t</td>\n" .
+			"\t\t</tr>\n" .
+			"\t\t<tr class=\"sub_head\">\n" .
+			"\t\t\t<td>" . $this->_lang->get('Username') . "</td>\n" .
+			"\t\t\t<td colspan=\"3\">\n" .
+			"\t\t\t\t<input type=\"text\" class=\"fill\" name=\"username\" value=\"" . $entry['username'] . "\" />\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
 			"\t\t<tr class=\"sub_head\">\n" .

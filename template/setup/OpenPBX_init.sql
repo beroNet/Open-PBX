@@ -1,12 +1,12 @@
-# OpenPBX Database Export from 2013-02-20_16-41-37
-# DB_VERSION=3
+# OpenPBX Database Export from 2013-05-14_12-00-00
+# DB_VERSION=4
 
 BEGIN TRANSACTION;
 CREATE TABLE activate (id VARCHAR(15) PRIMARY KEY,option INTEGER DEFAULT 0);
 INSERT INTO activate (id,option) VALUES('activate',0);
 CREATE TABLE sip_extensions (id INTEGER AUTOINCREMENT PRIMARY KEY,extension VARCHAR(16) NOT NULL DEFAULT '0');
 INSERT INTO sip_extensions (id,extension) VALUES(0,'Any Extension');
-CREATE TABLE sip_users (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '',extension INTEGER NOT NULL DEFAULT '0',password VARCHAR(256) NOT NULL DEFAULT '',voicemail INTEGER(1) NOT NULL DEFAULT 0,send_from_user INTEGER(1) NOT NULL DEFAULT 0,mail VARCHAR(256) NOT NULL DEFAULT '',language VARCHAR(5) NOT NULL DEFAULT 'en',details VARCHAR(512) NOT NULL DEFAULT '',CONSTRAINT fk_sip_extensions_id FOREIGN KEY(extension) REFERENCES sip_extensions(id) ON DELETE SET DEFAULT);
+CREATE TABLE sip_users (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '',extension INTEGER NOT NULL DEFAULT '0',username VARCHAR(256) NOT NULL DEFAULT '',password VARCHAR(256) NOT NULL DEFAULT '',voicemail INTEGER(1) NOT NULL DEFAULT 0,send_from_user INTEGER(1) NOT NULL DEFAULT 0,mail VARCHAR(256) NOT NULL DEFAULT '',language VARCHAR(5) NOT NULL DEFAULT 'en',details VARCHAR(512) NOT NULL DEFAULT '',easyconfig INTEGER NOT NULL DEFAULT '0',CONSTRAINT fk_sip_extensions_id FOREIGN KEY(extension) REFERENCES sip_extensions(id) ON DELETE SET DEFAULT);
 CREATE TABLE sip_groups (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '',extension INTEGER NOT NULL DEFAULT '0',voicemail INTEGER(1) NOT NULL DEFAULT 0,mail VARCHAR(256) NOT NULL DEFAULT '',description VARCHAR(256) NOT NULL DEFAULT '',CONSTRAINT fk_sip_extensions_id FOREIGN KEY(extension) REFERENCES sip_extensions(id) ON DELETE SET DEFAULT);
 CREATE TABLE sip_rel_user_group (id INTEGER AUTOINCREMENT PRIMARY KEY,userid INTEGER NOT NULL DEFAULT '0',groupid INTEGER NOT NULL DEFAULT '0',CONSTRAINT fk_sip_users_id FOREIGN KEY (userid) REFERENCES sip_users(id) ON DELETE CASCADE,CONSTRAINT fk_sip_groups_id FOREIGN KEY (groupid) REFERENCES sip_groups(id) ON DELETE CASCADE);
 CREATE TABLE mail_settings (id INTEGER AUTOINCREMENT PRIMARY KEY,smtp_host VARCHAR(128) NOT NULL DEFAULT '',smtp_port INTEGER NOT NULL DEFAULT 25,smtp_user VARCHAR(128) NOT NULL DEFAULT '',smtp_pass VARCHAR(128) NOT NULL DEFAULT '',smtp_from VARCHAR(128) NOT NULL DEFAULT '');
@@ -21,7 +21,7 @@ INSERT INTO phone_types (id,name) VALUES(6,'snom760');
 INSERT INTO phone_types (id,name) VALUES(7,'snom820');
 INSERT INTO phone_types (id,name) VALUES(8,'snom821');
 INSERT INTO phone_types (id,name) VALUES(9,'snom870');
-CREATE TABLE phone_devices (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '', ipaddr VARCHAR(16) NOT NULL DEFAULT '',macaddr VARCHAR(12) NOT NULL DEFAULT '',typeid INTEGER NOT NULL DEFAULT '1', tmplid INTEGER NOT NULL DEFAULT '1',userid INTEGER NOT NULL DEFAULT '0', CONSTRAINT fk_sip_users_id FOREIGN KEY (userid) REFERENCES sip_users(id) ON DELETE SET DEFAULT,CONSTRAINT fk_phone_types_id FOREIGN KEY (typeid) REFERENCES phone_types(id) ON DELETE SET DEFAULT,CONSTRAINT fk_phone_templates_id FOREIGN KEY (tmplid) REFERENCES phone_templates(id) ON DELETE SET DEFAULT);
+CREATE TABLE phone_devices (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '', ipaddr VARCHAR(16) NOT NULL DEFAULT '',macaddr VARCHAR(12) NOT NULL DEFAULT '',typeid INTEGER NOT NULL DEFAULT '1', tmplid INTEGER NOT NULL DEFAULT '1',userid INTEGER NOT NULL DEFAULT '0',easyconfig INTEGER NOT NULL DEFAULT '0',CONSTRAINT fk_sip_users_id FOREIGN KEY (userid) REFERENCES sip_users(id) ON DELETE SET DEFAULT,CONSTRAINT fk_phone_types_id FOREIGN KEY (typeid) REFERENCES phone_types(id) ON DELETE SET DEFAULT,CONSTRAINT fk_phone_templates_id FOREIGN KEY (tmplid) REFERENCES phone_templates(id) ON DELETE SET DEFAULT);
 CREATE TABLE phone_templates (id INTEGER PRIMARY KEY,name VARCHAR(60),description VARCHAR(120),path VARCHAR(60),readonly INTEGER);
 INSERT INTO phone_templates (id,name,description,path,readonly) VALUES(1,'snom_default','SNOM default template','/apps/OpenPBX/etc/settings/default/snom.xml',1);
 CREATE TABLE phone_pnp_managed (id INTEGER AUTOINCREMENT PRIMARY KEY, mac VARCHAR(12), enabled INTEGER(1) NOT NULL DEFAULT '0');
@@ -30,8 +30,8 @@ CREATE TABLE sip_dtmfmodes (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(16
 INSERT INTO sip_dtmfmodes (id,name) VALUES(1,'rfc2833');
 INSERT INTO sip_dtmfmodes (id,name) VALUES(2,'inband');
 INSERT INTO sip_dtmfmodes (id,name) VALUES(3,'info');
-CREATE TABLE sip_trunks (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(60) NOT NULL DEFAULT '',user VARCHAR(60) NOT NULL DEFAULT '',password VARCHAR(60) NOT NULL DEFAULT '',registrar VARCHAR(60) NOT NULL DEFAULT '',proxy VARCHAR(60) NOT NULL DEFAULT '',send_from_user INTEGER(1) NOT NULL DEFAULT 0,dtmfmode INTEGER NOT NULL DEFAULT '0',details VARCHAR(250) NOT NULL DEFAULT '',CONSTRAINT fk_sip_dtmfmodes_id FOREIGN KEY (dtmfmode) REFERENCES sip_dtmfmodes(id) ON DELETE SET DEFAULT);
-INSERT INTO sip_trunks (id,name,user,password,registrar,proxy,send_from_user,dtmfmode,details) VALUES(0,'Any Trunk','','','','',0,0,'');
+CREATE TABLE sip_trunks (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(60) NOT NULL DEFAULT '',user VARCHAR(60) NOT NULL DEFAULT '',password VARCHAR(60) NOT NULL DEFAULT '',registrar VARCHAR(60) NOT NULL DEFAULT '',proxy VARCHAR(60) NOT NULL DEFAULT '',send_from_user INTEGER(1) NOT NULL DEFAULT 0,dtmfmode INTEGER NOT NULL DEFAULT '0',details VARCHAR(250) NOT NULL DEFAULT '',easyconfig INTEGER NOT NULL DEFAULT '0',CONSTRAINT fk_sip_dtmfmodes_id FOREIGN KEY (dtmfmode) REFERENCES sip_dtmfmodes(id) ON DELETE SET DEFAULT);
+INSERT INTO sip_trunks (id,name,user,password,registrar,proxy,send_from_user,dtmfmode,details,easyconfig) VALUES(0,'Any Trunk','','','','',0,0,'',0);
 CREATE TABLE sip_codecs (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(64) NOT NULL DEFAULT '');
 INSERT INTO sip_codecs (id,name) VALUES(1,'all');
 INSERT INTO sip_codecs (id,name) VALUES(2,'alaw');
