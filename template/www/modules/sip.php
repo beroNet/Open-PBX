@@ -45,7 +45,7 @@ class MainModule {
 
 		$cols =	"\t<tr class=\"sub_head\">\n";
 		foreach ($ba->column_type('sip_trunks') as $column => $type) {
-			if (($column == 'id') || ($column == 'password') || ($column == 'details') || ($column == 'type') || ($column == 'context') || ($column == 'send_from_user')) {
+			if (($column == 'id') || ($column == 'password') || ($column == 'details') || ($column == 'type') || ($column == 'context') || ($column == 'send_from_user') || ($column == 'easyconfig')) {
 				continue;
 			}
 

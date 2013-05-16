@@ -20,6 +20,7 @@ class lang {
 		$this->_lang_arr['menu_management_mail']		= 'Mail Configuration';
 		$this->_lang_arr['menu_management_pnp']			= 'PNP Configuration';
 		$this->_lang_arr['menu_management_backup']		= 'Backup/Restore';
+		$this->_lang_arr['menu_management_easycfg']		= 'EasyConfig';
 		$this->_lang_arr['menu_management_userapp']		= 'UserApp Management';
 		$this->_lang_arr['menu_management_berogui']		= 'beroGui';
 
@@ -36,6 +37,7 @@ class lang {
 		$this->_lang_arr['headline_management_mail']		= 'Mail Configuration';
 		$this->_lang_arr['headline_management_pnp']		= 'PNP Configuration';
 		$this->_lang_arr['headline_management_backup']		= 'Backup/Restore';
+		$this->_lang_arr['headline_management_easycfg']		= 'bero*fix/OpenPBX EasyConfig';
 
 		# common fields
 		$this->_lang_arr['Condition']				= 'Condition';
@@ -188,6 +190,13 @@ class lang {
 									  "The MAC-Addresses to be served can be entered on the left side.<br /><br />";
 		$this->_lang_arr['pnp_mac_head']			= 'MAC-Address based provisioning';
 		$this->_lang_arr['pnp_mac_table_head']			= 'Managed MAC-Addresses';
+
+		# page Management -> easyconfig
+		$this->_lang_arr['easyconfig_button']			= 'Run EasyConfig';
+		$this->_lang_arr['easyconfig_text']			= 'Please set up your desired configuration below and follow the instructions given by the ' .
+									  'popup.</br><br />' .
+									  'When your berofix has been rebooted, come back to this page and press ' .
+									  '\'Run EasyConfig\' to execute the EasyConfig-Wizard.';
 
 		# page Management -> Backup
 		$this->_lang_arr['backup_table_download_head']		= 'Download Configuration';

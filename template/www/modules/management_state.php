@@ -74,6 +74,13 @@ class MainModule {
 		unset($query);
 		unset($entry);
 
+		$query = $ba->query('SELECT username FROM sip_users WHERE username != \'\';');
+		while (($entry = $ba->fetch_array($query))) {
+			$user[] = $entry['username'];
+		}
+		unset($query);
+		unset($entry);
+
 		$sippeers = $ami->SIPpeers();
 
 		foreach ($sippeers['Entrys'] as $entry) {

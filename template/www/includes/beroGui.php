@@ -30,6 +30,7 @@ Class beroGui {
 			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_mail\" id=\"item_management_mail\"><span>&#8226;</span> " . $this->_lang->get('menu_management_mail') . "</a></li>\n" .
 			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_pnpconf\" id=\"item_management_pnpconf\"><span>&#8226;</span> " . $this->_lang->get('menu_management_pnp') . "</a></li>\n" .
 			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_backres\" id=\"item_management_backres\"><span>&#8226;</span> " . $this->_lang->get('menu_management_backup') . "</a></li>\n" .
+			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_easycfg\" id=\"item_management_easycfg\"><span>&#8226;</span> " . $this->_lang->get('menu_management_easycfg') . "</a></li>\n" .
 			$pre . "\t\t\t<li><a href=\"/userapp/\"><span>&#8226;</span> " . $this->_lang->get('menu_management_userapp') . "</a></li>\n" .
 			$pre . "\t\t\t<li><a href=\"/\"><span>&#8226;</span> " . $this->_lang->get('menu_management_berogui') . "</a></li>\n" .
 			$pre . "\t\t</ul>\n" .

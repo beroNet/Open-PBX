@@ -78,6 +78,7 @@ function _ext_add_users ($ba, $ami) {
 
 	$query = $ba->query(	"SELECT " .
 					"s.name AS name," .
+					"s.username AS username," .
 					"e.extension AS extension " .
 				"FROM " .
 					"sip_users AS s," .
@@ -86,13 +87,13 @@ function _ext_add_users ($ba, $ami) {
 					"s.extension = e.id");
 	while ($entry = $ba->fetch_array($query)) {
 		$ret .=	"; user '" . $entry['name'] . "'\n" .
-			"exten => " . $entry['extension'] . ",hint,SIP/" . $entry['extension'] . "\n" .
+			"exten => " . $entry['extension'] . ",hint,SIP/" . (empty($entry['username']) ? $entry['extension'] : $entry['username']) . "\n" .
 			"exten => " . $entry['extension'] . ",1,NoOp(Incoming call for " . $entry['extension'] . " - user " . $entry['name'] . ")\n" .
-			"exten => " . $entry['extension'] . ",n,Macro(dialintern,\${EXTEN})\n" .
+			"exten => " . $entry['extension'] . ",n,Macro(dialintern," . (empty($entry['username']) ? "\${EXTEN}" : $entry['username']) . ")\n" .
 			"exten => " . $entry['extension'] . ",n,HangUp\n\n";
 
 		$dial = _ext_get_user_dialstring ($ba, $entry['id']);
-		$ami->DBPut('DAD', $entry['extension'], (($dial == '') ? 0 : $dial));
+		$ami->DBPut('DAD', (empty($entry['username']) ? $entry['extension'] : $entry['username']), (($dial == '') ? 0 : $dial));
 	}
 
 	return($ret);

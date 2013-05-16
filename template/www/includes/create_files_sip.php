@@ -77,6 +77,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 
 	$query = $ba->query(	"SELECT " .
 					"u.name AS name," .
+					"u.username AS username," .
 					"u.password AS password," .
 					"u.voicemail AS voicemail," .
 					"u.send_from_user AS send_from_user," .
@@ -90,15 +91,15 @@ function create_sip_OpenPBX ($ba, $ami) {
 
 	while ($entry = $ba->fetch_array($query)) {
 
-		$cont .=	"[" . $entry['extension'] . "]\n" .
+		$cont .=	"[" . ((empty($entry['username'])) ? $entry['extension'] : $entry['username']) . "]\n" .
 				"context = intern\n" .
 				"type = friend\n" .
 				"host = dynamic\n" .
-				"username = " . $entry['extension'] . "\n" .
+				"username = " . (empty($entry['username']) ? $entry['extension'] : $entry['username']). "\n" .
 				"secret = " . $entry['password'] . "\n" .
 				"callerid = \"" . $entry['name'] . "\" <" . $entry['extension'] . ">\n" .
-				(($entry['voicemail'] == 1) ? "mailbox = " . $entry['extension'] . "\n" : '') .
-				(($entry['send_from_user'] == 1) ? "fromuser = " . $entry['extension'] . "\n" : '') .
+				(($entry['voicemail'] == 1) ? "mailbox = " . (empty($entry['username']) ? $entry['extension'] : $entry['extension']) . "\n" : '') .
+				(($entry['send_from_user'] == 1) ? "fromuser = " . (empty($entry['username']) ? $entry['extension'] : $entry['username']) . "\n" : '') .
 				"dtmfmode = rfc2833\n" .
 				"disallow = all\n" .
 				"allow = alaw\n" .
@@ -109,9 +110,9 @@ function create_sip_OpenPBX ($ba, $ami) {
 				"\n";
 
 		foreach (array('CFWD','CFB','CFU') as $fwd_type) {
-			$res = $ami->DBGet($fwd_type, $entry['extension']);
+			$res = $ami->DBGet($fwd_type, (empty($entry['username']) ? $entry['extension'] : $entry['username']));
 			if( $res['Response'] != 'Success' || ($res['Response'] == 'Success' && $res['Val'] == 'vb' && $entry['voicemail'] == 0) ) {
-				$ami->DBPut($fwd_type, $entry['extension'], '0');
+				$ami->DBPut($fwd_type, (empty($entry['username']) ? $entry['extension'] : $entry['username']), '0');
 			}
 		}
 	}
