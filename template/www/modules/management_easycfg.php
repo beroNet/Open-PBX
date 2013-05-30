@@ -28,18 +28,23 @@ class MainModule {
 			return('');
 		}
 
-		$ba = new beroAri();
+		if (isset($_POST['easyconf_apply_button'])) {
+			$ba = new beroAri();
+			easyconf($ba);
+		} else if (isset($_POST['easyconf_appfs_button'])) {
+			$ret = "<script type=\"text/javascript\">popup_open(\"/app/api/openPBX.php\");</script>\n";
+		}
 
-		easyconf($ba);
-
-		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
+		return($ret . "<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
 	}
 
 	function display () {
 
-		$ret =	$this->_lang->get('easyconfig_text') . "<br /><br />\n" .
-			"<iframe name=\"openPBX_Wizard\" seamless=\"seamless\" src=\"/app/api/openPBX.php\" width=\"95%\" height=\"95%\"></iframe><br /><br />\n" .
+		$ret =	$this->_lang->get('easyconfig_text1') . "<br />\n" .
 			"<form name=\"easyconf_apply\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
+			"\t<input type=\"submit\" class=\"button\" name=\"easyconf_appfs_button\" style=\"width: 120px\" value=\"Configure\"  />\n"  .
+			"\t<br /><br /><br /><br />\n" .
+			$this->_lang->get('easyconfig_text2') . "<br />\n" .
 			"\t<input type=\"submit\" class=\"button\" name=\"easyconf_apply_button\" style=\"width: 120px\" value=\"" . $this->_lang->get('easyconfig_button') . "\" />\n" .
 			"</form><br />";
 

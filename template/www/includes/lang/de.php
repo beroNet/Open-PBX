@@ -195,11 +195,11 @@ class lang {
 		$this->_lang_arr['pnp_mac_table_head']			= 'Verwaltete MAC-Adressen';
 
 		# page Management -> easyconfig
-		$this->_lang_arr['easyconfig_button']			= 'Starte EasyConfig';
-		$this->_lang_arr['easyconfig_text']			= 'Bitte konfigurieren Sie Ihre berofix im unteren Abschnitt und folgen Sie den Anweisungen ' .
-									  ' des PopUps.<br /><br />' .
-									  'Nachdem Ihre berofix neu gestartet wurde, öffnen Sie bitte wieder diese Seite ' .
-									  'und drücken Sie auf \'Starte EasyConfig\', um den EasyConfig-Assistenten auszuführen.';
+		$this->_lang_arr['easyconfig_button']			= 'Konfiguration übernehmen';
+		$this->_lang_arr['easyconfig_text1']			= 'Bitte konfigurieren Sie Ihre berofix indem Sie auf \'Konfigurieren\' klicken.<br />' .
+									  'Starten Sie bitte anschliessend die berofix den Anweisungen entsprechend neu.<br />';
+		$this->_lang_arr['easyconfig_text2']			= 'Nachdem Ihre berofix neu gestartet wurde, öffnen Sie bitte wieder diese Seite und<br />' .
+									  'drücken Sie auf \'Konfiguration übernehmen\', um den EasyConfig-Assistenten auszuführen.<br />';
 
 		# page Management -> Backup
 		$this->_lang_arr['backup_table_download_head']		= 'Konfiguration herunterladen';
