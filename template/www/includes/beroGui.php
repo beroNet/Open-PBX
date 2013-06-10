@@ -55,6 +55,21 @@ Class beroGui {
 		return($ret);
 	}
 
+	function _dependencies ($list) {
+
+		if (empty($list)) {
+			return('');
+		}
+
+		foreach (explode(',', $list) as $dep) {
+			if (!file_exists('/apps/' . $dep)) {
+				$ret .= "<script>alert(\"OpenPBX needs package \'" . $dep . "\' to work properly!\");</script>\n";
+			}
+		}
+
+		return($ret);
+	}
+
 	function main_header ($app_name, $mod) {
 
 		$ba = new beroAri();
@@ -90,6 +105,7 @@ Class beroGui {
 			"\t\t\t\t\t<div id=\"body_frame_head\">" . strtoupper($mod->getTitle()) . "</div>\n" .
 			"\t\t\t\t\t<div id=\"body_frame_menu\">\n" .
 			$this->_main_menu($mod->getName()) .
+			$this->_dependencies('asterisk,asterisk_sounds') .
 			"\t\t\t\t\t\t<div id=\"apply_button\"></div>\n" .
 			"\t\t\t\t\t</div>\n" .
 			"\t\t\t\t\t<div id=\"body_frame_content\">\n" .
