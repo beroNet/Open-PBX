@@ -16,7 +16,7 @@ class AsteriskManager
 
 	public function __destruct()
 	{
-		if (is_resource($this->_socket)) {
+		if ($this->isConnected()) {
 			fclose($this->_socket);
 		}
 		$this->_socket = false;
@@ -24,6 +24,9 @@ class AsteriskManager
 
 	private function send_request($action, $parameters=array())
 	{
+		if (!$this->isConnected()) {
+			return array();
+		}
 		$req = 'Action: '. $action ."\r\n";
 		foreach ($parameters as $var => $val) {
 			$req .= $var .': '. $val ."\r\n";
@@ -64,7 +67,7 @@ class AsteriskManager
 		// connect to _socket
 		$errno = NULL;
 		$errstr = NULL;
-		$this->_socket = fsockopen($server, $port, $errno, $errstr, 1);
+		$this->_socket = @fsockopen($server, $port, $errno, $errstr, 1);
 		if (!$this->_socket) {
 			$this->error = 'Could not connect - '. $errno .': '. $errstr;
 			return false;
@@ -93,6 +96,11 @@ class AsteriskManager
 	public function disconnect()
 	{
 		$this->__destruct();
+	}
+
+	public function isConnected()
+	{
+		return (is_resource($this->_socket) ? true : false);
 	}
 
 	public function Command($command=false)

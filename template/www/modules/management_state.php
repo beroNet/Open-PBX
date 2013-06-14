@@ -140,7 +140,7 @@ class MainModule {
 			"\t\t<td>" . $this->_lang->get('State') . "</td>\n" .
 			"\t\t<td>" . $this->_lang->get('state_table_sipregs_regtime') . "</td>\n" .
 			"\t</tr>\n" .
-			$this->_display_sip_registrations($ami) .
+			($ami->isConnected() ? $this->_display_sip_registrations($ami) : '') .
 			"</table>\n" .
 			"<br />\n" .
 			"<br />\n" .
@@ -153,7 +153,7 @@ class MainModule {
 			"\t\t<td>" . $this->_lang->get('Username') . "</td>\n" .
 			"\t\t<td>" . $this->_lang->get('State') . "</td>\n" .
 			"\t</tr>\n" .
-			$this->_display_sip_peers($ami) .
+			($ami->isConnected() ? $this->_display_sip_peers($ami) : '') .
 			"</table>\n" .
 			"<br />\n" .
 			"<br />\n" .
@@ -168,7 +168,7 @@ class MainModule {
 			"\t\t<td>" . $this->_lang->get('state_table_chans_app_data') . "</td>\n" .
 			"\t\t<td>" . $this->_lang->get('Duration') . "</td>\n" .
 			"\t</tr>\n" .
-			$this->_display_channels_active($ami) .
+			($ami->isConnected() ? $this->_display_channels_active($ami) : '') .
 			"</table>\n";
 
 		$ami->Logout();
