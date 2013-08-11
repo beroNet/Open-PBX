@@ -37,6 +37,7 @@ function phone_user_get ($ba, $device) {
 	$query = $ba->query(	"SELECT " .
 					"u.name AS name," .
 					"u.password AS password," .
+					"u.language AS language," .
 					"e.extension AS extension " .
 				"FROM " .
 					"sip_users AS u," .
@@ -52,13 +53,31 @@ function phone_user_get ($ba, $device) {
 		return('');
 	}
 
+	// translate user language to snom specific name
+	switch ($user['language']) {
+		case 'de':
+		case 'de-AT':
+		case 'de-CH':
+		case 'de-DE':
+			$lang = 'Deutsch';
+			break;
+		case 'en-UK':
+			$lang = 'English(UK)';
+			break;
+		case 'en':
+		case 'en-US':
+		default:
+			$lang = 'English(US)';
+			break;
+	}
 
 	$ret =	"\t\t<user_pname idx=\"1\" perm=\"R\">" .	$user['extension']	. "</user_pname>\n" .		// Login Name
 		"\t\t<user_pass idx=\"1\" perm=\"R\">" .	$user['password']	. "</user_pass>\n" .		// Password
 		"\t\t<user_name idx=\"1\" perm=\"R\">" .	$user['extension']	. "</user_name>\n" .		// Account Name
 		"\t\t<user_realname idx=\"1\" perm=\"R\">" .	"[" . $user['extension'] . "] " . $user['name']	. "</user_realname>\n" .
 		"\t\t<user_host idx=\"1\" perm=\"R\">" .	phone_siphost_get()	. "</user_host>\n" .
-		"\t\t<user_dp_str idx=\"1\" perm=\"R\">!([^#]%2b)#!sip:\\1@\d!d</user_dp_str>\n";
+		"\t\t<user_dp_str idx=\"1\" perm=\"R\">!([^#]%2b)#!sip:\\1@\d!d</user_dp_str>\n" .
+		"\t\t<language perm=\"R\">" . $lang . "</language>\n";
 
 	return($ret);
 }
@@ -90,6 +109,17 @@ function phone_menukey_get ($ba, $type_id) {
 	return("\t\t<dkey_" . $key_name . " perm=\"R\">url " . $menu_url . "</dkey_" . $key_name . ">\n");
 }
 
+function phone_guilang_get () {
+
+	$lang_url = "http://" . $_SERVER['SERVER_NAME'] . BAF_URL_BASE . "/phones/snom/lang";
+
+	$ret = "\t\t<language url=\"" . $lang_url . "/gui_lang_DE.xml\" name=\"Deutsch\" />\n" .
+		"\t\t<language url=\"" . $lang_url . "/gui_lang_EN.xml\" name=\"English(US)\" />\n" .
+		"\t\t<language url=\"" . $lang_url . "/gui_lang_UK.xml\" name=\"English(UK)\" />\n";
+
+	return($ret);
+}
+
 $base_tmpl =	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n\n" .
 		"<settings>\n" .
 		"\t<phone-settings>\n" .
@@ -100,6 +130,8 @@ $base_tmpl =	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n\n" .
 		"\t</tbook>\n" .
 		"\t<dialplan>\n" .
 		"\t</dialplan>\n" .
+		"\t<gui-languages>\n" .
+		"\t</gui-languages>\n" .
 		"</settings>\n";
 
 
@@ -152,6 +184,12 @@ foreach (file($dev_tmpl_path) as $line) {
 	case '</dialplan>':
 		$mode = 'none';
 		break;
+	case '<gui-languages>':
+		$mode = 'guilang';
+		break;
+	case '</gui-languages>':
+		$mode = 'none';
+		break;
 	default:
 		switch ($mode) {
 		case 'phone':
@@ -165,6 +203,9 @@ foreach (file($dev_tmpl_path) as $line) {
 			break;
 		case 'dplan':
 			$dialplan .=		"\t\t" . trim($line, "\t\n") . "\n";
+			break;
+		case 'guilang':
+			$gui_languages .=	"\t\t" . trim($line, "\t\n") . "\n";
 			break;
 		}
 	}
@@ -193,6 +234,10 @@ echo	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" .
 	"\t<dialplan>\n" .
 	$dialplan .
 	"\t</dialplan>\n" .
+	"\t<gui-languages>\n" .
+	$gui_languages .
+	phone_guilang_get() .
+	"\t</gui-languages>\n" .
 	"</settings>\n";
 
 
