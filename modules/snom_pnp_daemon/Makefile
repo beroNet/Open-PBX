@@ -9,6 +9,7 @@ TOOLPREFX	:= arm-linux-uclibc
 TOOL_INC	:= $(BAF_DIR)/toolchain/usr/include
 TOOL_LIB	:= $(BAF_DIR)/toolchain/lib
 TOOL_USR_LIB	:= $(BAF_DIR)/toolchain/usr/lib
+TOOL_STRIP      := $(TOOLCHAIN)/$(TOOLPREFX)-strip --remove-section={.comment,.note,.pdr}
 
 BFX_INC		:= $(BAF_DIR)/include
 BFX_LIB		:= $(BAF_DIR)/lib
@@ -48,6 +49,7 @@ all:
 			./configure $(CONF_OPTS); \
 		fi; \
 		make $(MAKE_OPTS); \
+		$(TOOL_STRIP) snom_pnp_daemon; \
 	done;
 
 install:
