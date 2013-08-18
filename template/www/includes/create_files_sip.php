@@ -106,6 +106,7 @@ function create_sip_OpenPBX ($ba, $ami) {
 				"nat = no\n" .
 				"canreinvite = no\n" .
 				"call-limit = 2\n" .
+				"subscribecontext = intern\n" .
 				((!empty($entry['details'])) ? $entry['details'] : '') .
 				"\n";
 
@@ -134,7 +135,6 @@ function create_sip ($ba) {
 		"allow = ulaw\t\t\t\t; dtmfmode = inband only works with ulaw or alaw!\n" .
 		"defaultexpire = 60\n" .
 		"allowsubscribe = yes\n" .
-		"subscribecontext = intern\n" .
 		"notifyringing = yes\n" .
 		"notifyhold = yes\n" .
 		"progressinband = yes\n" .
