@@ -1,0 +1,24 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$trunkid = trim($agi->request['agi_arg_1']);
+if ($trunkid < 1) exit();
+
+$callerid_name = trim($agi->request['agi_arg_2']);
+if (! $callerid_name) exit();
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+$send_from_user = $ba->fetch_single($ba->query('SELECT send_from_user FROM sip_trunks WHERE id = '. $trunkid));
+
+if ($send_from_user == '1') {
+	$agi->set_variable('CALLERID(num)', $callerid_name);
+}
+
+?>

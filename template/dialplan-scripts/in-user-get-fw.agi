@@ -1,0 +1,40 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$ext = trim($agi->request['agi_arg_1']);
+
+if (! $ext) {
+	exit();
+}
+if (! preg_match('/^\d+$/', $ext)) {
+	exit();
+}
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+# get user id:
+$userid = (int)$ba->fetch_single($ba->query('SELECT u.id AS id FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND e.extension = "'. $ext.'"'));
+
+
+$forwards = array(
+	'always'  => '',
+	'busy'    => '',
+	'unavail' => ''
+);
+
+
+$query = $ba->query('SELECT fwcase, destination FROM callforwards WHERE userid = '. $userid);
+while ($entry=$ba->fetch_array($query)) {
+	$forwards[$entry['fwcase']] = $entry['destination'];
+}
+
+foreach ($forwards as $case => $destination) {
+	$agi->set_variable('fw_'.$case, $destination);
+}
+?>

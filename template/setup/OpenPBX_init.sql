@@ -1,5 +1,5 @@
 # OpenPBX Database Export from 2013-05-14_12-00-00
-# DB_VERSION=4
+# DB_VERSION=5
 
 BEGIN TRANSACTION;
 CREATE TABLE activate (id VARCHAR(15) PRIMARY KEY,option INTEGER DEFAULT 0);
@@ -39,16 +39,6 @@ INSERT INTO sip_codecs (id,name) VALUES(3,'gsm');
 INSERT INTO sip_codecs (id,name) VALUES(4,'ilbc');
 INSERT INTO sip_codecs (id,name) VALUES(5,'ulaw');
 CREATE TABLE sip_rel_trunk_codec (id INTEGER AUTOINCREMENT PRIMARY KEY,priority INTEGER NOT NULL DEFAULT '1',codecid INTEGER NOT NULL DEFAULT '0',trunkid INTEGER NOT NULL DEFAULT '0',CONSTRAINT fk_codecs_id FOREIGN KEY (codecid) REFERENCES codecs(id) ON DELETE SET DEFAULT,CONSTRAINT fk_sip_trunks_id FOREIGN KEY (trunkid) REFERENCES sip_trunks(id) ON DELETE CASCADE);
-CREATE TABLE rules_action (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(16));
-INSERT INTO rules_action (id,name) VALUES(0,'none');
-INSERT INTO rules_action (id,name) VALUES(1,'dial');
-INSERT INTO rules_action (id,name) VALUES(2,'hangup');
-INSERT INTO rules_action (id,name) VALUES(3,'voicemail');
-INSERT INTO rules_action (id,name) VALUES(4,'disa');
-CREATE TABLE rules_type (id INTEGER AUTOINCREMENT PRIMARY KEY,name VARCHAR(16) NOT NULL DEFAULT '');
-INSERT INTO rules_type (id,name) VALUES(1,'inbound');
-INSERT INTO rules_type (id,name) VALUES(2,'outbound');
-CREATE TABLE call_rules (id INTEGER AUTOINCREMENT PRIMARY KEY,typeid INTEGER NUT NULL DEFAULT '0',extid INTEGER NOT NULL DEFAULT '0',position INTEGER NOT NULL DEFAULT '1',number VARCHAR(128) NOT NULL DEFAULT '*',actionid INTEGER NOT NULL DEFAULT '0',action_1 VARCHAR(128) NOT NULL DEFAULT '',action_2 VARCHAR(128) NOT NULL DEFAULT '',trunkid INTEGER NOT NULL DEFAULT '0',CONSTRAINT fk_sip_extensions_id FOREIGN KEY (extid) REFERENCES sip_extensions(id) ON DELETE CASCADE,CONSTRAINT fk_rules_type_id FOREIGN KEY (typeid) REFERENCES rules_type(id) ON DELETE CASCADE,CONSTRAINT fk_rules_action_id FOREIGN KEY (actionid) REFERENCES rules_action(id) ON DELETE CASCADE,CONSTRAINT fk_sip_trunks_id FOREIGN KEY (trunkid) REFERENCES sip_trunks(id) ON DELETE CASCADE);
-CREATE VIEW call_rules_outbound AS SELECT r.id AS id,r.number AS Target,e.extension AS Extension,a.name AS Action,r.action_1 AS action_1,r.action_2 AS action_2,t.name AS Trunk FROM call_rules AS r,rules_action AS a, sip_extensions AS e,sip_trunks AS t WHERE r.typeid = '2' AND a.id = r.actionid AND e.id = r.extid AND t.id = r.trunkid GROUP BY r.number ORDER BY r.position ASC;
-CREATE VIEW call_rules_inbound AS SELECT r.id AS id,r.number AS Source,e.extension AS Extension,a.name AS Action,r.action_1 AS action_1,r.action_2 AS action_2,t.name AS Trunk FROM call_rules AS r,rules_action AS a, sip_extensions AS e,sip_trunks AS t WHERE r.typeid = '1' AND a.id = r.actionid AND e.id = r.extid AND t.id = r.trunkid GROUP BY r.number ORDER BY r.position ASC;
+CREATE TABLE dialplan (id INTEGER AUTOINCREMENT PRIMARY KEY,ruletype VARCHAR(8) NOT NULL DEFAULT 'inbound',trunkid INTEGER NOT NULL DEFAULT '0',dnid_search VARCHAR(60) NOT NULL DEFAULT '(.*)',dnid_replace VARCHAR(60) NOT NULL DEFAULT '$1',cid_search VARCHAR(60) NOT NULL DEFAULT '(.*)',cid_replace VARCHAR(60) NOT NULL DEFAULT '$1',position INTEGER NOT NULL DEFAULT '0',active INTEGER NOT NULL DEFAULT '1',CONSTRAINT fk_sip_trunks_id FOREIGN KEY (trunkid) REFERENCES sip_trunks(id) ON DELETE CASCADE);
+CREATE TABLE callforwards (id INTEGER AUTOINCREMENT PRIMARY KEY,userid INTEGER NOT NULL DEFAULT '0',fwcase VARCHAR(7) NOT NULL DEFAULT 'always',destination VARCHAR(60) NOT NULL DEFAULT '',CONSTRAINT fk_sip_users_id FOREIGN KEY (userid) REFERENCES sip_users(id) ON DELETE CASCADE);
 COMMIT;

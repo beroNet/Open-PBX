@@ -1,0 +1,44 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$ext = trim($agi->request['agi_arg_1']);
+
+if (! $ext) {
+	$agi->set_variable('exttype', '');
+	exit();
+}
+if (! preg_match('/^\d+$/', $ext)) {
+	$agi->set_variable('exttype', 'unknown');
+	exit();
+}
+
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+
+# is it a user?
+#
+$num = $ba->fetch_single($ba->query('SELECT COUNT(*) FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND e.extension = \''. $ext .'\''));
+if ($num > 0) {
+	$agi->set_variable('exttype', 'user');
+	exit();
+}
+
+
+# is it a group?
+#
+$num = $ba->fetch_single($ba->query('SELECT COUNT(*) FROM sip_groups AS g, sip_extensions AS e WHERE g.extension = e.id AND e.extension = \''. $ext .'\''));
+if ($num > 0) {
+	$agi->set_variable('exttype', 'group');
+	exit();
+}
+
+$agi->set_variable('exttype', 'unknown');
+
+?>

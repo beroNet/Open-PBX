@@ -1,6 +1,6 @@
 <?php
 
-include(BAF_APP_WWW . '/includes/amifunc.php');
+// include(BAF_APP_WWW . '/includes/amifunc.php');
 
 class MainModule {
 
@@ -76,19 +76,18 @@ class MainModule {
 		unset($query);
 
 		$ba->query("UPDATE phone_devices SET userid = '0' WHERE userid = '" . $userid . "'");
-		$ba->query("DELETE FROM call_rules WHERE extid = '" . $extid . "'");
 		$ba->query("DELETE FROM sip_extensions WHERE id = '" . $extid . "'");
 		$ba->query("DELETE FROM sip_rel_user_group WHERE userid = '". $userid . "'");
 		$ba->query("DELETE FROM sip_users WHERE id = '" . $userid . "'");
 		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
-		$ami = new AsteriskManager();
-		$ami->connect();
-		foreach (array('CFWD','CFB','CFU') as $fwd_type) {
-			$ami->DBDel($fwd_type, $extension);
-		}
-		$ami->Logout();
-		unset($ami);
+		// $ami = new AsteriskManager();
+		// $ami->connect();
+		// foreach (array('CFWD','CFB','CFU') as $fwd_type) {
+		// 	$ami->DBDel($fwd_type, $extension);
+		// }
+		// $ami->Logout();
+		// unset($ami);
 
 		return("<script type=\"text/javascript\">this.window.location.href='" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "';</script>\n");
 	}
@@ -101,7 +100,6 @@ class MainModule {
 		$extid = $ba->fetch_single($query);
 		unset($query);
 
-		$ba->query("DELETE FROM call_rules WHERE extid = '" . $extid . "'");
 		$ba->query("DELETE FROM sip_extensions WHERE id = '" . $extid . "'");
 		$ba->query("DELETE FROM sip_rel_user_group WHERE groupid = '". $groupid . "'");
 		$ba->query("DELETE FROM sip_groups WHERE id = '" . $groupid . "'");

@@ -11,7 +11,11 @@ if [ ! -d ${AST_CONF_DIR} ]; then
 	mkdir -p ${AST_CONF_DIR}
 fi
 
+cp ${BAF_BASE_DIR}/setup/extensions.ael ${AST_CONF_DIR}
+cp ${BAF_BASE_DIR}/setup/extensions.conf ${AST_CONF_DIR}
 cp ${BAF_BASE_DIR}/setup/manager.conf ${AST_CONF_DIR}
+cp ${BAF_BASE_DIR}/setup/minivm.conf ${AST_CONF_DIR}
+cp ${BAF_BASE_DIR}/setup/sip.conf ${AST_CONF_DIR}
 
 if [ ! -d ${BAF_LIBS_DIR} ]; then
 	mkdir -p ${BAF_LIBS_DIR}
@@ -25,6 +29,9 @@ fi
 if [ -f /tmp/OpenPBX_migration.sql ]; then
 	${BAF_EXEC_DIR}/database_migration.sh import
 fi
+
+# create dynamic asterisk conf files
+/usr/bin/env -i bash -c "/usr/bin/php -q /apps/OpenPBX/www/includes/create_files.php"
 
 # reset default template for SNOM provisioning
 cp ${BAF_BASE_DIR}/setup/snom_default.xml ${BAF_CONF_DIR}/settings/default/snom.xml

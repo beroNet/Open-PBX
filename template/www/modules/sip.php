@@ -105,8 +105,8 @@ class MainModule {
 
 		$ba = new beroAri();
 
+		$ba->query("DELETE FROM dialplan WHERE trunkid = '" . $id . "'");
 		$ba->query("DELETE FROM sip_rel_trunk_codec WHERE trunkid = '" . $id . "'");
-		$ba->query("DELETE FROM call_rules WHERE trunkid = '" . $id . "'");
 		$ba->query("DELETE FROM sip_trunks WHERE id = '" . $id . "'");
 		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 	}
