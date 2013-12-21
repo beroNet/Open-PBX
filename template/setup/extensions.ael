@@ -1,0 +1,206 @@
+//----------------------------------------------------------
+// Dialing voicemail, used in call-forwarding
+//----------------------------------------------------------
+context openpbx_to-voicemail {
+
+	_vm. => {
+		Set(box=${EXTEN:2});
+		AGI(/apps/OpenPBX/dialplan-scripts/in-user-get-vm.agi,${box});
+		Verbose(1,### OpenPBX: Forwarded call to voicemail of ${box});
+		Answer();
+		Wait(0.5);
+		Playback(vm-theperson);
+		SayDigits(${box});
+		Playback(vm-isunavail);
+		Playback(vm-intro);
+		MinivmRecord(${mail});
+		Hangup();
+	}
+
+	h => {
+		if ("${MVM_RECORD_STATUS}" = "SUCCESS") {
+			Verbose(1,### OpenPBX: Send mail to ${mail});
+			MinivmNotify(${mail},${template});
+			MinivmDelete();
+		}
+		Hangup();
+	}
+}
+
+
+context openpbx_to-internal {
+
+	//----------------------------------------------------------
+	// Dialing voicemail, used in call-forwarding
+	//----------------------------------------------------------
+	_vm. => jump ${EXTEN}@openpbx_to-voicemail;
+
+
+	//----------------------------------------------------------
+	// Users, Groups, ...
+	//----------------------------------------------------------
+
+	_X. => {
+		Verbose(1,### OpenPBX: Incoming call to ${EXTEN});
+
+		Set(__max_forwards=5);
+
+		if ("${forwards}" = "") {
+			Set(__forwards=-1);
+		}
+		if ("${forwards}" = "${max_forwards}") {
+			Verbose(1,### OpenPBX: Maximum number of call forwards (${max_forwards}));
+			Hangup();
+		}
+		Set(__forwards=${MATH(${forwards}+1,int)});
+
+		// check the type of called extension:
+		AGI(/apps/OpenPBX/dialplan-scripts/in-get-type.agi,${EXTEN});
+		Verbose(1,### OpenPBX: Incoming call to ${EXTEN}, type: ${exttype}, forwards: ${forwards});
+
+		// where is is?
+		if ("${exttype}" = "user")
+			goto to_user;
+		if ("${exttype}" = "group")
+			goto to_group;
+		if ("${exttype}" = "unknown")
+			goto to_unknown;
+		Hangup();
+
+
+		//----------------------------------------------------------
+		// type is "user":
+		//----------------------------------------------------------
+		to_user:
+			AGI(/apps/OpenPBX/dialplan-scripts/in-user-get-fw.agi,${EXTEN});
+
+			// forward (case=always) active?
+			if ("${fw_always}" != "") {
+				Verbose(1,### OpenPBX: Called user: ${EXTEN} - always forward to: ${fw_always});
+				Dial(Local/${fw_always}@openpbx_to-internal/n,200);
+				Hangup();
+			}
+
+			Verbose(1,### OpenPBX: Call user ${EXTEN}, timeout: 15s);
+			Dial(SIP/${EXTEN},15);
+
+			if ("${DIALSTATUS}" = "BUSY")
+				goto user_busy;
+			if ("${DIALSTATUS}" != "BUSY")
+				goto user_unavail;
+			Hangup();
+
+			// user busy:
+			//
+			user_busy:
+				Verbose(1,### OpenPBX: Called user ${EXTEN} is busy);
+				// forwared on busy?
+				if ("${fw_busy}" != "") {
+					Verbose(1,### OpenPBX: Called user: ${EXTEN} - forwards on busy to: ${fw_busy});
+					Dial(Local/${fw_busy}@openpbx_to-internal/n,200);
+					Hangup();
+				}
+				Hangup();
+
+			// user unavail:
+			//
+			user_unavail:
+				Verbose(1,### OpenPBX: Called user ${EXTEN} is unavail);
+				// forwarded on unavail?
+				if ("${fw_unavail}" != "") {
+					Verbose(1,### OpenPBX: Called user: ${EXTEN} - forwards on unavail to: ${fw_unvail});
+					Dial(Local/${fw_unavail}@openpbx_to-internal/n,200);
+					Hangup();
+				}
+				Hangup();
+
+
+		//----------------------------------------------------------
+		// type is "group":
+		//----------------------------------------------------------
+		to_group:
+			AGI(/apps/OpenPBX/dialplan-scripts/in-group-get.agi,${EXTEN});
+
+			Verbose(1,### OpenPBX: Call group: ${group_name}, timeout: 15s);
+			Dial(${group_dialstr},15);
+
+			Verbose(1,### OpenPBX: Called group ${EXTEN} (${group_name}) is unavail);
+
+			if ("${group_voicemail}" = "1" ) {
+				Verbose(1,### OpenPBX: Called group: ${EXTEN} (${group_name}) - forwards on unavail to voicebox);
+				Dial(Local/vm${EXTEN}@openpbx_to-internal/n,200);
+			}
+			Hangup();
+
+
+		//----------------------------------------------------------
+		// type is "unknown":
+		//----------------------------------------------------------
+		to_unknown:
+			Verbose(1,### OpenPBX: Dial to trunk for unknown extension: ${EXTEN});
+			jump ${EXTEN}@openpbx_to-trunk;
+			Hangup();
+
+	}
+}
+
+
+context openpbx_to-trunk {
+
+	_X. => {
+		AGI(/apps/OpenPBX/dialplan-scripts/out-route.agi,${EXTEN},${CALLERID(num)});
+
+		if ("${trunk_dial}" = "") {
+			Verbose(1,### OpenPBX: No matching route for ${EXTEN} configured);
+			Set(DIALSTATUS=CONGESTION);
+			Congestion(5);
+			Hangup();
+		}
+
+		Set(CALLERID(num)=${trunk_cid});
+		Set(CALLERID(name)=${trunk_cid});
+		Verbose(1,### OpenPBX: Outbound route: ${trunk_dial} - Caller ID: "${CALLERID(name)}" <${CALLERID(num)}@${trunk_cid_host}>);
+		Dial(${trunk_dial},60);
+
+		Verbose(1,### OpenPBX: Dialstatus for ${trunk_dial}: ${DIALSTATUS});
+		if ("${DIALSTATUS}" = "ANSWER" || "${DIALSTATUS}" = "CANCEL" || "${DIALSTATUS}" = "NOANSWER") {
+			Hangup();
+		}
+		else if ("${DIALSTATUS}" = "BUSY") {
+			Busy(3);
+			Hangup();
+		}
+
+		Hangup();
+	}
+}
+
+
+context openpbx_from-trunk {
+	
+	_. => {
+		if ("${EXTEN}" != "h" && "${EXTEN}" != "t" && "${EXTEN}" != "i") {
+			if ("${EXTEN}" == "s") {
+				WaitExten(1);
+			}
+			Verbose(1,### OpenPBX: Incoming call from trunk: "${trunkname}");
+			AGI(/apps/OpenPBX/dialplan-scripts/in-get-cid.agi,1,${CALLERID(name)});
+			Set(did_full=${EXTEN});
+			AGI(/apps/OpenPBX/dialplan-scripts/in-route.agi,1,${did_full},${CALLERID(name)});
+			if ("${route_id}" != "") {
+				Verbose(1,### OpenPBX: Matching route for ${did_full} is id ${route_id});
+				Verbose(1,### OpenPBX: dnid: ${did_full} => ext: ${did_ext_to});
+				Verbose(1,### OpenPBX: from cid orig: ${CALLERID(name)} => from cid: ${cid_fixed});
+				Set(CALLERID(num)=${cid_fixed});
+			} else {
+				Verbose(1,### OpenPBX: No Matching route. dnid: ${did_full}, cid: ${CALLERID(name)});
+			}
+			if ("${did_ext_to}" != "") {
+				jump ${did_ext_to}@openpbx_to-internal;
+			} else {
+				Set(PRI_CAUSE=1);
+				Hangup(1);
+			}
+		}
+	}
+}

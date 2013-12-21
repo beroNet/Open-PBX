@@ -1,0 +1,69 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$exten = trim($agi->request['agi_arg_1']);
+if (! $exten) {
+	$agi->verbose('### OpenPBX: Empty exten', 1);
+	exit();
+}
+
+$callerid_num = trim($agi->request['agi_arg_2']);
+if (! $callerid_num) {
+	$agi->verbose('### OpenPBX: Empty callerid_num', 1);
+	exit();
+}
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+$query = $ba->query(
+	'SELECT '.
+		'd.id AS id, '.
+		'd.trunkid AS trunkid, '.
+		'd.dnid_search AS dnid_search, '.
+		'd.dnid_replace AS dnid_replace, '.
+		'd.cid_search AS cid_search, '.
+		'd.cid_replace AS cid_replace, '.
+		'st.name AS trunk_name, '.
+		'st.registrar AS trunk_registrar '.
+	'FROM '.
+		'dialplan AS d, '.
+		'sip_trunks AS st '.
+	'WHERE '.
+		'd.ruletype="outbound" '.
+	'AND '.
+		'd.active=1 '.
+	'AND '.
+		'd.trunkid = st.id '.
+	'ORDER BY '.
+		'position ASC'
+);
+
+$trunk_name = '';
+$trunk_dial = '';
+$cid_fixed = '';
+$trunk_cid_host = '';
+
+while ($entry = $ba->fetch_array($query)) {
+	if (preg_match('/^'.$entry['dnid_search'].'/', $exten)) {
+		$route_id = $entry['id'];
+		$dnid_fixed = preg_replace('/^'.$entry['dnid_search'].'/', $entry['dnid_replace'], $exten);
+		$cid_fixed = preg_replace('/^'.$entry['cid_search'].'/', $entry['cid_replace'], $callerid_num);
+		$trunk_name = $entry['trunk_name'];
+		$trunk_dial = 'SIP/'. str_replace(' ', '_', $entry['trunk_name']) .'/'. $dnid_fixed;
+		$trunk_cid_host =  $entry['trunk_registrar'];
+		break;
+	}	
+}
+
+$agi->set_variable('trunk_name', $trunk_name);
+$agi->set_variable('trunk_dial', $trunk_dial);
+$agi->set_variable('trunk_cid', $cid_fixed);
+$agi->set_variable('trunk_cid_host', $trunk_cid_host);
+
+?>

@@ -1,12 +1,12 @@
 <?php
 
-include('/apps/OpenPBX/www/includes/variables.php');
-include(BAF_APP_WWW . '/includes/database.php');
-include(BAF_APP_WWW . '/includes/amifunc.php');
-include(BAF_APP_WWW . '/includes/create_files_functions.php');
-include(BAF_APP_WWW . '/includes/create_files_ext.php');
-include(BAF_APP_WWW . '/includes/create_files_sip.php');
-include(BAF_APP_WWW . '/includes/create_files_mailbox.php');
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_WWW . '/includes/database.php');
+include_once(BAF_APP_WWW . '/includes/amifunc.php');
+include_once(BAF_APP_WWW . '/includes/create_files_functions.php');
+include_once(BAF_APP_WWW . '/includes/create_files_extensions.php');
+include_once(BAF_APP_WWW . '/includes/create_files_minivm.php');
+include_once(BAF_APP_WWW . '/includes/create_files_sip.php');
 
 $ba = new beroAri();
 
@@ -24,21 +24,15 @@ if ($ba->is_error()) {
 }
 
 // create files
+create_extensions_OpenPBX($ba);
+create_sip_OpenPBX($ba);
+create_minivm_OpenPBX($ba);
+
+// Reload
 $ami = new AsteriskManager();
 $ami->connect();
-
-create_ext();
-create_ext_OpenPBX($ba, $ami);
-
-create_sip($ba);
-create_sip_OpenPBX($ba, $ami);
-
-create_mailbox($ba);
-create_mailbox_OpenPBX($ba, $ami);
-
 $ami->Reload();
 $ami->Logout();
-
 unset($ami);
 
 // apply changes

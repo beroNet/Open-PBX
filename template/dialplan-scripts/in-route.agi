@@ -1,0 +1,50 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+function _err($msg) {
+
+	$agi->verbose('### OpenPBX: '.$msg);
+	$agi->set_variable('route_id', '');
+	$agi->set_variable('did_ext_to', '');
+	$agi->set_variable('cid_fixed', '');
+	exit();
+}
+
+$trunkid = $agi->request['agi_arg_1'];
+if ($trunkid < 1) _err('Bad trunk id');
+
+$number = $agi->request['agi_arg_2'];
+if ($number == '') _err('Empty number');
+
+$cid = $agi->request['agi_arg_3'];
+if ($cid == '') _err('Empty cid');
+
+
+include(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+$query = $ba->query('SELECT * FROM dialplan WHERE ruletype = "inbound" AND active = 1 AND trunkid = "'. $trunkid .'" ORDER BY position ASC');
+
+$route_id = '';
+$did_ext_to = '';
+$cid_fixed = '';
+
+while ($entry = $ba->fetch_array($query)) {
+	if (preg_match('/^'.$entry['dnid_search'].'/', $number)) {
+		$route_id = $entry['id'];
+		$did_ext_to = preg_replace('/^'.$entry['dnid_search'].'/', $entry['dnid_replace'], $number);
+		$cid_fixed = preg_replace('/^'.$entry['cid_search'].'/', $entry['cid_replace'], $cid);
+		break;
+	}
+}
+
+$agi->set_variable('route_id', $route_id);
+$agi->set_variable('did_ext_to', $did_ext_to);
+$agi->set_variable('cid_fixed', $cid_fixed);
+
+?>

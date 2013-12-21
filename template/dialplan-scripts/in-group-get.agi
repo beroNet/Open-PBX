@@ -1,0 +1,50 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$ext = trim($agi->request['agi_arg_1']);
+
+if (! $ext) {
+	$agi->set_variable('exttype', '');
+	exit();
+}
+if (! preg_match('/^\d+$/', $ext)) {
+	$agi->set_variable('exttype', 'unknown');
+	exit();
+}
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+$group = $ba->fetch_array($ba->query('SELECT g.id AS id, g.name AS name, g.voicemail AS voicemail FROM sip_groups AS g, sip_extensions AS e WHERE g.extension = e.id AND e.extension = \''. $ext .'\''));
+
+$agi->set_variable('group_id', $group['id']);
+$agi->set_variable('group_name', $group['name']);
+$agi->set_variable('group_voicemail', $group['voicemail']);
+
+$group_dialstr = '';
+
+$query = $ba->query('SELECT
+						e.extension AS extension
+					FROM
+						sip_users AS u,
+						sip_extensions AS e, 
+						sip_rel_user_group as rug
+					WHERE
+						u.extension = e.id
+					AND
+						u.id = rug.userid
+					AND
+						rug.groupid = \''. $group['id'] .'\''
+					);
+while ($entry = $ba->fetch_array($query)) {
+	$group_dialstr .= 'SIP/'. $entry['extension'] . '&';
+}
+
+$agi->set_variable('group_dialstr', substr_replace($group_dialstr, '', -1));
+
+?>
