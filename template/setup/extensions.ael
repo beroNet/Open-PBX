@@ -63,6 +63,8 @@ context openpbx_to-internal {
 			goto to_user;
 		if ("${exttype}" = "group")
 			goto to_group;
+		if ("${exttype}" = "disa")
+			goto to_disa;
 		if ("${exttype}" = "unknown")
 			goto to_unknown;
 		Hangup();
@@ -130,6 +132,22 @@ context openpbx_to-internal {
 				Verbose(1,### OpenPBX: Called group: ${EXTEN} (${group_name}) - forwards on unavail to voicebox);
 				Dial(Local/vm${EXTEN}@openpbx_to-internal/n,200);
 			}
+			Hangup();
+
+
+		//----------------------------------------------------------
+		// type is "disa":
+		//----------------------------------------------------------
+		to_disa:
+			AGI(/apps/OpenPBX/dialplan-scripts/in-disa-get.agi,${EXTEN});
+
+			Verbose(1,### OpenPBX: Call DISA: ${EXTEN});
+			Answer();
+			if ("${password}" != "no-password") {
+				Playback(agent-pass&vm-and);
+			}
+			Playback(vm-enter-num-to-call);
+			DISA(${password},openpbx_to-internal);
 			Hangup();
 
 

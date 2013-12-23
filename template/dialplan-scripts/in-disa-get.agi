@@ -1,0 +1,30 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$ext = trim($agi->request['agi_arg_1']);
+
+if (! $ext) {
+	exit();
+}
+if (! preg_match('/^\d+$/', $ext)) {
+	exit();
+}
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+$password = trim($ba->fetch_single($ba->query('SELECT d.password AS password FROM disa AS d, sip_extensions AS e WHERE d.extension = e.id AND e.extension = "'. $ext .'"')));
+
+if (empty($password)) {
+	$agi->set_variable('password', 'no-password');
+	exit();
+}
+
+$agi->set_variable('password', $password);
+
+?>
