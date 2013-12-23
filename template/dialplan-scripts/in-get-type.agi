@@ -39,6 +39,15 @@ if ($num > 0) {
 	exit();
 }
 
+
+# is it DISA?
+#
+$num = $ba->fetch_single($ba->query('SELECT COUNT(*) FROM disa AS d, sip_extensions AS e WHERE d.extension = e.id AND e.extension = \''. $ext .'\''));
+if ($num > 0) {
+	$agi->set_variable('exttype', 'disa');
+	exit();
+}
+
 $agi->set_variable('exttype', 'unknown');
 
 ?>
