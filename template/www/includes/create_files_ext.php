@@ -61,12 +61,14 @@ function _ext_add_groups ($ba, $ami) {
 	while ($entry = $ba->fetch_array($query)) {
 
 		$dial = _ext_add_group_members($ba, $entry['id']);
+		
+		$extension=$entry['extension'];
 
 		$ret .= "; group '" . $entry['name'] . "'\n" .
-			"exten => " . $entry['extension'] . ",1,NoOp(Incoming call for " . $entry['extension'] . " - group " . $entry['name'] . ")\n" .
-			(($dial != '') ? "exten => " . $entry['extension'] . ",n,Dial(" . $dial . ",15)\n" : '') .
-			(($entry['voicemail'] == 1) ? "exten => " . $entry['extension'] . ",n,Voicemail(" . $entry['extension'] . ",u)\n" : '') .
-			"exten => " . $entry['extension'] . ",n,HangUp\n\n";
+			"exten => " . $extension . ",1,NoOp(Incoming call for " . $entry['extension'] . " - group " . $entry['name'] . ")\n" .
+			(($dial != '') ? "exten => " . $extension. ",n,Dial(" . $dial . ",15)\n" : '') .
+			(($entry['voicemail'] == 1) ? "exten => " . $extension. ",n,Voicemail(" . $entry['extension'] . ",u)\n" : '') .
+			"exten => " . $extension . ",n,HangUp\n\n";
 
 		$ami->DBPut('DAD', $entry['extension'], (($dial == '') ? 0 : $dial));
 	}
@@ -206,7 +208,27 @@ function _ext_add_section_outbound ($ba, $type) {
 	return($ret);
 }
 
-function _ext_add_section_inbound ($ba, $type) {
+function _get_group_extensions($ba) {
+		$query = $ba->query(	"SELECT " .
+					"e.extension AS extension," .
+					"g.name AS name, " .
+					"g.id AS id " .
+				"FROM " .
+					"sip_extensions AS e," .
+					"sip_groups AS g " .
+				"WHERE " .
+					"e.id = g.extension " );
+	while ($entry = $ba->fetch_array($query)) {
+		$groups[$entry['extension']]['name']=$entry['name'];
+		$groups[$entry['extension']]['id']=$entry['id'];
+	}
+
+	return $groups;
+}
+
+function _ext_add_section_inbound ($ba, $type, $ami) {
+
+	$groups=_get_group_extensions($ba);
 
 	$query = $ba->query(	"SELECT " .
 					"c.position AS position," .
@@ -234,6 +256,7 @@ function _ext_add_section_inbound ($ba, $type) {
 					"c.number ASC," .
 					"c.action_1 ASC," .
 					"c.position ASC");
+
 	while ($entry = $ba->fetch_array($query)) {
 
 		if ($entry['trunk'] != $last_trunk) {
@@ -241,16 +264,25 @@ function _ext_add_section_inbound ($ba, $type) {
 			$last_trunk = $entry['trunk'];
 		}
 
-		$number = (($entry['number'] != '*') ? $entry['number'] : 's') . (($entry['action_1'] != '*') ? '/' . $entry['action_1'] : '');
+		/*	$entry['number'] ist source
+			$entry['action_1'] ist target
+			strange but true
+		*/
+		$number = (($entry['action_1'] != '*') ? $entry['action_1'] : '_X.') . (($entry['number'] != '*') ? '/' . $entry['number'] : '');
 
 		if ($number != $last_number) {
 			$pos = '1';
 			$last_number = $number;
 		}
 
+		if (isset($groups[$entry['extension']]['name'])) {	
+			$dial = _ext_add_group_members($ba, $groups[$entry['extension']]['id']).",15";
+		} else {
+			$dial = "SIP/".$entry['extension'];
+		}		
 		switch ($entry['action']) {
 		case 'dial':
-			$ret .= "exten => " . $number . "," . $pos . ",Dial(SIP/" . (($entry['extension'] != 'Any Extension') ? $entry['extension'] : '0') . ")\n";
+			$ret .= "exten => " . $number . "," . $pos . ",Dial(" . (($dial != 'Any Extension') ? $dial: '0') . ")\n";
 			break;
 		case 'disa':
 			$ret .= 'exten => ' . $number . ',' . $pos . ",Playback(" . ((!empty($entry['action_2'])) ? 'agent-pass&vm-and&' : '') . "vm-enter-num-to-call)\n" .
@@ -266,6 +298,7 @@ function _ext_add_section_inbound ($ba, $type) {
 
 		$pos = 'n';
 	}
+	
 
 	return($ret);
 }
@@ -283,10 +316,10 @@ function create_ext_OpenPBX ($ba, $ami) {
 	while ($entry = $ba->fetch_array($query)) {
 		switch ($entry['name']) {
 		case 'inbound':
-			$cont .= _ext_add_section_inbound($ba, $entry) . "\n";
+			$cont .= _ext_add_section_inbound($ba, $entry, $ami) . "\n";
 			break;
 		case 'outbound':
-			$cont .= _ext_add_section_outbound($ba, $entry) . "\n";
+			$cont .= _ext_add_section_outbound($ba, $entry, $ami) . "\n";
 			break;
 		}
 	}
