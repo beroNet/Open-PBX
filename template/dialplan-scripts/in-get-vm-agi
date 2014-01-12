@@ -1,0 +1,38 @@
+#!/usr/bin/php -q
+<?php
+
+include_once('/apps/OpenPBX/www/includes/variables.php');
+include_once(BAF_APP_PATH .'/dialplan-scripts/class.AGI.php');
+
+$agi = new AGI();
+
+$ext = trim($agi->request['agi_arg_1']);
+$exttype = trim($agi->request['agi_arg_2']);
+
+if (! $ext) {
+	$agi->set_variable('mail', '');
+	exit();
+}
+if (! preg_match('/^\d+$/', $ext)) {
+	$agi->set_variable('mail', '');
+	exit();
+}
+if (! in_array($exttype, array('user', 'group'))) {
+	$agi->set_variable('mail', '');
+	exit();
+}
+
+include_once(BAF_APP_WWW . '/includes/database.php');
+$ba = new beroAri();
+
+if ($exttype == 'user') {
+	$entry = $ba->fetch_array($ba->query('SELECT u.mail AS mail, u.language as language FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND e.extension = \''. $ext .'\''));
+	$agi->set_variable('template', 'openpbx_'. $entry['language']);
+} elseif ($exttype == 'group') {
+	$entry = $ba->fetch_array($ba->query('SELECT g.mail AS mail FROM sip_groups AS g, sip_extensions AS e WHERE g.extension = e.id AND e.extension = \''. $ext .'\''));
+	$agi->set_variable('template', 'openpbx_en-EN');
+}
+
+$agi->set_variable('mail', $entry['mail']);
+
+?>

@@ -26,7 +26,7 @@ $ba = new beroAri();
 #
 $num = $ba->fetch_single($ba->query('SELECT COUNT(*) FROM sip_users AS u, sip_extensions AS e WHERE u.extension = e.id AND e.extension = \''. $ext .'\''));
 if ($num > 0) {
-	$agi->set_variable('exttype', 'user');
+	$agi->set_variable('__exttype', 'user');
 	exit();
 }
 
@@ -35,7 +35,7 @@ if ($num > 0) {
 #
 $num = $ba->fetch_single($ba->query('SELECT COUNT(*) FROM sip_groups AS g, sip_extensions AS e WHERE g.extension = e.id AND e.extension = \''. $ext .'\''));
 if ($num > 0) {
-	$agi->set_variable('exttype', 'group');
+	$agi->set_variable('__exttype', 'group');
 	exit();
 }
 
@@ -44,10 +44,10 @@ if ($num > 0) {
 #
 $num = $ba->fetch_single($ba->query('SELECT COUNT(*) FROM disa AS d, sip_extensions AS e WHERE d.extension = e.id AND e.extension = \''. $ext .'\''));
 if ($num > 0) {
-	$agi->set_variable('exttype', 'disa');
+	$agi->set_variable('__exttype', 'disa');
 	exit();
 }
 
-$agi->set_variable('exttype', 'unknown');
+$agi->set_variable('__exttype', 'unknown');
 
 ?>

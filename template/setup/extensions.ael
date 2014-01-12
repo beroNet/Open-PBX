@@ -5,7 +5,10 @@ context openpbx_to-voicemail {
 
 	_vm. => {
 		Set(box=${EXTEN:2});
-		AGI(/apps/OpenPBX/dialplan-scripts/in-user-get-vm.agi,${box});
+		AGI(/apps/OpenPBX/dialplan-scripts/in-get-vm.agi,${box},${exttype});
+		if ("${mail}" = "") {
+			Hangup();
+		}
 		Verbose(1,### OpenPBX: Forwarded call to voicemail of ${box});
 		Answer();
 		Wait(0.5);
