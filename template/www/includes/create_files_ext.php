@@ -66,7 +66,7 @@ function _ext_add_groups ($ba, $ami) {
 
 		$ret .= "; group '" . $entry['name'] . "'\n" .
 			"exten => " . $extension . ",1,NoOp(Incoming call for " . $entry['extension'] . " - group " . $entry['name'] . ")\n" .
-			(($dial != '') ? "exten => " . $extension. ",n,Dial(" . $dial . ",15)\n" : '') .
+			(($dial != '') ? "exten => " . $extension. ",n,Dial(" . $dial . ",60)\n" : '') .
 			(($entry['voicemail'] == 1) ? "exten => " . $extension. ",n,Voicemail(" . $entry['extension'] . ",u)\n" : '') .
 			"exten => " . $extension . ",n,HangUp\n\n";
 
@@ -276,7 +276,7 @@ function _ext_add_section_inbound ($ba, $type, $ami) {
 		}
 
 		if (isset($groups[$entry['extension']]['name'])) {	
-			$dial = _ext_add_group_members($ba, $groups[$entry['extension']]['id']).",15";
+			$dial = _ext_add_group_members($ba, $groups[$entry['extension']]['id']).",60";
 		} else {
 			$dial = "SIP/".$entry['extension'];
 		}		
@@ -352,7 +352,7 @@ function create_ext () {
 		"exten=>s,n,GotoIf(\$[\"\${CFWD}\"!=\"0\"]?cfwd)\n" .
 #		"exten=>s,n,Set(DADNAME=\${DB(DAD/\${DAD})})\n" .
 #		"exten=>s,n,Dial(SIP/\${DADNAME},20,t)\n" .
-		"exten=>s,n,Dial(SIP/\${DAD},20,t)\n" .
+		"exten=>s,n,Dial(SIP/\${DAD},60,t)\n" .
 		"exten=>s,n,GotoIf(\$[\"\${DIALSTATUS}\"=\"BUSY\"]?busy)\n" .
 		"exten=>s,n,GotoIf(\$[\"\${DIALSTATUS}\"!=\"BUSY\"]?noanswer)\n" .
 		"exten=>s,n,Goto(exit)\n" .
