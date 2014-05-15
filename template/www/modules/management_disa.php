@@ -48,7 +48,7 @@ class MainModule {
 		$ret .= "\t\t". '<th>'. $this->_lang->get('Password') .'</th>' ."\n";
 		$ret .= "\t\t". '<th class="button">' ."\n";
 		$ret .= "\t\t\t". '<form name="disa_add" action="'. BAF_URL_BASE .'/index.php?m='. $_GET['m'] .'&execute" method="POST">' ."\n";
-		$ret .= "\t\t\t\t". '<input type="submit" name="add" value="'. 'hinzufügen' .'" />' ."\n";
+		$ret .= "\t\t\t\t". '<input type="submit" name="add" value="'. $this->_lang->get('add') .'" />' ."\n";
 		$ret .= "\t\t\t". '</form>' ."\n";
 		$ret .= "\t\t". '</th>' ."\n";
 		$ret .= "\t". '</tr>' ."\n";
