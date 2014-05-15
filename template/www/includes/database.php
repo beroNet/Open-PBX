@@ -171,6 +171,10 @@ class beroAri {
 			if (($line[0] == '#') || (strstr($line, 'INSERT INTO activate'))) {
 				continue;
 			}
+			# hack to insert mail_settings
+			if (strstr($line, 'INSERT INTO mail_settings')) {
+				sqlite_query($this->db,'DELETE FROM mail_settings WHERE id = 1');
+			}
 			sqlite_query($this->db, $line, $res, $error_msg);
 
 			if (isset($error_msg)) {
