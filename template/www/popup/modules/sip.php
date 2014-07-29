@@ -44,8 +44,8 @@ class PopupModule {
 			unset($query);
 		}
 
-		$ret .=	"<form name=\"sip_trunks_mod\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return is_submit(this);\">\n" .
-			"\t<table class=\"default\" id=\"sip_trunks_mod\">\n" .
+		$ret .=	"<form name=\"sip_trunks_mod\" class='extensions_form' action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return is_submit(this);\">\n" .
+			"\t<table class=\"default contenttoc\" id=\"sip_trunks_mod\"><tbody>\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"5\">" . $this->_lang->get('popup_sip_table_title_' . (isset($_GET['id']) ? 'modify' : 'add')) . "</th>\n" .
 			"\t\t</tr>\n" .
@@ -122,12 +122,13 @@ class PopupModule {
 			"\t\t\t\t</textarea>\n" .
 			"\t\t\t</td>\n" .
 			"\t\t</tr>\n" .
-			"\t</table>\n" .
+			"\t</tbody></table>\n" .
+                        "<div class='center'>".
 			(isset($entry['id']) ? "\t<input name=\"id_upd\" type=\"hidden\" value=\"" . $entry['id'] . "\" />\n" : '') .
 			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" onclick=\"selectall('sip_codecs_sel');\" />\n" .
 			"\t&nbsp&nbsp\n" .
 			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
-			"</form>\n";
+			"</div></form>\n";
 
 		return($ret);
 	}

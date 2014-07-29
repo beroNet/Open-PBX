@@ -87,7 +87,7 @@ class MainModule {
 
 	function display () {
 
-		$ret =	"<table class=\"default\" id=\"noborder\">\n" .
+		$ret =	"<table class=\"default contenttoc\" id=\"noborder\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"2\">" . $this->_lang->get('backup_table_download_head') . "</th>\n" .
 			"\t</tr>\n" .
@@ -106,7 +106,7 @@ class MainModule {
 			"\t</tr>\n" .
 			"\t<tr>\n" .
 			"\t\t<td class=\"nowrap\" colspan=\"2\">\n" .
-			"\t\t\t<form name=\"conf_upload\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" enctype=\"multipart/form-data\">\n" .
+			"\t\t\t<form name=\"conf_upload\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" enctype=\"multipart/form-data\">\n" .
 			"\t\t\t\t<input type=\"file\" name=\"uploadfile\" size=\"28\" />\n" .
 			"\t\t\t\t<input type=\"submit\" name=\"upload\" value=\"" . $this->_lang->get('Upload') . "\" onclick=\"return confirm('This will change the whole configuration. Do you want to continue?')\" />\n" .
 			"\t\t\t</form>\n" .

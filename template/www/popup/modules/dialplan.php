@@ -337,8 +337,8 @@ class PopupModule {
 			return('');
 		}
 
-		$ret =	"<form name=\"rules_" . $rule_type . "\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t<table class=\"default\" id=\"rules_" . $rule_type . "\">\n" .
+		$ret =	"<form name=\"rules_" . $rule_type . "\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
+			"\t<table class=\"default contenttoc\" id=\"rules_" . $rule_type . "\">\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"2\">" . $this->_lang->get('popup_dialplan_' . (isset($entry['id']) ? 'modify' : 'add') . '_rule') . "</th>\n" .
 			"\t\t</tr>\n" .

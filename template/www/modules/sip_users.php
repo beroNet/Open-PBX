@@ -207,7 +207,7 @@ class MainModule {
 					"\t</tr>\n";
 		}
 
-		$ret =	"<table class=\"default\" id=\"sip_users\">\n" .
+		$ret =	"<table class=\"default contenttoc\" id=\"sip_users\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"" . (count($col_names) + 2) . "\">" . $this->_lang->get('users_table_users_head') . "</th>\n" .
 			"\t</tr>\n" .
@@ -266,7 +266,7 @@ class MainModule {
 		}
 
 		// complete table
-		$ret =	"<table class=\"default\" id=\"sip_groups\">\n" .
+		$ret =	"<table class=\"default contenttoc\" id=\"sip_groups\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"" . (count($col_names) + 1) . "\">" . $this->_lang->get('users_table_groups_head') . "</th>\n" .
 			"\t</tr>\n" .

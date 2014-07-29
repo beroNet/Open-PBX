@@ -90,7 +90,7 @@ class MainModule {
 		}
 		unset($query);
 
-		$ret =	"<table class=\"default\">\n" .
+		$ret =	"<table class=\"default contenttoc\">\n" .
 			"\t<tr>\n" .
 			"\t<th colspan=\"" . $span . "\">" . $this->_lang->get('siptrunks_table_head') . "</th>\n" .
 			"\t</tr>\n" .

@@ -82,8 +82,8 @@ class MainModule {
 		$entry = $ba->fetch_array($query);
 		unset($query);
 
-		$ret =	"<form name=\"mail_server\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t<table class=\"default\">\n" .
+		$ret =	"<form name=\"mail_server\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
+			"\t<table class=\"default contenttoc\">\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"2\">" . $this->_lang->get('mail_table_head') . "</td>\n" .
 			"\t\t</tr>\n" .

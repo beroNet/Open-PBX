@@ -147,7 +147,7 @@ class MainModule {
 	private function _build_snom_pnp_table () {
 
 
-		$ret =	"\t<table class=\"default\">\n" .
+		$ret =	"\t<table class=\"default contenttoc\">\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"2\">" . $this->_lang->get('pnp_mac_table_head') . "</th>\n" .
 			"\t\t</tr>\n" .
@@ -158,7 +158,7 @@ class MainModule {
 			$this->_build_snom_pnp_table_entry() .
 			"\t\t<tr>\n" .
 			"\t\t\t<td colspan=\"2\">\n" .
-			"\t\t\t\t<form name=\"snom_pnp_entry_add_form\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return verifyMAC(snom_pnp_entry_new_mac.value,'" .
+			"\t\t\t\t<form name=\"snom_pnp_entry_add_form\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return verifyMAC(snom_pnp_entry_new_mac.value,'" .
 												$this->_lang->get('mac_empty') ."','" . $this->_lang->get('mac_invalid') . "');\">\n" .
 			"\t\t\t\t\t<input type=\"hidden\" name=\"snom_pnp_action\" value=\"entry_add\" />\n" .
 			"\t\t\t\t\t<input type=\"text\" name=\"snom_pnp_entry_new_mac\" size=\"12\" maxlength=\"12\" />\n" .

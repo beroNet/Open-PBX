@@ -59,7 +59,7 @@ div#popup_frame_head {
 }
 
 div#popup_frame_content {
-	margin 5px;
+	margin : 5px;
 	text-align: center;
 }
 

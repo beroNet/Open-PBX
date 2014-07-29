@@ -129,7 +129,7 @@ class MainModule {
 		$ami = new AsteriskManager();
 		$ami->connect();
 
-		$ret =	"<table class=\"default\">\n" .
+		$ret =	"<table class=\"default contenttoc\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"5\">" . $this->_lang->get('state_table_sipregs_head') . "</th>\n" .
 			"\t</tr>\n" .
@@ -144,7 +144,7 @@ class MainModule {
 			"</table>\n" .
 			"<br />\n" .
 			"<br />\n" .
-			"<table class=\"default\">\n" .
+			"<table class=\"default contenttoc\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"3\">" . $this->_lang->get('state_table_sippeers_head') . "</th>\n" .
 			"\t</tr>\n" .
@@ -157,7 +157,7 @@ class MainModule {
 			"</table>\n" .
 			"<br />\n" .
 			"<br />\n" .
-			"<table class=\"default\">\n" .
+			"<table class=\"default contenttoc\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"5\">" . $this->_lang->get('state_table_chans_head') . "</th>\n" .
 			"\t</tr>\n" .

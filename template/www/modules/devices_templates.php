@@ -64,7 +64,7 @@ class MainModule {
 				"\t<tr>\n";
 		}
 
-		$table =	"<table class=\"default\">\n" .
+		$table =	"<table class=\"default contenttoc\">\n" .
 				$cols .
 				$rows .
 				"</table>\n";

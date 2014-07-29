@@ -77,7 +77,7 @@ class MainModule {
 		}
 		unset($query);
 
-		$table =	"<table class=\"default\">\n" .
+		$table =	"<table class=\"default contenttoc\">\n" .
 				"\t<tr>\n" .
 				"\t\t<th colspan=\"" . (count($col_names) + 2) . "\">" . $this->_lang->get('phones_table_users_head') . "</th>\n" .
 				"\t</tr>\n" .

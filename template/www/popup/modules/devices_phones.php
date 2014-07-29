@@ -146,9 +146,9 @@ class PopupModule {
 			$entry = $ba->fetch_array($query);
 		}
 
-		$ret =	"<form name=\"devices\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return verifyIP(ip.value,'" .$this->_lang->get('ip_empty') . "','" .
+		$ret =	"<form name=\"devices\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return verifyIP(ip.value,'" .$this->_lang->get('ip_empty') . "','" .
 			$this->_lang->get('ip_invalid') . "');\">\n" .
-			"\t<table class=\"default\">\n" .
+			"\t<table class=\"default contenttoc\">\n" .
 			"\t\t<tr class=\"sub_head\">\n" .
 			"\t\t\t<td>Name</td>\n" .
 			"\t\t\t<td>\n" .
@@ -181,10 +181,10 @@ class PopupModule {
 			"\t\t</tr>\n" .
 			"\t</table>\n" .
 			(isset($entry['id']) ? "<input name=\"id_upd\" type=\"hidden\" value=\"" . $entry['id'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
+			"\t<div class=\"center\"><input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
 			"\t&nbsp&nbsp\n" .
 			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
-			"</form>\n";
+			"</div></form>\n";
 
 		return($ret);
 	}

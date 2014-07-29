@@ -383,8 +383,8 @@ class PopupModule {
 			unset($query);
 		}
 
-		$ret =	"<form name=\"sip_users\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t<table class=\"default\" id=\"sip_users_mod\">\n" .
+		$ret =	"<form name=\"sip_users\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
+			"\t<table class=\"default contenttoc\" id=\"sip_users_mod\">\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"4\">" . $this->_lang->get('popup_users_table_title_user_' . (isset($_GET['id']) ? 'modify' : 'add')) . "</th>\n" .
 			"\t\t</tr>\n" .
@@ -449,10 +449,10 @@ class PopupModule {
 			"\t</table>\n" .
 			"\t<input type=\"hidden\" name=\"mode\" value=\"user\" />\n" .
 			(isset($entry['id']) ? "\t<input type=\"hidden\" name=\"id_upd\" value=\"" . $entry['id'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"Save\" onclick=\"selectall('devices_sel');\" />\n" .
+			"\t<div class=\"center\"><input type=\"submit\" name=\"submit\" value=\"Save\" onclick=\"selectall('devices_sel');\" />\n" .
 			"\t&nbsp&nbsp\n" .
 			"\t<input type=\"button\" name=\"close\" value=\"Close\" onclick=\"javascript:popup_close();\" />\n" .
-			"</form>\n";
+			"</div></form>\n";
 
 		return($ret);
 	}
@@ -511,8 +511,8 @@ class PopupModule {
 			unset($query);
 		}
 
-		$ret =	"<form name=\"sip_groups\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t<table class=\"default\" id=\"sip_groups_mod\">\n" .
+		$ret =	"<form name=\"sip_groups\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
+			"\t<table class=\"default contenttoc\" id=\"sip_groups_mod\">\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"4\">" . $this->_lang->get('popup_users_table_title_group_' . (isset($_GET['id']) ? 'modify' : 'add')) . "</th>\n" .
 			"\t\t</tr>\n" .
@@ -555,10 +555,10 @@ class PopupModule {
 			"\t</table>\n" .
 			"\t<input type=\"hidden\" name=\"mode\" value=\"group\" />\n" .
 			(isset($entry['id']) ? "\t<input type=\"hidden\" name=\"id_upd\" value=\"" . $entry['id'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" onclick=\"selectall('members');\" />\n" .
+			"\t<div class=\"center\"><input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" onclick=\"selectall('members');\" />\n" .
 			"\t&nbsp&nbsp\n" .
 			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
-			"</form>\n";
+			"</div></form>\n";
 
 		return($ret);
 	}

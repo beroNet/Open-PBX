@@ -114,8 +114,8 @@ class PopupModule {
 
 		$modify = (isset($_GET['modify'])) ? 1 : 0;
 
-		$ret =	"<form name=\"device_templates\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return is_submit(this);\">\n" .
-			"\t<table class=\"default\" id=\"device_templates\">\n" .
+		$ret =	"<form name=\"device_templates\" class=\"extensions_form\" action=\"" . BAF_URL_BASE . "/popup/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\" onsubmit=\"return is_submit(this);\">\n" .
+			"\t<table class=\"default contenttoc\" id=\"device_templates\">\n" .
 			"\t\t<tr>\n" .
 			"\t\t\t<th colspan=\"2\">" . $this->_lang->get('popup_template_' . ($modify ? 'modify' : 'copy') . '_header') . "</th>\n" .
 			"\t\t</tr>\n" .
@@ -141,10 +141,10 @@ class PopupModule {
 			"\t</table>\n" .
 			($modify ? "\t<input type=\"hidden\" name=\"id\" value=\"" . $entry['id'] . "\" />\n" : '') .
 			($modify ? "\t<input type=\"hidden\" name=\"path\" value=\"" . $entry['path'] . "\" />\n" : '') .
-			"\t<input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
+			"\t<div class=\"center\"><input type=\"submit\" name=\"submit\" value=\"" . $this->_lang->get('Save') . "\" />\n" .
 			"\t&nbsp;&nbsp;\n" .
 			"\t<input type=\"button\" name=\"close\" value=\"" . $this->_lang->get('Close') . "\" onclick=\"javascript:popup_close();\" />\n" .
-			"</form>\n";
+			"</div></form>\n";
 
 		return($ret);
 	}

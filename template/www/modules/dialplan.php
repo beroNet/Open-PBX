@@ -213,7 +213,7 @@ class MainModule {
 					"\t</tr>\n";
 		}
 
-		$ret =	"<table class=\"default\">\n" .
+		$ret =	"<table class=\"default contenttoc\">\n" .
 			"\t<tr>\n" .
 			"\t\t<th colspan=\"3\">" . $this->_lang->get('dialplan_table_' . $rule_type['name'] . '_head') . "</th>\n" .
 			"\t</tr>\n" .
