@@ -24,7 +24,7 @@ Class beroGui {
 			$pre . "\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=devices_templates\" id=\"item_devices_templates\"> " . $this->_lang->get('menu_devices_templates') . "</a></li>\n" .
 			$pre . "\t\t</ul>\n" .
 			$pre . "\t</li>\n" .
-			$pre . "\t<li><a href=\"#\" id=\"submenu_management\"><span class=\"submenu\">&#9660</span> " . $this->_lang->get('menu_management') . "</a>\n" .
+			$pre . "\t<li><a href=\"#\" id=\"submenu_management\"> " . $this->_lang->get('menu_management') . "</a>\n" .
 			$pre . "\t\t<ul>\n" .
 			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_state\" id=\"item_management_state\"> " . $this->_lang->get('menu_management_state') . "</a></li>\n" .
 			$pre . "\t\t\t<li><a href=\"" . BAF_URL_BASE . "/index.php?m=management_mail\" id=\"item_management_mail\"> " . $this->_lang->get('menu_management_mail') . "</a></li>\n" .

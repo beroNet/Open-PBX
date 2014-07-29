@@ -42,10 +42,10 @@ class MainModule {
 
 		$ret =	$this->_lang->get('easyconfig_text1') . "<br />\n" .
 			"<form name=\"easyconf_apply\" action=\"" . BAF_URL_BASE . "/index.php?m=" . $_GET['m'] . "&execute\" method=\"POST\">\n" .
-			"\t<input type=\"submit\" class=\"button\" name=\"easyconf_appfs_button\" style=\"width: 120px\" value=\"Configure\"  />\n"  .
+			"\t<input type=\"submit\" class=\"button\" name=\"easyconf_appfs_button\" style=\"width: 170px\" value=\"Configure\"  />\n"  .
 			"\t<br /><br /><br /><br />\n" .
 			$this->_lang->get('easyconfig_text2') . "<br />\n" .
-			"\t<input type=\"submit\" class=\"button\" name=\"easyconf_apply_button\" style=\"width: 120px\" value=\"" . $this->_lang->get('easyconfig_button') . "\" />\n" .
+			"\t<input type=\"submit\" class=\"button\" name=\"easyconf_apply_button\" style=\"width: 170px\" value=\"" . $this->_lang->get('easyconfig_button') . "\" />\n" .
 			"</form><br />";
 
 		return($ret);
