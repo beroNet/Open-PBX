@@ -29,3 +29,4 @@ fi
 # reset default template for SNOM provisioning
 cp ${BAF_BASE_DIR}/setup/snom_default.xml ${BAF_CONF_DIR}/settings/default/snom.xml
 
+$BAF_BASE_DIR/setup/add_sip_peers.sh
