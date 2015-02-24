@@ -15,7 +15,7 @@ class lang {
 		$this->_lang_arr['menu_devices']			= 'Geräte';
 		$this->_lang_arr['menu_devices_phones']			= 'Telefone';
 		$this->_lang_arr['menu_devices_templates']		= 'Vorlagen';
-		$this->_lang_arr['menu_management']			= 'Verwaltung';
+		$this->_lang_arr['menu_management']			= 'OpenPBX Verwaltung';
 		$this->_lang_arr['menu_management_state']		= 'Status';
 		$this->_lang_arr['menu_management_mail']		= 'E-Mail Einstellungen';
 		$this->_lang_arr['menu_management_pnp']			= 'PNP Einstellungen';
