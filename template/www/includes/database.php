@@ -19,7 +19,7 @@ class beroAri {
 
 		// enable foreign keys support
 		sqlite_query($this->db, "PRAGMA foreign_keys = ON");
-	
+
 		return;
 	}
 
@@ -81,11 +81,12 @@ class beroAri {
 			}
 			sqlite_query($this->db, $line);
 		}
-		
-		//create default Peer for beroFix 
+
+		//create default Peer for beroFix
 		$host=system('/sbin/ifconfig eth0 | grep inet | sed "s/.*addr:\(.*\) Bcast.*/\1/"');
 		sqlite_query($this->db, "INSERT INTO sip_trunks (name, user, password, registrar, proxy, dtmfmode,send_from_user) VALUES ('openpbx-gateway', 'openpbx-gateway', 'openpbx-gateway', '$host', '$host',1,1);");
 		sqlite_query($this->db, "INSERT INTO sip_rel_trunk_codec (priority, codecid, trunkid) VALUES (1, 1, 1);");
+		sqlite_query($this->db, 'UPDATE activate SET option = 1 WHERE id = \'activate\' AND option < 1');
 
 	}
 
