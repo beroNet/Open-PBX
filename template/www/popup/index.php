@@ -1,30 +1,11 @@
 <?php
 
-$app_name = 'OpenPBX';
+# includes
 
-# BEGIN session management #
-$redir_login = '/app/berogui/includes/login.php';
+$newTarget = '/userapp/OpenPBX/index.php?m=' . $_GET['m'];
+require_once(file_exists('/home/admin/lib/php/session_popup.php') ? '/home/admin/lib/php/session_popup.php' : '/apps/OpenPBX/www/includes/session_popup.php');
+unset($newTarget);
 
-@session_start();
-if (!isset($_SESSION['beroari_time'])) {
-	echo	"<script>window.opener.location=\"" . $redir_login . "?userapp=" . $app_name . "\"</script>\n" .
-		"<script>this.window.close();</script>\n";
-	exit();
-} elseif ((isset($_SESSION['beroari_time'])) && (($_SESSION['beroari_time'] + 1200) < time())) {
-	@session_unset();
-	@session_destroy();
-	echo	"<script>window.opener.location=\"" . $redir_login . "?reason=sess_expd&userapp=" . $app_name . "\"</script>\n" .
-		"<script>this.window.close();</script>\n";
-	exit();
-}
-
-unset($redir_login);
-
-$_SESSION['beroari_time'] = time();
-
-# END session management #
-
-# main code
 include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/includes/database.php');
 include(BAF_APP_WWW . '/includes/beroGui.php');

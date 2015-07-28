@@ -39,23 +39,23 @@ class PopupModule {
 
 		$name = str_replace(' ', '_', trim($_POST['name']));
 		if ($name == str_replace(' ', '_', trim($this->_lang->get('popup_template_new_name')))) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('please_enter_a_valid_name') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('please_enter_a_valid_name') . "'); window.history.back();</script>\n");
 		}
 
 		$query = $ba->query("SELECT id FROM phone_templates where name = '" . $name . "'");
 		if ($ba->num_rows($query) > 0) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_name_already_exists') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
 		$path = BAF_APP_ETC . '/settings/default/' . $name . '.xml';
 		if (!$this->_execute_dev_templ_write($path, $_POST['template'])) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('could_not_save') . ' ' . $path . "!');</script>\n");
+			return("<script>alert('" . $this->_lang->get('could_not_save') . ' ' . $path . "!'); window.history.back();</script>\n");
 		}
 
 		$ba->query("INSERT INTO phone_templates ('name', 'description', 'path') VALUES('" . $name ."', '" . $_POST['description'] . "', '" . $path . "')");
 		if ($ba->is_error()) {
-			return("<script>window.history.back(); alert(" . $ba->error() . ");</script>\n");
+			return("<script>alert(" . $ba->error() . "); window.history.back();</script>\n");
 		}
 
 		$ret =	"<script>window.opener.location='" . BAF_URL_BASE . "/index.php?m=" . $this->_name . "'</script>\n" .
@@ -67,11 +67,11 @@ class PopupModule {
 	private function _execute_dev_templ_update ($ba) {
 
 		if (!file_exists($_POST['path'])) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('does_not_exist') . $_POST['path'] . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('does_not_exist') . $_POST['path'] . "'); window.history.back();</script>\n");
 		}
 
 		if (!$this->_execute_dev_templ_write($_POST['path'], $_POST['template'])) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('could_not_save') . ' ' . $path . "!');</script>\n");
+			return("<script>alert('" . $this->_lang->get('could_not_save') . ' ' . $path . "!'); window.history.back();</script>\n");
 		}
 
 		$ret =	"<script>window.opener.location='" . BAF_URL_BASE . "/index.php?m=" . $this->_name . "'</script>\n" .

@@ -1,28 +1,7 @@
 <?php
 
-$app_name = 'OpenPBX';
-
-# BEGIN session management #
-$redir_login = '/app/berogui/includes/login.php';
-
-@session_start();
-if (!isset($_SESSION['beroari_time'])) {
-	header('Location:' . $redir_login . '?userapp=' . $app_name);
-	exit();
-} elseif ((isset($_SESSION['beroari_time'])) && (($_SESSION['beroari_time'] + 1200) < time())) {
-	@session_unset();
-	@session_destroy();
-	header('Location:' . $redir_login . '?reason=sess_expd&userapp=' . $app_name);
-	exit();
-}
-
-unset($redir_login);
-
-$_SESSION['beroari_time'] = time();
-
-# END session management #
-
-# main code
+# includes
+require_once(file_exists('/home/admin/lib/php/session.php') ? '/home/admin/lib/php/session.php' : '/apps/OpenPBX/www/includes/session.php');
 include('/apps/OpenPBX/www/includes/variables.php');
 include(BAF_APP_WWW . '/includes/database.php');
 include(BAF_APP_WWW . '/includes/beroGui.php');
@@ -40,7 +19,7 @@ $gui	= new beroGui($lang);
 $mod	= new MainModule($lang);
 
 # display the gui
-echo	$gui->main_header($app_name, $mod) .
+echo	$gui->main_header('OpenPBX', $mod) .
 	$mod->execute() .
 	$mod->display() .
 	$gui->main_footer();

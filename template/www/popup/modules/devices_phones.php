@@ -25,12 +25,12 @@ class PopupModule {
 
 		$query = $ba->query("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) == 0) {
-			return("<script>window.history.back(); alert('Device '" . $_POST['name'] . "' does not exist!');</script>\n");
+			return("<script>alert('Device '" . $_POST['name'] . "' does not exist!'); window.history.back();</script>\n");
 		}
 
 		foreach ($ba->fetch_array($query) as $entry) {
 			if ($_POST['id_upd'] != $entry['id']) {
-				return("<script>window.history.back(); alert('Invalid Name!');</script>\n");
+				return("<script>alert('Invalid Name!'); window.history.back();</script>\n");
 			}
 		}
 
@@ -60,12 +60,12 @@ class PopupModule {
 	private function _execute_dev_create ($ba) {
 
 		if (($_POST['submit'] == 'Save') && (!isset($_POST['name']))) {
-			return("<script>window.history.back(); alert('Please fill in the form completly!')</script>\n");
+			return("<script>alert('Please fill in the form completly!'); window.history.back();</script>\n");
 		}
 
 		$query = $ba->query("SELECT id FROM phone_devices WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
-			return("<script> window.history.back(); alert('Name '" . $_POST['name'] . "' is already in use!');</script>\n");
+			return("<script> alert('Name '" . $_POST['name'] . "' is already in use!'); window.history.back();</script>\n");
 		}
 
 		$ba->query("INSERT INTO phone_devices (name, typeid, ipaddr, macaddr, tmplid) VALUES ('" .

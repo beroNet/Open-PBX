@@ -108,7 +108,7 @@ class PopupModule {
 		// check if user name does not belong to another user
 		$query = $ba->query("SELECT * FROM sip_users WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
@@ -116,7 +116,7 @@ class PopupModule {
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'user');
 		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
@@ -145,20 +145,20 @@ class PopupModule {
 
 	private function _execute_sip_user_create ($ba) {
 		if (empty($_POST['name']) || empty($_POST['extension']) || empty($_POST['password'])) {
-			return("<script>window.history.back(); alert('Please fill out the form completely.')</script>\n");
+			return("<script>alert('Please fill out the form completely.'); window.history.back();</script>\n");
 		}
 
 		// check if user name does not belong to another user
 		$query = $ba->query("SELECT name FROM sip_users WHERE name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
 		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
@@ -203,19 +203,19 @@ class PopupModule {
 	private function _execute_sip_group_create($ba) {
 
 		if (empty($_POST['name']) || empty($_POST['extension'])) {
-			return("<script>window.history.back(); alert('Please fill out the form completely.')</script>\n");
+			return("<script>alert('Please fill out the form completely.'); window.history.back();</script>\n");
 		}
 
 		$query = $ba->query("SELECT id FROM sip_groups WHERE name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
 		// check if extensions does not belong to another user/group
 		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
@@ -243,7 +243,7 @@ class PopupModule {
 
 		$query = $ba->query("SELECT id FROM sip_groups WHERE id != '" . $_POST['id_upd'] . "' AND name = '" . $_POST['name'] . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_name_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 
@@ -251,7 +251,7 @@ class PopupModule {
 		$extension_id = $this->_execute_sip_get_ext_id($ba, $_POST['id_upd'], 'group');
 		$query = $ba->query("SELECT id FROM sip_extensions WHERE extension = '" . $_POST['extension'] . "' AND id != '" . $extension_id . "'");
 		if (($query != false) && ($ba->num_rows($query) > 0)) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_extension_already_inuse') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 

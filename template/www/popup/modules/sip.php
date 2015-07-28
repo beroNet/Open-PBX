@@ -28,7 +28,7 @@ class PopupModule {
 
 		$ba = new beroAri();
 		if ($ba->is_error()) {
-			return("<script>window.history.back(); alert(" . $ba->error() . ");</script>\n");
+			return("<script>alert(" . $ba->error() . "); window.history.back();</script>\n");
 		}
 
 		return($_POST['id_upd'] ? $this->_execute_sip_update($ba) : $this->_execute_sip_create($ba));
@@ -137,7 +137,7 @@ class PopupModule {
 		$ba->query("UPDATE activate SET option = 1 WHERE id = 'activate' AND option < 1");
 
 		if ($ba->is_error()){
-			return("<script>window.history.back(); alert(" . $ba->error() . ");</script>\n");
+			return("<script>alert(" . $ba->error() . "); window.history.back();</script>\n");
 		}
 
 		$ret =	"<script>window.opener.location='" . BAF_URL_BASE . "/index.php?m=" . $this->_name . "'</script>\n" .
@@ -166,7 +166,7 @@ class PopupModule {
 
 		$query = $ba->query("SELECT id FROM sip_trunks WHERE id != '" . $_POST['id_upd'] . "' AND name == '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
-			return("<script> window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script> alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 		$send_from_user = ((isset($_POST['send_from_user'])) ? '1' :'0');
@@ -191,12 +191,12 @@ class PopupModule {
 	private function _execute_sip_create ($ba) {
 
 		if (empty($_POST['name']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['registrar']) || empty($_POST['proxy'])) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('please_fill_the_form') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('please_fill_the_form') . "'); window.history.back();</script>\n");
 		}
 
 		$query = $ba->query("SELECT id FROM sip_trunks WHERE name = '" . $_POST['name'] . "'");
 		if ($ba->num_rows($query) > 0) {
-			return("<script>window.history.back(); alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "');</script>\n");
+			return("<script>alert('" . $this->_lang->get('this_name_already_exists') . ' ' . $this->_lang->get('please_choose_another') . "'); window.history.back();</script>\n");
 		}
 		unset($query);
 		$send_from_user = ((isset($_POST['send_from_user'])) ? '1' :'0');

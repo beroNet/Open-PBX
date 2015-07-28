@@ -83,9 +83,15 @@ class beroAri {
 		}
 
 		//create default Peer for beroFix
-		$host=system('/sbin/ifconfig eth0 | grep inet | sed "s/.*addr:\(.*\) Bcast.*/\1/"');
-		sqlite_query($this->db, "INSERT INTO sip_trunks (name, user, password, registrar, proxy, dtmfmode,send_from_user) VALUES ('openpbx-gateway', 'openpbx-gateway', 'openpbx-gateway', '$host', '$host',1,1);");
-		sqlite_query($this->db, "INSERT INTO sip_rel_trunk_codec (priority, codecid, trunkid) VALUES (1, 1, 1);");
+		$host = '127.0.0.1';
+		if (($pp = popen('/usr/bin/expr match "$(/sbin/ifconfig eth0) | grep inet addr" ".*inet addr:\([0-9\.]*\)"', 'r')) != null) {
+			$host = rtrim(fread($pp, 32));
+			pclose($pp);
+		}
+
+		sqlite_query($this->db, 'INSERT INTO sip_trunks (name, user, password, registrar, proxy, dtmfmode,send_from_user) ' .
+					'VALUES (\'openpbx-gateway\', \'openpbx-gateway\', \'openpbx-gateway\', \'' . $host . '\', \'' . $host .'\', 1, 1);');
+		sqlite_query($this->db, 'INSERT INTO sip_rel_trunk_codec (priority, codecid, trunkid) VALUES (1, 1, 1);');
 		sqlite_query($this->db, 'UPDATE activate SET option = 1 WHERE id = \'activate\' AND option < 1');
 
 	}
